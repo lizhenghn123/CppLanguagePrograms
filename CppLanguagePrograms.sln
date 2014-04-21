@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "静态绑定和动态绑定", "静态绑定和动态绑定\静态绑定和动态绑定.vcxproj", "{1CBE48C0-7D7C-4AC8-B289-9D0A83DE98BA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "静态多态和动态多态", "静态多态和动态多态\静态多态和动态多态.vcxproj", "{0C2A4083-4148-4B8D-8D37-1972CE949685}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "名字重整(NameMangling)", "名字重整(NameMangling)\名字重整(NameMangling).vcxproj", "{925FD3C9-1F2A-4A39-807D-81EEA014D777}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "指针常量和常量指针", "指针常量和常量指针\指针常量和常量指针.vcxproj", "{0193D4C9-0C50-4615-8EF6-4956A5A8419F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1CBE48C0-7D7C-4AC8-B289-9D0A83DE98BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1CBE48C0-7D7C-4AC8-B289-9D0A83DE98BA}.Debug|Win32.Build.0 = Debug|Win32
+		{1CBE48C0-7D7C-4AC8-B289-9D0A83DE98BA}.Release|Win32.ActiveCfg = Release|Win32
+		{1CBE48C0-7D7C-4AC8-B289-9D0A83DE98BA}.Release|Win32.Build.0 = Release|Win32
+		{0C2A4083-4148-4B8D-8D37-1972CE949685}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C2A4083-4148-4B8D-8D37-1972CE949685}.Debug|Win32.Build.0 = Debug|Win32
+		{0C2A4083-4148-4B8D-8D37-1972CE949685}.Release|Win32.ActiveCfg = Release|Win32
+		{0C2A4083-4148-4B8D-8D37-1972CE949685}.Release|Win32.Build.0 = Release|Win32
+		{925FD3C9-1F2A-4A39-807D-81EEA014D777}.Debug|Win32.ActiveCfg = Debug|Win32
+		{925FD3C9-1F2A-4A39-807D-81EEA014D777}.Debug|Win32.Build.0 = Debug|Win32
+		{925FD3C9-1F2A-4A39-807D-81EEA014D777}.Release|Win32.ActiveCfg = Release|Win32
+		{925FD3C9-1F2A-4A39-807D-81EEA014D777}.Release|Win32.Build.0 = Release|Win32
+		{0193D4C9-0C50-4615-8EF6-4956A5A8419F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0193D4C9-0C50-4615-8EF6-4956A5A8419F}.Debug|Win32.Build.0 = Debug|Win32
+		{0193D4C9-0C50-4615-8EF6-4956A5A8419F}.Release|Win32.ActiveCfg = Release|Win32
+		{0193D4C9-0C50-4615-8EF6-4956A5A8419F}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
