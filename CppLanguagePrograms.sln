@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "名字重整(NameMangling)"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "指针常量和常量指针", "指针常量和常量指针\指针常量和常量指针.vcxproj", "{0193D4C9-0C50-4615-8EF6-4956A5A8419F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "strlen_sizeof", "strlen_sizeof\strlen_sizeof.vcxproj", "{D7D34FBF-B1EC-4834-B38D-92B1B07EF06A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,10 @@ Global
 		{0193D4C9-0C50-4615-8EF6-4956A5A8419F}.Debug|Win32.Build.0 = Debug|Win32
 		{0193D4C9-0C50-4615-8EF6-4956A5A8419F}.Release|Win32.ActiveCfg = Release|Win32
 		{0193D4C9-0C50-4615-8EF6-4956A5A8419F}.Release|Win32.Build.0 = Release|Win32
+		{D7D34FBF-B1EC-4834-B38D-92B1B07EF06A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D7D34FBF-B1EC-4834-B38D-92B1B07EF06A}.Debug|Win32.Build.0 = Debug|Win32
+		{D7D34FBF-B1EC-4834-B38D-92B1B07EF06A}.Release|Win32.ActiveCfg = Release|Win32
+		{D7D34FBF-B1EC-4834-B38D-92B1B07EF06A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
