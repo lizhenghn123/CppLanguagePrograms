@@ -2,23 +2,6 @@
 
 /*
 sizeof()与strlen()的区别
-首先需要说明的是sizeof和strlen都可以求长度，但是却有很大的区别，简单来说可以概括为以下几点：
-
-1. sizeof是一个关键字，而strlen一个函数。
-2 .sizeof求的是分配过来的长度，而strlen求的却是实际使用的长度。
-比如：char a[30]="abcd";
-sizeof(a)=30;而strlen(a)=4;
-
-4、strlen求的长度是以'\0'结束的。
-比如char a[30];strlen(a)的结果是不定的，而sizeof(a)=30;
-同理：char a[30]={'a','b','c'};对于strlen来说也是不定的，而sizeof却是30.
-
-以上四点便是sizeof和strlen的简要区别，给自己提个醒，也给别人提个醒。
-
-另外@小知了了指出，sizeof是在编译是计算的，而strlen是在运行是计算的。
-
-//---------------------------------
-sizeof()与strlen()的区别
 
 1. sizeof是C++中的一个关键字，而strlen是C语言中的一个函数；
 2. sizeof求的是字节长度，而strlen求的却是实际长度；
