@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "指针常量和常量指针
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "strlen_sizeof", "strlen_sizeof\strlen_sizeof.vcxproj", "{D7D34FBF-B1EC-4834-B38D-92B1B07EF06A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GBKtoUTF8", "GBKtoUTF8\GBKtoUTF8.vcxproj", "{3443518D-6997-4995-B765-2D6648A9746C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -37,6 +39,10 @@ Global
 		{D7D34FBF-B1EC-4834-B38D-92B1B07EF06A}.Debug|Win32.Build.0 = Debug|Win32
 		{D7D34FBF-B1EC-4834-B38D-92B1B07EF06A}.Release|Win32.ActiveCfg = Release|Win32
 		{D7D34FBF-B1EC-4834-B38D-92B1B07EF06A}.Release|Win32.Build.0 = Release|Win32
+		{3443518D-6997-4995-B765-2D6648A9746C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3443518D-6997-4995-B765-2D6648A9746C}.Debug|Win32.Build.0 = Debug|Win32
+		{3443518D-6997-4995-B765-2D6648A9746C}.Release|Win32.ActiveCfg = Release|Win32
+		{3443518D-6997-4995-B765-2D6648A9746C}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
