@@ -362,13 +362,13 @@ std::string PrintStringAsBinaryString(const std::string &str)
 }
 
 
-extern const unsigned short const mb_gb2uni_table[];
+extern const unsigned short const gbk_to_unicode_table[];
 
 unsigned short one_gbk_to_unicode(unsigned char ch, unsigned char cl)
 {
 	ch -= 0x81;
 	cl -= 0x40;
-	return (ch <= 0x7d && cl <= 0xbe) ? mb_gb2uni_table[ch*0xbf+cl] : 0x1fff;
+	return (ch <= 0x7d && cl <= 0xbe) ? gbk_to_unicode_table[ch*0xbf+cl] : 0x1fff;
 }
 
 /*****************************************************************************
