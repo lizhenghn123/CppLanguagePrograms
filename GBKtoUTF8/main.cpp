@@ -36,6 +36,12 @@ void test_gbbk_utf_unicode()
 	std::cout << std::hex<<one_gbk_to_unicode(186,195) <<"\n";
 	std::cout << std::hex<<one_gbk_to_unicode(210,187) <<"\n";
 	std::cout << std::hex<<one_gbk_to_unicode(182,254) <<"\n";
+
+	unsigned short uni = 0x4E00;
+	char pgbk[32];
+	unicode_to_gbk(&uni,pgbk,32);
+	std::cout << pgbk << "\n";
+
 	unsigned long one = 0x4E00; //0xD2BB;//0x4E00;
 	unsigned char pOutput[6];  
 	memset(pOutput,0,6);

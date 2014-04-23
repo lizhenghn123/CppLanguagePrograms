@@ -21,7 +21,8 @@ std::string PrintStringAsBinaryString(const std::string& str);
 
 /**Unicode和UTF-8的编码转换*/
 unsigned short one_gbk_to_unicode(unsigned char ch, unsigned char cl);
-unsigned short one_unicode_to_gbk(unsigned char ch, unsigned char cl); //not implement
+unsigned short one_unicode_to_gbk(unsigned short unicode); //not implement
+void unicode_to_gbk(unsigned short * punicode, char * pgbk, int len);
 int one_unicode_to_utf8(unsigned long unic, unsigned char *pOutput,int outSize);
 
 //参数1是UTF8字符串当前位置指针，这里必须要是指针，因为必须要通过第1个字符进行判断才知道一个完整的字符的编码要向后取多少个字符

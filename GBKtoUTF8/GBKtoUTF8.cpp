@@ -363,12 +363,55 @@ std::string PrintStringAsBinaryString(const std::string &str)
 
 
 extern const unsigned short const gbk_to_unicode_table[];
+extern const unicode_to_gbk_t const unicode_to_gbk_table[];
+#define U2W_LOBYTE(w)           ((unsigned char)(((unsigned short)(w)) & 0xff))
+#define U2W_HIBYTE(w)           ((unsigned char)((((unsigned short)(w)) >> 8) & 0xff))
 
 unsigned short one_gbk_to_unicode(unsigned char ch, unsigned char cl)
 {
     ch -= 0x81;
     cl -= 0x40;
     return (ch <= 0x7d && cl <= 0xbe) ? gbk_to_unicode_table[ch * 0xbf + cl] : 0x1fff;
+}
+
+unsigned short one_unicode_to_gbk(unsigned short unicode)
+{
+	const static int  TABLE_SIZE = (sizeof(unicode_to_gbk_table)/sizeof(unicode_to_gbk_table[0]));
+	int i, b, e;
+	b = 0;
+	e = TABLE_SIZE - 1;
+	while (b <= e)
+	{
+		i = (b + e) / 2;
+		if (unicode_to_gbk_table[i].unicode == unicode)
+			return unicode_to_gbk_table[i].gbk;
+
+		if (unicode_to_gbk_table[i].unicode < unicode)
+			b = i + 1;
+		else
+			e = i - 1;
+	}
+	return 0;
+}
+
+void unicode_to_gbk(unsigned short * punicode, char * pgbk, int len)
+{
+	while (*punicode && len > 0)
+	{
+		unsigned short dbcs;
+		dbcs = one_unicode_to_gbk(*punicode);
+		if (dbcs > 0x0ff || dbcs < 0)
+		{
+			*pgbk = dbcs >> 8;
+			++pgbk;
+		}
+
+		*pgbk = U2W_LOBYTE(dbcs);
+		++pgbk;
+		--len;
+		++punicode;
+	}
+	*pgbk = 0x00;
 }
 
 /*****************************************************************************
