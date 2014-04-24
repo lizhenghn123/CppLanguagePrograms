@@ -2,17 +2,17 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
+#include "osDefine.h"
 
-#if defined(_WIN32) || defined(WIN32)        /**Windows*/
-#define WINDOWS_IMPL
+#ifdef OS_WINDOWS
 #include <Windows.h>
 #include <DbgHelp.h>				/*用于实现将重整后的名字解析为原始名字*/
 #pragma comment(lib,"DbgHelp.lib")
-#else
-#define LINUX_IMPL
+#elif defined(OS_LINUX)
 #include<cxxabi.h>					/*用于实现将重整后的名字解析为原始名字*/
+#else
+#error "You must be include osDefine.h firstly"
 #endif
-
 
 int /*__cdecl*/ func(int);//windows平台下在函数名前可加__cdecl、__stdcall、__fastcall，默认__cdecl
 
@@ -78,7 +78,7 @@ void UnDecorateName()
 	printf("Please Input Mangled Name: ");
 	scanf("%s", szDecorateName);
 
-#ifdef WINDOWS_IMPL
+#ifdef OS_WINDOWS
 	if (::UnDecorateSymbolName(szDecorateName, szUnDecorateName, sizeof(szUnDecorateName), UNDNAME_COMPLETE) == 0)
 	{
 		printf("UnDecorateSymbolName Failed. GetLastError() = %d", GetLastError());
@@ -95,7 +95,6 @@ void UnDecorateName()
 	printf("Name after  Mangled : %s \nName before Mangled : %s\n", szDecorateName, szUnDecorateName);
 #endif
 }
-
 
 int main(void)
 {

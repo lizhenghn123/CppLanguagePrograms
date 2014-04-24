@@ -3,17 +3,6 @@
 #include <vector>
 #include <string>
 
-#if defined(_WIN32) || defined(WIN32)        /**Windows*/
-#define WINDOWS_IMPL
-#include <Windows.h>
-#include <DbgHelp.h>				/*用于实现将重整后的名字解析为原始名字*/
-#pragma comment(lib,"DbgHelp.lib")
-#else
-#define LINUX_IMPL
-#include<cxxabi.h>					/*用于实现将重整后的名字解析为原始名字*/
-#endif
-
-
 namespace DynamicPoly
 {
 	class Geometry

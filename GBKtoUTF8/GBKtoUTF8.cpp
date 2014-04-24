@@ -6,15 +6,14 @@
 #include <string.h>
 #include <memory.h>
 #include <assert.h>
+#include "osDefine.h"
 
-
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-#define OS_WINDOWS
+#ifdef OS_WINDOWS
 #include <Windows.h>
-
-#else
-#define OS_LINUX
+#elif defined(OS_LINUX)
 #include <iconv.h>
+#else
+#error "You must be include osDefine.h firstly"
 #endif
 
 #ifdef OS_WINDOWS
