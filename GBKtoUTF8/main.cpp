@@ -50,7 +50,7 @@ void test_gbbk_utf_unicode()
 	std::cout<<PrintStringAsBinaryString((char*)pOutput)<<"\n";
 }
 
-int main()
+void test1()
 {
 	std::cout<<PrintStringAsBinaryString("Äã")<<"\n";
 	std::cout<<PrintStringAsBinaryString("ºÃ")<<"\n";
@@ -63,14 +63,24 @@ int main()
 	one_utf8_to_unicode(p, wch);
 	std::cout<<wch<<"--"<<PrintStringAsBinaryString((char*)&wch)<<"\n";
 
-
 	unsigned short unicode = 0x4E00;
 	char buf[32] = {'0'};
 	unicode_to_utf8(unicode,buf);
+}
 
+int main()
+{
+	//test1();
+	//std::cout<<"-----------------------------------------\n";
+	//test_gbbk_utf_unicode();
+	//std::cout<<"-----------------------------------------\n";
 
-	test_gbbk_utf_unicode();
-	
+	std::cout<<"×Ö: GBK: "<<PrintStringAsBinaryString("×Ö")<<"\n";  //11010111 11010110 : 215 214
+	std::cout<<"×Ö: Unicode: "<< std::hex<<one_gbk_to_unicode(215,214) <<"\n"; //5b57
+	unsigned short unicode = 0x5b57;
+	char buf[32] = {'0'};
+	unicode_to_utf8(unicode,buf);
+	std::cout<<"×Ö: Utf-8: "<< PrintStringAsBinaryString(buf) <<"\t"<< buf <<"\n"; //11100101 10101101 10010111 : E5 AD 97
 	std::cout<<"-----------------------------------------\n";
 
 	std::string ghello = "ÄãºÃ";
