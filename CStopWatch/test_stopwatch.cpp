@@ -1,5 +1,6 @@
 #include <iostream>
 #include "CStopWatch.h"
+#include "HighPrecisionTime.h"
 
 #ifdef OS_WINDOWS
 #include <Windows.h>
@@ -38,7 +39,7 @@ int main()
 
 	{
 		#ifdef OS_WINDOWS
-		CStopWatchEx watch;
+		HighPrecisionTime watch;
 		watch.Reset();
 		Sleep(1000);
 		std::cout << watch.ElapsedTime()<<"\n";

@@ -75,11 +75,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CStopWatch.h" />
+    <ClCompile Include="..\include\CStopWatch.cpp" />
+    <ClCompile Include="test_stopwatch.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CStopWatch.cpp" />
-    <ClCompile Include="test_stopwatch.cpp" />
+    <ClInclude Include="..\include\CStopWatch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
