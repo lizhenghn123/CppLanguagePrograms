@@ -1,6 +1,5 @@
 #include "CStopWatch.h"
 
-
 CStopWatch::CStopWatch()
 {
 	Start();
@@ -8,7 +7,6 @@ CStopWatch::CStopWatch()
 
 CStopWatch::~CStopWatch()
 {
-
 }
 
 bool CStopWatch::Start()
@@ -33,7 +31,7 @@ double CStopWatch::ElapsedTime()
 {
 	timeval now;
 	GetTimeOfDay(&now, NULL);
-	
+
 	return 1.0*(now.tv_sec-m_startTime.tv_sec) + 1.0*(now.tv_usec-m_startTime.tv_usec)/1000000;
 }
 

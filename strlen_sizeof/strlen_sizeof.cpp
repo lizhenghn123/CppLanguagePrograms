@@ -37,12 +37,11 @@ private:
 	double score;
 };
 
-
 int main()
 {
 	int i = 1;
 	std::cout << sizeof(i) << "\n";   //sizeof(i) == sizeof(int) == 4
-	
+
 	char str1[] = "hello world";
 	std::cout << sizeof(str1) << "\t" << strlen(str1) << "\n"; //12 11, 前者是因为为str1总共分配了12个字节大小内存（加上结束符'\0'）,而strlen计算时并不加上结束符
 
@@ -62,7 +61,7 @@ int main()
 
 	C * c = NULL;
 	//checked_delete(c);  //编译失败，因为C是不完整类型，只有声明，没有定义
-	
+
 	system("pause");
 	return 0;
 }

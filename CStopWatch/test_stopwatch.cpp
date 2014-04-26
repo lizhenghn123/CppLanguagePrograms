@@ -9,7 +9,7 @@
 #endif
 
 //睡眠，以毫秒为单位
-void MySleep(long millseconds) 
+void MySleep(long millseconds)
 {
 #ifdef OS_WINDOWS
 	Sleep(millseconds);
@@ -28,7 +28,7 @@ int main()
 
 	watch.Reset();
 	MySleep(500);
-	
+
 	std::cout << watch.ElapsedTimeInMill()<<"\n";
 
 	watch.Reset();
@@ -53,7 +53,7 @@ int main()
 		std::cout << watch.ElapsedTimeInMicro()<<"\n";
 		#endif
 	}
-	 
+
 	system("pause");
 	return 0;
 }

@@ -65,7 +65,6 @@ END:
 	}
 }
 
-
 void test_do_while_3()
 {
 	do
@@ -88,7 +87,7 @@ int main()
 	test_do_while_1();
 
 	test_do_while_2();
-	
+
 	EMPTYMICRO;
 
 	test_do_while_3();

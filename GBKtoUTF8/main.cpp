@@ -6,7 +6,6 @@
 #include "GBKtoUTF8.h"
 using namespace std;
 
-
 void GetText(bool isUtf8, std::vector<std::string>& vecStr)
 {
 	const char* filename = isUtf8 ? "utf8.txt" : "gbk.txt";
@@ -43,7 +42,7 @@ void test_gbbk_utf_unicode()
 	std::cout << pgbk << "\n";
 
 	unsigned long one = 0x4E00; //0xD2BB;//0x4E00;
-	unsigned char pOutput[6];  
+	unsigned char pOutput[6];
 	memset(pOutput,0,6);
 	one_unicode_to_utf8(one,pOutput,6);
 	cout << pOutput << "\n";

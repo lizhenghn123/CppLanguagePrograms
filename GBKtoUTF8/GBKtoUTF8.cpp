@@ -132,7 +132,6 @@ std::string ConvertUtf8ToGBK(const std::string &strUtf8)
 }
 #endif
 
-
 /*下面两个IsTextUTF8都无法检测出gb2312编码的汉字“谢谢”*/
 bool IsTextUTF8(const char *str, int length)
 {
@@ -360,7 +359,6 @@ std::string PrintStringAsBinaryString(const std::string &str)
     return stream.str();
 }
 
-
 extern const unsigned short const gbk_to_unicode_table[];
 extern const unicode_to_gbk_t const unicode_to_gbk_table[];
 #define U2W_LOBYTE(w)           ((unsigned char)(((unsigned short)(w)) & 0xff))
@@ -490,8 +488,6 @@ int one_unicode_to_utf8(unsigned long unic, unsigned char *pOutput, int outSize)
 
     return 0;
 }
-
-
 
 /*****************************************************************************
  * 该代码来自：http://blog.csdn.net/coollofty/article/details/8058859
@@ -627,4 +623,3 @@ int unicode_to_utf8(unsigned short wchar, char *utf8)
 
     return len;
 }
-
