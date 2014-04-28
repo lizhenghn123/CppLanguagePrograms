@@ -20,7 +20,7 @@ Content：
 
 8.  2014-04-25 增加do-while(0)的使用场景
 
-
+9.  2014-04-28 增加vector和list插入操作的性能比较
 
 Created by lizhenghn@gmail.com 
 
