@@ -17,6 +17,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CStopWatch", "CStopWatch\CS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "do-while(0)", "do-while(0)\do-while(0).vcxproj", "{4E266146-CF1E-49B5-8823-0B642A1E0400}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "STL", "STL", "{E9FAB1B8-1988-40C2-ABB1-84F24F2CF07E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vector_list", "vector_list\vector_list.vcxproj", "{8A484FC8-F28D-41AA-86D2-4AEB3F37222D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -55,8 +59,15 @@ Global
 		{4E266146-CF1E-49B5-8823-0B642A1E0400}.Debug|Win32.Build.0 = Debug|Win32
 		{4E266146-CF1E-49B5-8823-0B642A1E0400}.Release|Win32.ActiveCfg = Release|Win32
 		{4E266146-CF1E-49B5-8823-0B642A1E0400}.Release|Win32.Build.0 = Release|Win32
+		{8A484FC8-F28D-41AA-86D2-4AEB3F37222D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8A484FC8-F28D-41AA-86D2-4AEB3F37222D}.Debug|Win32.Build.0 = Debug|Win32
+		{8A484FC8-F28D-41AA-86D2-4AEB3F37222D}.Release|Win32.ActiveCfg = Release|Win32
+		{8A484FC8-F28D-41AA-86D2-4AEB3F37222D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8A484FC8-F28D-41AA-86D2-4AEB3F37222D} = {E9FAB1B8-1988-40C2-ABB1-84F24F2CF07E}
 	EndGlobalSection
 EndGlobal
