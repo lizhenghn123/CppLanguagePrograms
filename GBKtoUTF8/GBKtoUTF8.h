@@ -3,21 +3,17 @@
 
 #include <string>
 
-
 /**GBK和UTF-8的字符串转换*/
 std::string ConvertGBKToUtf8(const std::string& strGBK);
 std::string ConvertUtf8ToGBK(const std::string& strUtf8);
-
 
 /**检测字符串是否是utf8编码*/
 bool IsTextUTF8(const char* str, int length);
 bool IsTextUTF8(const std::string& str);
 
-
 /**计算字符串的二进制表示*/
 std::string PrintStringAsBinaryString(const char* p);
 std::string PrintStringAsBinaryString(const std::string& str);
-
 
 /**Unicode和UTF-8的编码转换*/
 unsigned short one_gbk_to_unicode(unsigned char ch, unsigned char cl);

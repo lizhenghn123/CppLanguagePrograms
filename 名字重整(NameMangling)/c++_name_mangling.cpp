@@ -16,7 +16,7 @@
 
 int /*__cdecl*/ func(int);//windows平台下在函数名前可加__cdecl、__stdcall、__fastcall，默认__cdecl
 
-float  func(float); 
+float  func(float);
 
 int    func(const std::vector<std::string>& vec);
 
@@ -24,7 +24,7 @@ namespace NP1
 {
 	int func(int);
 
-	class C 
+	class C
 	{
 	public:
 		int func(int);
@@ -91,7 +91,7 @@ void UnDecorateName()
 #else
 	int status;
 	size_t n = max_size;
-	abi::__cxa_demangle(szDecorateName,szUnDecorateName,&n,&status); 
+	abi::__cxa_demangle(szDecorateName,szUnDecorateName,&n,&status);
 	printf("Name after  Mangled : %s \nName before Mangled : %s\n", szDecorateName, szUnDecorateName);
 #endif
 }

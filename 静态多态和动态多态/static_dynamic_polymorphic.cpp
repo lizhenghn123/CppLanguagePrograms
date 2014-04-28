@@ -50,7 +50,6 @@ namespace DynamicPoly
 		for(size_t i = 0; i < size; ++i)
 			vecGeo[i]->Draw();
 	}
-
 }
 
 namespace StaticPoly

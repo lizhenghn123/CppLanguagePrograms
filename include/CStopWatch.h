@@ -33,5 +33,4 @@ private:
 	timeval		m_startTime;
 };
 
-
 #endif /** CSTOPWTACH_FILE_H */

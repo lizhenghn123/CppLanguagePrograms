@@ -27,7 +27,7 @@ public:
 	{
 		radius_ = radius;
 	}
-	
+
 	double Area()const
 	{
 		return MATH_PI*radius_*radius_;
@@ -44,7 +44,7 @@ public:
 		length_ = length;
 		width_ = width;
 	}
-	
+
 	double Area()const
 	{
 		return length_*width_;
@@ -55,11 +55,11 @@ private:
 };
 
 /*
-形参firgure所执行的操作静态绑定到Figure类的Area()方法上.这样访问的只是从基类中的Area()方法.而不是所传递过来实例所在直接类的Area()方法.所以输出结果不正确. 
+形参firgure所执行的操作静态绑定到Figure类的Area()方法上.这样访问的只是从基类中的Area()方法.而不是所传递过来实例所在直接类的Area()方法.所以输出结果不正确.
 
-解决这个问题办法就是多态,或者是动态绑定,这个动态绑定是在运行时发生的.因此又被称为 
-运行时多态. 
-在C++中实现动态绑定要求成员函数用virtual来标记. 
+解决这个问题办法就是多态,或者是动态绑定,这个动态绑定是在运行时发生的.因此又被称为
+运行时多态.
+在C++中实现动态绑定要求成员函数用virtual来标记.
 */
 void printArea(Figure &figure)
 {
@@ -90,7 +90,7 @@ class E
 {
 public:
 	virtual void func(int i = 0)
-	{ 
+	{
 		std::cout << "E::func()\t"<< i <<"\n";
 	}
 };
@@ -103,14 +103,12 @@ public:
 	}
 };
 
-
 int main(void)
 {
 	F* pf = new F();
 	E* pe = pf;
 	pf->func(); //F::func() 1  正常，就该如此；
 	pe->func(); //F::func() 0  哇哦，这是什么情况，调用了子类的函数，却使用了基类中参数的默认值！
-	
 
 	C* pc = new C(); //pc的静态类型是它声明的类型C*，动态类型也是C*；
 	B* pb = new B(); //pb的静态类型和动态类型也都是B*；
@@ -131,8 +129,7 @@ int main(void)
 	pa->func();      //B::func() 因为有了virtual虚函数特性，pa的动态类型指向B*，因此先在B中查找，找到后直接调用；
 	pc->func();      //C::func() pc的动、静态类型都是C*，因此也是先在C中查找；
 	pnull->func();   //空指针异常，因为是func是virtual函数，因此对func的调用只能等到运行期才能确定，然后才发现pnull是空指针；
-	
-	
+
 	std::cout << "------------------------------\n";
 
 	Figure figure;
@@ -157,4 +154,3 @@ int main(void)
 	system("pause");
 	return 0;
 }
-
