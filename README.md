@@ -22,7 +22,7 @@ Content：
 
 9.  2014-04-28 增加Windows/Linux下的几个计时函数
 
-10.  2014-04-28 增加Windows/Linux下的几个计时函数
+10.  2014-04-28 增加vector、list的插入性能比较
 
 Created by lizhenghn@gmail.com 
 
