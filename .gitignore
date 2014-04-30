@@ -2,7 +2,11 @@
 *.slo
 *.lo
 *.o
+  #VisualStudio temp files
 *.obj
+*.user
+*.sdf
+*.suo
 
 # Compiled Dynamic libraries
 *.so

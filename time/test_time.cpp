@@ -53,7 +53,6 @@ void test_time()
     //        long    tv_sec;         /* seconds */
     //        long    tv_usec;        /* and microseconds */
     //};
-    timeval  val;
 
     //用clock()来计时  毫秒
     clock_t  clockBegin, clockEnd;
@@ -78,7 +77,7 @@ void test_time()
     Sleep(1000);
     dwEnd = timeGetTime();
     printf("%d\n", dwEnd - dwBegin);
-    
+
     //用QueryPerformanceCounter()来计时  微秒
     LARGE_INTEGER  large_interger;
     double dff;
@@ -105,7 +104,6 @@ void test_time()
     timeuse=1000000*(tpend.tv_sec-tpstart.tv_sec)+tpend.tv_usec-tpstart.tv_usec;//注意，秒的读数和微秒的读数都应计算在内
     printf("used time:%fus\n",timeuse);
 #endif
-
 }
 
 int main()
