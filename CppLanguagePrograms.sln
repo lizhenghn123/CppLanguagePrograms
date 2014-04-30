@@ -47,6 +47,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "函数对象Demo", "函数�
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "heapDemo", "STL\heapDemo\heapDemo.vcxproj", "{5600721A-1C45-4085-95FB-6F255972E3EC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{B458DE41-F5AB-44F3-9550-77B2880AED0A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "求两个文件的差异", "tools\求两个文件的差异\求两个文件的差异.vcxproj", "{A885976E-F9AC-42CE-906C-7EE8690C5687}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -141,6 +145,10 @@ Global
 		{5600721A-1C45-4085-95FB-6F255972E3EC}.Debug|Win32.Build.0 = Debug|Win32
 		{5600721A-1C45-4085-95FB-6F255972E3EC}.Release|Win32.ActiveCfg = Release|Win32
 		{5600721A-1C45-4085-95FB-6F255972E3EC}.Release|Win32.Build.0 = Release|Win32
+		{A885976E-F9AC-42CE-906C-7EE8690C5687}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A885976E-F9AC-42CE-906C-7EE8690C5687}.Debug|Win32.Build.0 = Debug|Win32
+		{A885976E-F9AC-42CE-906C-7EE8690C5687}.Release|Win32.ActiveCfg = Release|Win32
+		{A885976E-F9AC-42CE-906C-7EE8690C5687}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,5 +166,6 @@ Global
 		{094BE633-036C-4BEB-819E-DF03D3B55D47} = {E9FAB1B8-1988-40C2-ABB1-84F24F2CF07E}
 		{05CF58CF-1E0B-4F63-8F97-79EF55863D9D} = {E9FAB1B8-1988-40C2-ABB1-84F24F2CF07E}
 		{5600721A-1C45-4085-95FB-6F255972E3EC} = {E9FAB1B8-1988-40C2-ABB1-84F24F2CF07E}
+		{A885976E-F9AC-42CE-906C-7EE8690C5687} = {B458DE41-F5AB-44F3-9550-77B2880AED0A}
 	EndGlobalSection
 EndGlobal
