@@ -1,13 +1,13 @@
 // ***********************************************************************
 // Filename         : CStopWatch.h
-// Author           : Administrator
+// Author           : LIZHENG
 // Created          : 2014-04-28
 // Description      : 
 //
-// Last Modified By : Administrator
+// Last Modified By : LIZHENG
 // Last Modified On : 2014-05-14
 // 
-// Copyright (c) 北京大学图形学图形学与人机交互人机交互实验室. All rights reserved.
+// Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 
 #ifndef CSTOPWTACH_FILE_H
