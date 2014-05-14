@@ -51,6 +51,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{B458DE41
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "求两个文件的差异", "tools\求两个文件的差异\求两个文件的差异.vcxproj", "{A885976E-F9AC-42CE-906C-7EE8690C5687}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LittleOrBigEndian", "tools\LittleOrBigEndian\LittleOrBigEndian.vcxproj", "{F3AC8666-F42F-4B87-8D21-FD461EFC4470}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -149,6 +151,10 @@ Global
 		{A885976E-F9AC-42CE-906C-7EE8690C5687}.Debug|Win32.Build.0 = Debug|Win32
 		{A885976E-F9AC-42CE-906C-7EE8690C5687}.Release|Win32.ActiveCfg = Release|Win32
 		{A885976E-F9AC-42CE-906C-7EE8690C5687}.Release|Win32.Build.0 = Release|Win32
+		{F3AC8666-F42F-4B87-8D21-FD461EFC4470}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F3AC8666-F42F-4B87-8D21-FD461EFC4470}.Debug|Win32.Build.0 = Debug|Win32
+		{F3AC8666-F42F-4B87-8D21-FD461EFC4470}.Release|Win32.ActiveCfg = Release|Win32
+		{F3AC8666-F42F-4B87-8D21-FD461EFC4470}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -167,5 +173,6 @@ Global
 		{05CF58CF-1E0B-4F63-8F97-79EF55863D9D} = {E9FAB1B8-1988-40C2-ABB1-84F24F2CF07E}
 		{5600721A-1C45-4085-95FB-6F255972E3EC} = {E9FAB1B8-1988-40C2-ABB1-84F24F2CF07E}
 		{A885976E-F9AC-42CE-906C-7EE8690C5687} = {B458DE41-F5AB-44F3-9550-77B2880AED0A}
+		{F3AC8666-F42F-4B87-8D21-FD461EFC4470} = {B458DE41-F5AB-44F3-9550-77B2880AED0A}
 	EndGlobalSection
 EndGlobal
