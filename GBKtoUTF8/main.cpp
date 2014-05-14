@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <set>
+#include <iterator>
+#include <algorithm>
 #include <assert.h>
 #include "GBKtoUTF8.h"
 using namespace std;
@@ -67,8 +70,49 @@ void test1()
 	unicode_to_utf8(unicode,buf);
 }
 
+struct set_key_comp : public binary_function<std::string, std::string, bool>
+{
+	bool operator()(const std::string& _Left, const std::string& _Right) const
+	{
+		//在这里实现你的任意排序方式
+		return _Right < _Left;
+		return _Left < _Right;
+	}
+};
+
+void test_set()
+{
+	std::string s1 = "赵薇";
+	std::string s2 = "黄晓明";
+	std::string s3 = "华X";
+	std::string s4 = "黄Z";
+	std::string s5 = "阿莎";
+	std::set<std::string> ss1;
+	std::set<std::string,set_key_comp> ss2;
+	std::cout<<PrintStringAsBinaryString(s1)<<"\t" << s1 <<"\n";
+	std::cout<<PrintStringAsBinaryString(s2)<<"\t" << s2 <<"\n";
+	std::cout<<PrintStringAsBinaryString(s3)<<"\t" << s3 <<"\n";
+	std::cout<<PrintStringAsBinaryString(s4)<<"\t" << s4 <<"\n";
+	std::cout<<PrintStringAsBinaryString(s5)<<"\t" << s5 <<"\n";
+
+	ss1.insert(s1); ss1.insert(s2); ss1.insert(s3); ss1.insert(s4); ss1.insert(s5);
+	ss2.insert(s1); ss2.insert(s2); ss2.insert(s3); ss2.insert(s4); ss2.insert(s5);
+
+	for(std::set<std::string>::iterator itr = ss1.begin();itr!=ss1.end();++itr)
+		std::cout << *itr << "\t";
+	std::cout << "\n";
+	for(std::set<std::string,set_key_comp>::iterator itr = ss2.begin();itr!=ss2.end();++itr)
+		std::cout << *itr << "\t";
+	std::cout << "\n";
+	//std::copy(ss1.begin(),ss2.end(),std::back_inserter(std::cout));
+	//std::copy(ss1.begin(), ss1.end(), std::back_inserter(ss2));
+}
+
 int main()
 {
+	test_set();
+	system("pause");
+	return 0;
 	//test1();
 	//std::cout<<"-----------------------------------------\n";
 	//test_gbbk_utf_unicode();
