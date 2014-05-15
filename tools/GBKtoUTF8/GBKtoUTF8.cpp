@@ -6,7 +6,7 @@
 #include <string.h>
 #include <memory.h>
 #include <assert.h>
-#include "osDefine.h"
+#include "../../include/osDefine.h"
 
 #ifdef OS_WINDOWS
 #include <Windows.h>

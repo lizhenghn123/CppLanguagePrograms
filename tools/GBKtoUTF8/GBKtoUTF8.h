@@ -1,3 +1,14 @@
+// ***********************************************************************
+// Filename         : GBKtoUTF8.h
+// Author           : LIZHENG
+// Created          : 2014-04-28
+// Description      : GBK和Utf8的相互转换
+//
+// Last Modified By : LIZHENG
+// Last Modified On : 2014-04-30
+// 
+// Copyright (c) lizhenghn@gmail.com. All rights reserved.
+// ***********************************************************************
 #ifndef GBK_TO_UTF8_FILE_H
 #define GBK_TO_UTF8_FILE_H
 
