@@ -18,6 +18,10 @@
 #ifdef OS_WINDOWS
 #include <Windows.h>
 #include <time.h>
+//struct timeval
+//{
+//	long tv_sec, tv_usec;
+//};
 #elif defined(OS_LINUX)
 #include <sys/time.h>
 #else
@@ -39,7 +43,8 @@ public:
 
 private:
 	bool Start();
-	void GetTimeOfDay(timeval *tv,void *);
+	void GetTimeOfDay(timeval *tv,void *tz);
+	void gettimeofday(struct timeval *tv, void* tz);
 
 private:
 	timeval		m_startTime;

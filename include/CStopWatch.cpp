@@ -51,8 +51,10 @@ double CStopWatch::ElapsedTimeInMicro()
 	return (now.tv_sec-m_startTime.tv_sec)*1000000 + 1.0*(now.tv_usec-m_startTime.tv_usec);
 }
 
-void CStopWatch::GetTimeOfDay(timeval *tv,void *)
+void CStopWatch::GetTimeOfDay(timeval *tv,void *tz)
 {
+	//return gettimeofday(tv,tz);  //this is ok
+
 #ifdef OS_LINUX
 	gettimeofday(tv, NULL);
 
@@ -73,4 +75,20 @@ void CStopWatch::GetTimeOfDay(timeval *tv,void *)
 	tv->tv_sec = clock;
 	tv->tv_usec = wtm.wMilliseconds * 1000;
 #endif
+}
+
+void CStopWatch::gettimeofday(struct timeval *tv, void* tz) 
+{
+typedef unsigned __int64 uint64;
+#define EPOCHFILETIME (116444736000000000ULL)
+	FILETIME ft;
+	LARGE_INTEGER li;
+	uint64 tt;
+
+	GetSystemTimeAsFileTime(&ft);
+	li.LowPart = ft.dwLowDateTime;
+	li.HighPart = ft.dwHighDateTime;
+	tt = (li.QuadPart - EPOCHFILETIME) / 10;
+	tv->tv_sec = tt / 1000000;
+	tv->tv_usec = tt % 1000000;
 }
