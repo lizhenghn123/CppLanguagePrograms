@@ -3,6 +3,9 @@
 #include <vector>
 #include <string>
 #include "osDefine.h"
+#include "Demangle.h"
+
+////Demangle.h Demangle.cpp 来源于glog,但该实现只可解析linux系统gcc编译器的名字重整。
 
 #ifdef OS_WINDOWS
 #include <Windows.h>
@@ -42,7 +45,7 @@ namespace NP2
 	};
 };
 
-//#define IMPLEMENT_ALL   /**打开该宏，则定义以上函数实现*/
+#define IMPLEMENT_ALL   /**打开该宏，则定义以上函数实现*/
 #ifdef IMPLEMENT_ALL
 
 int func(int) { return 1; }
@@ -70,13 +73,13 @@ namespace NP2
 /******************************************************
 根据重整后的名字解析出原函数原型名字（Windows/Linux）
 *******************************************************/
-void UnDecorateName()
+void UnDecorateName(const char *szDecorateName)
 {
 	const size_t max_size = 1024;
-	char szDecorateName[max_size] = {0};
+	//char szDecorateName[max_size] = {0};
 	char szUnDecorateName[max_size] = {0};
-	printf("Please Input Mangled Name: ");
-	scanf("%s", szDecorateName);
+	//printf("Please Input Mangled Name: ");
+	//scanf("%s", szDecorateName);
 
 #ifdef OS_WINDOWS
 	if (::UnDecorateSymbolName(szDecorateName, szUnDecorateName, sizeof(szUnDecorateName), UNDNAME_COMPLETE) == 0)
@@ -87,7 +90,6 @@ void UnDecorateName()
 	{
 		printf("Name after  Mangled : %s \nName before Mangled : %s\n", szDecorateName, szUnDecorateName);
 	}
-	system("pause");
 #else
 	int status;
 	size_t n = max_size;
@@ -96,6 +98,12 @@ void UnDecorateName()
 #endif
 }
 
+class H
+{
+public : 
+	H();
+
+};
 int main(void)
 {
 	int i = 1;
@@ -104,7 +112,7 @@ int main(void)
 	NP1::C *pac = new NP1::C;
 	NP2::C *pbc = new NP2::C;
 
-#if 0
+#if 1
 	func(f);
 	func(i);
 
@@ -116,8 +124,31 @@ int main(void)
 
 	func(vec);
 #endif
+	UnDecorateName("?func@@YAHABV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@@Z");
+	std::cout << "---------------------------------\n";
+	UnDecorateName("?func@NP1@@YAHH@Z");
+	std::cout << "---------------------------------\n";
+	UnDecorateName("??0H@@QAE@XZ");
+	std::cout << "---------------------------------\n";
 
-	UnDecorateName();
+	//下面三个是linux下gcc编译器重整后的名字，在Windows下解析不成功
+	UnDecorateName("_ZTCN10LogMessage9LogStreamE0_So");
+	UnDecorateName("_ZN3FooD1Ev");
+	UnDecorateName("_ZNSoD0Ev");
+	
+	//H h;
+	char buf[4096];
+	Demangle("_ZTCN10LogMessage9LogStreamE0_So",buf,4096);
+	std::cout << buf <<"\n---------------------------------\n";
+
+	memset(buf,'0',4096);
+	Demangle("_ZN3FooD1Ev",buf,4096);
+	std::cout << buf <<"\n---------------------------------\n";
+
+	memset(buf,'0',4096);
+	Demangle("??0H@@QAE@XZ",buf,4096);		//Windows,VS 2010重整的名字，glog的Demangle也是解析不成功
+	std::cout << buf <<"\n---------------------------------\n";
+
 	//system("pause");
 	return 0;
 }

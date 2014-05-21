@@ -18,5 +18,13 @@
     <ClCompile Include="c++_name_mangling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Demangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Demangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

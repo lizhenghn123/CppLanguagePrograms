@@ -76,6 +76,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="c++_name_mangling.cpp" />
+    <ClCompile Include="Demangle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Demangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
