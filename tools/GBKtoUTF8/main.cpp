@@ -108,8 +108,31 @@ void test_set()
 	//std::copy(ss1.begin(), ss1.end(), std::back_inserter(ss2));
 }
 
+size_t get_utf8_length(const std::string &input) {
+	size_t length = 0;
+	for (size_t i = 0, len = 0; i != input.length(); i += len) {
+		unsigned char byte = input[i];
+		if (byte >= 0xFC) // lenght 6
+			len = 6;  
+		else if (byte >= 0xF8)
+			len = 5;
+		else if (byte >= 0xF0)
+			len = 4;
+		else if (byte >= 0xE0)
+			len = 3;
+		else if (byte >= 0xC0)
+			len = 2;
+		else
+			len = 1;
+		length ++;
+	}   
+	return length;
+}
+
 int main()
 {
+	std:;cout << get_utf8_length("лл") << "\n";
+	std:;cout << get_utf8_length("л л!") << "\n";
 	test_set();
 	system("pause");
 	return 0;
