@@ -1,4 +1,4 @@
-// ***********************************************************************
+﻿// ***********************************************************************
 // Filename         : CStopWatch.h
 // Author           : LIZHENG
 // Created          : 2014-04-28
@@ -28,6 +28,9 @@
 #error "You must be include osDefine.h firstly"
 #endif
 
+namespace UTILS
+{
+
 class CStopWatch
 {
 public:
@@ -49,5 +52,7 @@ private:
 private:
 	timeval		m_startTime;
 };
+
+} /* namespace UTILS */
 
 #endif /** CSTOPWTACH_FILE_H */
