@@ -6,14 +6,14 @@
 #include <string.h>
 #include <memory.h>
 #include <assert.h>
-#include "../../include/osDefine.h"
+#include "../../include/OsDefine.h"
 
 #ifdef OS_WINDOWS
 #include <Windows.h>
 #elif defined(OS_LINUX)
 #include <iconv.h>
 #else
-#error "You must be include osDefine.h firstly"
+#error "You must be include OsDefine.h firstly"
 #endif
 
 #ifdef OS_WINDOWS

@@ -1,6 +1,6 @@
 ﻿#include <iostream>
 #include <vector>
-#include "osDefine.h"
+#include "OsDefine.h"
 using namespace std;
 
 /******************************************************

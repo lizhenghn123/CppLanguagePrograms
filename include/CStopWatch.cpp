@@ -56,31 +56,11 @@ void CStopWatch::GetTimeOfDay(timeval *tv,void *tz)
 	//return gettimeofday(tv,tz);  //this is ok
 
 #ifdef OS_LINUX
-	gettimeofday(tv, NULL);
+	gettimeofday(tv, tz);
 
 #elif defined(OS_WINDOWS)
-	time_t clock;
-	struct tm tm;
-	SYSTEMTIME wtm;
-
-	GetLocalTime(&wtm);
-	tm.tm_year     = wtm.wYear - 1900;
-	tm.tm_mon     = wtm.wMonth - 1;
-	tm.tm_mday     = wtm.wDay;
-	tm.tm_hour     = wtm.wHour;
-	tm.tm_min     = wtm.wMinute;
-	tm.tm_sec     = wtm.wSecond;
-	tm. tm_isdst    = -1;
-	clock = mktime(&tm);
-	tv->tv_sec = clock;
-	tv->tv_usec = wtm.wMilliseconds * 1000;
-#endif
-}
-
-void CStopWatch::gettimeofday(struct timeval *tv, void* tz) 
-{
-typedef unsigned __int64 uint64;
-#define EPOCHFILETIME (116444736000000000ULL)
+	typedef unsigned __int64 uint64;
+	#define EPOCHFILETIME (116444736000000000ULL)
 	FILETIME ft;
 	LARGE_INTEGER li;
 	uint64 tt;
@@ -91,4 +71,27 @@ typedef unsigned __int64 uint64;
 	tt = (li.QuadPart - EPOCHFILETIME) / 10;
 	tv->tv_sec = tt / 1000000;
 	tv->tv_usec = tt % 1000000;
+
+    ////以下计算精度不够
+	//time_t clock;
+	//struct tm tm;
+	//SYSTEMTIME wtm;
+	//
+	//GetLocalTime(&wtm);
+	//tm.tm_year     = wtm.wYear - 1900;
+	//tm.tm_mon     = wtm.wMonth - 1;
+	//tm.tm_mday     = wtm.wDay;
+	//tm.tm_hour     = wtm.wHour;
+	//tm.tm_min     = wtm.wMinute;
+	//tm.tm_sec     = wtm.wSecond;
+	//tm. tm_isdst    = -1;
+	//clock = mktime(&tm);
+	//tv->tv_sec = clock;
+	//tv->tv_usec = wtm.wMilliseconds * 1000;
+#endif
+}
+
+void CStopWatch::gettimeofday(struct timeval *tv, void* tz) 
+{
+
 }

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
-#include "osDefine.h"
+#include "OsDefine.h"
 #include "Demangle.h"
 
 ////Demangle.h Demangle.cpp 来源于glog,但该实现只可解析linux系统gcc编译器的名字重整。
@@ -14,7 +14,7 @@
 #elif defined(OS_LINUX)
 #include<cxxabi.h>					/*用于实现将重整后的名字解析为原始名字*/
 #else
-#error "You must be include osDefine.h firstly"
+#error "You must be include OsDefine.h firstly"
 #endif
 
 int /*__cdecl*/ func(int);//windows平台下在函数名前可加__cdecl、__stdcall、__fastcall，默认__cdecl

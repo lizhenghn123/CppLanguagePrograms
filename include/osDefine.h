@@ -19,4 +19,4 @@
 #error	"You Must Be Choose One Platform"
 #endif
 
-#endif
+#endif /* OSDEFINE_FILE_H */

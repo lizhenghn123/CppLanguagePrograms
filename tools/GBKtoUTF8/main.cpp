@@ -131,8 +131,8 @@ size_t get_utf8_length(const std::string &input) {
 
 int main()
 {
-	std:;cout << get_utf8_length("лл") << "\n";
-	std:;cout << get_utf8_length("л л!") << "\n";
+	std::cout << get_utf8_length("лл") << "\n";
+	std::cout << get_utf8_length("л л!") << "\n";
 	test_set();
 	system("pause");
 	return 0;
