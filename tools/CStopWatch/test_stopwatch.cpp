@@ -20,7 +20,7 @@ void MySleep(long millseconds)
 
 int main()
 {
-	CStopWatch watch;
+	UTILS::CStopWatch watch;
 	watch.Reset();
 
 	MySleep(1000);

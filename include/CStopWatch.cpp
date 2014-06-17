@@ -53,11 +53,8 @@ double CStopWatch::ElapsedTimeInMicro()
 
 void CStopWatch::GetTimeOfDay(timeval *tv,void *tz)
 {
-	//return gettimeofday(tv,tz);  //this is ok
-
 #ifdef OS_LINUX
 	gettimeofday(tv, tz);
-
 #elif defined(OS_WINDOWS)
 	typedef unsigned __int64 uint64;
 	#define EPOCHFILETIME (116444736000000000ULL)
@@ -89,9 +86,4 @@ void CStopWatch::GetTimeOfDay(timeval *tv,void *tz)
 	//tv->tv_sec = clock;
 	//tv->tv_usec = wtm.wMilliseconds * 1000;
 #endif
-}
-
-void CStopWatch::gettimeofday(struct timeval *tv, void* tz) 
-{
-
 }

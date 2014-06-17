@@ -1,4 +1,4 @@
-// ***********************************************************************
+﻿// ***********************************************************************
 // Filename         : CStopWatch.h
 // Author           : LIZHENG
 // Created          : 2014-04-28
@@ -28,6 +28,9 @@
 #error "You must be include OsDefine.h firstly"
 #endif
 
+namespace UTILS
+{
+
 class CStopWatch
 {
 public:
@@ -43,9 +46,10 @@ public:
 private:
 	bool Start();
 	void GetTimeOfDay(timeval *tv,void *tz);
-	void gettimeofday(struct timeval *tv, void* tz);
 private:
 	timeval		m_startTime;
 };
+
+} /* namespace UTILS */
 
 #endif /** CSTOPWTACH_FILE_H */
