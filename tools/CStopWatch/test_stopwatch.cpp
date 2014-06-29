@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../../include/CStopWatch.h"
+#include "../../include/StopWatch.h"
 #include "../../include/HighPrecisionTime.h"
 
 #ifdef OS_WINDOWS
@@ -20,7 +20,7 @@ void MySleep(long millseconds)
 
 int main()
 {
-	UTILS::CStopWatch watch;
+	UTILS::StopWatch watch;
 	watch.Reset();
 
 	MySleep(1000);

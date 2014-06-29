@@ -1,5 +1,5 @@
 ﻿// ***********************************************************************
-// Filename         : CStopWatch.h
+// Filename         : StopWatch.h
 // Author           : LIZHENG
 // Created          : 2014-04-28
 // Description      : 
@@ -10,8 +10,8 @@
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 
-#ifndef CSTOPWTACH_FILE_H
-#define CSTOPWTACH_FILE_H
+#ifndef STOPWTACH_FILE_H
+#define STOPWTACH_FILE_H
 
 #include "OsDefine.h"
 
@@ -31,11 +31,11 @@
 namespace UTILS
 {
 
-class CStopWatch
+class StopWatch
 {
 public:
-	CStopWatch();
-	~CStopWatch();
+	StopWatch();
+	~StopWatch();
 public:
 	bool     Reset();
 	timeval  Now();
@@ -52,4 +52,4 @@ private:
 
 } /* namespace UTILS */
 
-#endif /** CSTOPWTACH_FILE_H */
+#endif /** STOPWTACH_FILE_H */
