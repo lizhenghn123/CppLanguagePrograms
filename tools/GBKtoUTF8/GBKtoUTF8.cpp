@@ -17,118 +17,133 @@
 #endif
 
 #ifdef OS_WINDOWS
-std::string ConvertGBKToUtf8(const std::string &strGBK)
-{
-    int len = MultiByteToWideChar( CP_ACP, 0, (LPCTSTR)strGBK.c_str(), -1, NULL, 0 );
-    unsigned short *wszUtf8 = new unsigned short[len + 1];
-    memset(wszUtf8, 0, len * 2 + 2);
-    MultiByteToWideChar( CP_ACP, 0, (LPCTSTR)strGBK.c_str(), -1, (LPWSTR)wszUtf8, len );
-    len = WideCharToMultiByte( CP_UTF8, 0, (LPWSTR)wszUtf8, -1, NULL, 0, NULL, NULL );
-    char *szUtf8 = new char[len + 1];
-    memset( szUtf8, 0, len + 1 );
-    WideCharToMultiByte ( CP_UTF8, 0, (LPWSTR)wszUtf8, -1, (LPSTR)szUtf8, len, NULL, NULL );
-    std::string strUtf8 = szUtf8;
-    delete[] szUtf8;
-    delete[] wszUtf8;
 
-    return strUtf8;
+std::string ConvertGBKToUtf8(const std::string& strGBK )
+{
+	int len = MultiByteToWideChar( CP_ACP, 0, (LPCTSTR)strGBK.c_str(), -1, NULL, 0 );
+	unsigned short *wszUtf8 = new unsigned short[len + 1];
+	memset(wszUtf8, 0, len * 2 + 2);
+	MultiByteToWideChar( CP_ACP, 0, (LPCTSTR)strGBK.c_str(), -1, (LPWSTR)wszUtf8, len );
+	len = WideCharToMultiByte( CP_UTF8, 0, (LPWSTR)wszUtf8, -1, NULL, 0, NULL, NULL );
+	char *szUtf8 = new char[len + 1];
+	memset( szUtf8, 0, len + 1 );
+	WideCharToMultiByte ( CP_UTF8, 0, (LPWSTR)wszUtf8, -1, (LPSTR)szUtf8, len, NULL, NULL );
+	std::string strUtf8 = szUtf8;
+	delete[] szUtf8;
+	delete[] wszUtf8;
+
+	return strUtf8;
 }
+
+std::string ConvertGBKToUtf8(const char* strGBK, int len)
+{
+	std::string gbk(strGBK, len);
+	return ConvertGBKToUtf8(gbk);
+}
+
 std::string ConvertUtf8ToGBK(const std::string &strUtf8)
 {
-    int len = MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUtf8.c_str(), -1, NULL, 0);
-    unsigned short *wszGBK = new unsigned short[len + 1];
-    memset(wszGBK, 0, len * 2 + 2);
-    MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUtf8.c_str(), -1, (LPWSTR)wszGBK, len);
-    len = WideCharToMultiByte(CP_ACP, 0, (LPWSTR)wszGBK, -1, NULL, 0, NULL, NULL);
-    char *szGBK = new char[len + 1];
-    memset(szGBK, 0, len + 1);
-    WideCharToMultiByte (CP_ACP, 0, (LPWSTR)wszGBK, -1, (LPSTR)szGBK, len, NULL, NULL);
-    std::string strGBK = szGBK;
-    delete[] szGBK;
-    delete[] wszGBK;
+	int len = MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUtf8.c_str(), -1, NULL, 0);
+	unsigned short *wszGBK = new unsigned short[len + 1];
+	memset(wszGBK, 0, len * 2 + 2);
+	MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUtf8.c_str(), -1, (LPWSTR)wszGBK, len);
+	len = WideCharToMultiByte(CP_ACP, 0, (LPWSTR)wszGBK, -1, NULL, 0, NULL, NULL);
+	char *szGBK = new char[len + 1];
+	memset(szGBK, 0, len + 1);
+	WideCharToMultiByte (CP_ACP, 0, (LPWSTR)wszGBK, -1, (LPSTR)szGBK, len, NULL, NULL);
+	std::string strGBK = szGBK;
+	delete[] szGBK;
+	delete[] wszGBK;
 
-    return strGBK;
+	return strGBK;
 }
+
+std::string ConvertUtf8ToGBK(const char* strUtf8, int len)
+{
+	std::string utf8(strUtf8, len);
+	return ConvertUtf8ToGBK(utf8);
+}
+
 #elif defined(OS_LINUX)
-bool code_convert(const char *from_charset , const char *to_charset , char *inbuf , size_t  inlen , char *outbuf , size_t outlen )
+
+bool code_convert(const char *from_charset, const char *to_charset, char *inbuf, size_t inlen , char *outbuf, size_t outlen);
+
+std::string ConvertGBKToUtf8(const char* strGBK, int len)
 {
-    iconv_t cd ;
-    int rc ;
-    char **pin = &inbuf ;
-    char **pout = &outbuf ;
+	char *cname = new char[len + 1];
+	memset(cname, '\0', len + 1);
+	memcpy(cname, strGBK, len);
 
-    cd = iconv_open( to_charset , from_charset );
-    if( cd == 0 )
-    {
-        return false;
-    }
+	char *cdst = new char[len * 3];
+	memset(cdst, '\0', len * 3);
 
-    memset( outbuf , 0 , outlen );
-    int convert = iconv( cd , pin , &inlen , pout , &outlen );
-    if( convert == -1 )
-    {
-        iconv_close( cd );
-        return false ;
-    }
-    iconv_close(cd);
+	bool code = code_convert("gbk", "utf-8", cname, len, cdst, len * 3);
+	std::string strUtf8;
+	if (code)
+	{
+		strUtf8 = cdst;
+	}
 
-    return true ;
+	delete[] cname;
+	delete[] cdst;
+
+	return strUtf8;
 }
 
 std::string ConvertGBKToUtf8(const std::string &strGBK)
 {
-    const size_t length = strGBK.length();
+	return ConvertGBKToUtf8(strGBK.c_str(), strGBK.size());
+}
 
-    char *cname = new char[length + 1];
-    memset(cname, '\0', length + 1);
-    memcpy(cname, strGBK.c_str(), length);
+std::string ConvertUtf8ToGBK(const char* strUtf8, int len)
+{
+	char *cname = new char[len + 1];
+	memset(cname, '\0', len + 1);
+	memcpy(cname, strUtf8, len);
 
-    char *cdst = new char[length * 3];
-    memset(cdst, '\0', length * 3);
+	char *cdst = new char[len + 1];
+	memset(cdst, '\0', len + 1);
 
-    bool code = code_convert( "gbk" , "utf-8" , cname, length, cdst, length * 3);
-    std::string strUtf8;
-    if (code)
-    {
-        strUtf8 = cdst;
-    }
-    else    //转换失败就使用原来的编码内容，有总比没有好吧，要是其他地方使用的话可未必如此哦
-    {
-        strUtf8 = cname;
-    }
+	bool code = code_convert("utf-8", "gbk", cname, len, cdst, len);
+	std::string strGBK;
+	if (code)
+	{
+		strGBK = cdst;
+	}
 
-    delete[] cname;
-    delete[] cdst;
+	delete[] cname;
+	delete[] cdst;
 
-    return strUtf8;
+	return strGBK;
 }
 
 std::string ConvertUtf8ToGBK(const std::string &strUtf8)
 {
-    const size_t length = strUtf8.length();
+	return ConvertUtf8ToGBK(strUtf8.c_str(), strUtf8.size());
+}
 
-    char *cname = new char[length + 1];
-    memset(cname, '\0', length + 1);
-    memcpy(cname, strUtf8.c_str(), length);
+bool code_convert(const char *from_charset, const char *to_charset, char *inbuf, size_t inlen, char *outbuf, size_t outlen)
+{
+	iconv_t cd ;
+	char **pin = &inbuf ;
+	char **pout = &outbuf ;
 
-    char *cdst = new char[length + 1];
-    memset(cdst, '\0', length + 1);
+	cd = iconv_open( to_charset , from_charset );
+	if( cd == 0 )
+	{
+		return false;
+	}
 
-    bool code = code_convert( "utf-8" , "gbk" , cname, length, cdst, length);
-    std::string strGBK;
-    if (code)
-    {
-        strGBK = cdst;
-    }
-    else    //转换失败就使用原来的编码内容，有总比没有好吧，要是其他地方使用的话可未必如此哦
-    {
-        strGBK = cname;
-    }
+	memset( outbuf , 0 , outlen );
+	int convert = iconv( cd , pin , &inlen , pout , &outlen );
+	if( convert == -1 )
+	{
+		iconv_close( cd );
+		return false ;
+	}
+	iconv_close(cd);
 
-    delete[] cname;
-    delete[] cdst;
-
-    return strGBK;
+	return true ;
 }
 #endif
 
