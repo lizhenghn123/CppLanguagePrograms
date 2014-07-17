@@ -1,33 +1,36 @@
-#include "CStopWatch.h"
+#include "StopWatch.h"
 
-CStopWatch::CStopWatch()
+namespace UTILS
+{
+
+StopWatch::StopWatch()
 {
 	Start();
 }
 
-CStopWatch::~CStopWatch()
+StopWatch::~StopWatch()
 {
 }
 
-bool CStopWatch::Start()
+bool StopWatch::Start()
 {
 	return Reset();
 }
 
-bool CStopWatch::Reset()
+bool StopWatch::Reset()
 {
 	GetTimeOfDay(&m_startTime, NULL);
 	return true;
 }
 
-timeval CStopWatch::Now()
+timeval StopWatch::Now()
 {
 	timeval now;
 	GetTimeOfDay(&now, NULL);
 	return now;
 }
 
-double CStopWatch::ElapsedTime()
+double StopWatch::ElapsedTime()
 {
 	timeval now;
 	GetTimeOfDay(&now, NULL);
@@ -35,7 +38,7 @@ double CStopWatch::ElapsedTime()
 	return 1.0*(now.tv_sec-m_startTime.tv_sec) + 1.0*(now.tv_usec-m_startTime.tv_usec)/1000000;
 }
 
-double CStopWatch::ElapsedTimeInMill()
+double StopWatch::ElapsedTimeInMill()
 {
 	timeval now;
 	GetTimeOfDay(&now, NULL);
@@ -43,7 +46,7 @@ double CStopWatch::ElapsedTimeInMill()
 	return (now.tv_sec-m_startTime.tv_sec)*1000 + 1.0*(now.tv_usec-m_startTime.tv_usec)/1000;
 }
 
-double CStopWatch::ElapsedTimeInMicro()
+double StopWatch::ElapsedTimeInMicro()
 {
 	timeval now;
 	GetTimeOfDay(&now, NULL);
@@ -51,7 +54,7 @@ double CStopWatch::ElapsedTimeInMicro()
 	return (now.tv_sec-m_startTime.tv_sec)*1000000 + 1.0*(now.tv_usec-m_startTime.tv_usec);
 }
 
-void CStopWatch::GetTimeOfDay(timeval *tv,void *tz)
+void StopWatch::GetTimeOfDay(timeval *tv,void *tz)
 {
 #ifdef OS_LINUX
 	gettimeofday(tv, tz);
@@ -86,4 +89,6 @@ void CStopWatch::GetTimeOfDay(timeval *tv,void *tz)
 	//tv->tv_sec = clock;
 	//tv->tv_usec = wtm.wMilliseconds * 1000;
 #endif
+}
+
 }

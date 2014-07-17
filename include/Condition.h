@@ -30,7 +30,7 @@ namespace UTILS
 class Condition
 {
 public:
-	Condition(UTILS::CriticalSection& cs):m_cs(cs)
+	Condition(UTILS::CriticalSection& cs):m_cs(cs),m_signaled(false)
 	{
 	#ifdef OS_LINUX
 		pthread_cond_init(&m_condition, NULL);
@@ -82,6 +82,7 @@ private:
 #elif defined(OS_WINDOWS)
 	CONDITION_VARIABLE m_condition;
 #endif
+	bool m_signaled;
 };
 
 } /* namespace UTILS */
