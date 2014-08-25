@@ -1,18 +1,20 @@
 // ***********************************************************************
-// Filename         : JobWorker.h
+// Filename         : BlockQueueWorker.h
 // Author           : LIZHENG
 // Created          : 2014-05-16
-// Description      : 工作调度，工作在异步的工作队列JobQueue上面
+// Description      : 工作调度，工作在阻塞队列BlockingQueue上面
 //
 // Last Modified By : LIZHENG
-// Last Modified On : 2014-05-16
+// Last Modified On : 2014-08-25
 // 
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
-#ifndef ZL_JOBWORKER_FILE_H
-#define ZL_JOBWORKER_FILE_H
+#ifndef ZL_BLOCKQUEUEWORKER_H
+#define ZL_BLOCKQUEUEWORKER_H
+#include "BlockQueue.h"
 
-#include "JobQueue.h"
+namespace ZL
+{
 
 template <typename Queue>
 class JobWorker
@@ -88,4 +90,6 @@ private:
 	boost::thread_group		threads_;
 };
 
-#endif /* ZL_JOBWORKER_FILE_H */
+} /* namespace ZL */
+
+#endif  /* ZL_BLOCKQUEUEWORKER_H */

@@ -28,7 +28,7 @@
 #error "You must be include OsDefine.h firstly"
 #endif
 
-namespace UTILS
+namespace ZL
 {
 
 class StopWatch

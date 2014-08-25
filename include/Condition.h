@@ -1,90 +1,91 @@
 // ***********************************************************************
-// Filename         : Mutex.h
+// Filename         : Condition.h
 // Author           : LIZHENG
 // Created          : 2014-05-16
-// Description      : 条件变量
+// Description      : 条件变量在Windows及Linux平台下的封装
 //
 // Last Modified By : LIZHENG
-// Last Modified On : 2014-05-16
-// 
+// Last Modified On : 2014-08-25
+//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
-#ifndef ZL_CONTDITION_FILE_H
-#define ZL_CONTDITION_FILE_H
-
-#include "osDefine.h"
-#include "CriticalSection.h"
+#ifndef ZL_CONTDITION_H
+#define ZL_CONTDITION_H
+#include "OsDefine.h"
+#include "NonCopy.h"
+#include "Mutex.h"
 #ifdef OS_LINUX
-#define LINUX_LOCK
+#define OS_LINUX
 #include <unistd.h>
 #include <pthread.h>
 #include <errno.h>
 #elif defined(OS_WINDOWS)
-#define WINDOWS_LOCK
+#define OS_WINDOWS
 #include <Windows.h>
 #endif
 
-namespace UTILS
+namespace ZL
 {
 
-class Condition
-{
-public:
-	Condition(UTILS::CriticalSection& cs):m_cs(cs),m_signaled(false)
-	{
-	#ifdef OS_LINUX
-		pthread_cond_init(&m_condition, NULL);
-	#elif defined(OS_WINDOWS)
-		InitializeConditionVariable(&m_condition);
-	#endif
-	}
+    class Condition : public ZL::NonCopy
+    {
+    public:
+        explicit Condition(Mutex& mu) : mutex_(mu), signaled_(false)
+        {
+        #ifdef OS_WINDOWS
+            InitializeConditionVariable(&condition_);
+        #elif defined(OS_LINUX)
+            pthread_cond_init(&condition_, NULL);
+        #endif
+        }
 
-	~Condition()
-	{
-	#ifdef OS_LINUX
-		pthread_cond_destroy(&m_condition);
-	#elif defined(OS_WINDOWS)
-	#endif
-	}
+        ~Condition()
+        {
+        #ifdef OS_WINDOWS
+            //nothing
+        #elif defined(OS_LINUX)
+            pthread_cond_destroy(&condition_);
+        #endif
+        }
 
-public:
-	void Wait()
-	{
-	#ifdef OS_LINUX
-		pthread_cond_wait(&m_condition, m_cs.GetMutex());
-	#elif defined(OS_WINDOWS)
-		SleepConditionVariableCS(&m_condition, m_cs.GetMutex(), INFINITE);
-	#endif
-	}
+    public:
+        void Wait()
+        {
+        #ifdef OS_WINDOWS
+            SleepConditionVariableCS(&condition_, mutex_.GetMutex(), INFINITE);
+        #elif defined(OS_LINUX)
+            pthread_cond_wait(&condition_, mutex_.GetMutex());
+        #endif
+        }
 
-	void Notify()
-	{
-	#ifdef OS_LINUX
-		pthread_cond_signal(&m_condition);
-	#elif defined(OS_WINDOWS)
-		WakeConditionVariable(&m_condition);
-	#endif
-	}
+        void NotifyOne()
+        {
+        #ifdef OS_WINDOWS
+            WakeConditionVariable(&condition_);
+        #elif defined(OS_LINUX)
+            pthread_cond_signal(&condition_);
+        #endif
+        }
 
-	void NotifyAll()
-	{
-	#ifdef OS_LINUX
-		pthread_cond_broadcast(&m_condition);
-	#elif defined(OS_WINDOWS)
-		WakeAllConditionVariable(&m_condition);
-	#endif
-	}
+        void NotifyAll()
+        {
+        #ifdef OS_WINDOWS
+            WakeAllConditionVariable(&condition_);
+        #elif defined(OS_LINUX)
+            pthread_cond_broadcast(&condition_);
+        #endif
+        }
 
-private:
-	UTILS::CriticalSection&		m_cs;
-#ifdef OS_LINUX
-	pthread_cond_t m_condition;
-#elif defined(OS_WINDOWS)
-	CONDITION_VARIABLE m_condition;
-#endif
-	bool m_signaled;
-};
+    private:
+        bool signaled_;
+        Mutex&		mutex_;
+    #ifdef OS_WINDOWS
+        CONDITION_VARIABLE condition_;
+    #elif defined(OS_LINUX)
+        pthread_cond_t     condition_;
+    #endif
+    };
 
-} /* namespace UTILS */
+} /* namespace ZL */
 
-#endif /* ZL_CONTDITION_FILE_H */
+#endif /* ZL_CONTDITION_H */
