@@ -2,11 +2,11 @@
 // Filename         : StopWatch.h
 // Author           : LIZHENG
 // Created          : 2014-04-28
-// Description      : 
+// Description      :
 //
 // Last Modified By : LIZHENG
 // Last Modified On : 2014-05-14
-// 
+//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 
@@ -31,24 +31,24 @@
 namespace ZL
 {
 
-class StopWatch
-{
-public:
-	StopWatch();
-	~StopWatch();
-public:
-	bool     Reset();
-	timeval  Now();
-	double   ElapsedTime();
-	double   ElapsedTimeInMill();
-	double   ElapsedTimeInMicro();
+    class StopWatch
+    {
+    public:
+        StopWatch();
+        ~StopWatch();
+    public:
+        bool     Reset();
+        timeval  Now();
+        double   ElapsedTime();
+        double   ElapsedTimeInMill();
+        double   ElapsedTimeInMicro();
 
-private:
-	bool Start();
-	void GetTimeOfDay(timeval *tv,void *tz);
-private:
-	timeval		m_startTime;
-};
+    private:
+        bool Start();
+        void GetTimeOfDay(timeval *tv, void *tz);
+    private:
+        timeval		m_startTime;
+    };
 
 } /* namespace UTILS */
 

@@ -6,7 +6,7 @@
 //
 // Last Modified By : LIZHENG
 // Last Modified On : 2014-08-25
-// 
+//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_BLOCKINGQUEUE_H
@@ -17,145 +17,148 @@
 #include "Condition.h"
 
 namespace ZL
-{ 
-
-struct tagFIFO {};  //先进先出
-struct tagFILO {};  //先进后出
-struct tagPRIO {};  //按优先级
-
-template <typename Job, typename Queue = std::queue<Job>, typename Order = tagFIFO >
-class BlockingQueue : public ZL::NonCopy
 {
-public:
-	typedef Job                                 JobType;
-	typedef Queue	                            QueueType;
-	typedef ZL::Mutex							MutexType;
-	typedef ZL::MutexGuard	         		    LockGuard;
-	typedef ZL::Condition            		    ConditionType;
 
-public:
-	BlockingQueue() : stopFlag_(false), mutex_(), has_job_(mutex_) {}
-	virtual ~BlockingQueue(){ Stop(); }
+    struct tagFIFO {};  //先进先出
+    struct tagFILO {};  //先进后出
+    struct tagPRIO {};  //按优先级
 
-public:
-	virtual void Push(const JobType& job)
-	{
-		LockGuard lock(mutex_);
-		queue_.push(job);
-		has_job_.NotifyOne();
-	}
+    template <typename Job, typename Queue = std::queue<Job>, typename Order = tagFIFO >
+    class BlockingQueue : public ZL::NonCopy
+    {
+    public:
+        typedef Job                                 JobType;
+        typedef Queue	                            QueueType;
+        typedef ZL::Mutex							MutexType;
+        typedef ZL::MutexGuard	         		    LockGuard;
+        typedef ZL::Condition            		    ConditionType;
 
-	virtual bool Pop(JobType& job)
-	{
-		LockGuard lock(mutex_);
-		while (queue_.empty() && !stopFlag_)
-		{
-			has_job_.Wait();
-		}
-		if (stopFlag_)
-		{
-			return false;
-		}
+    public:
+        BlockingQueue() : stopFlag_(false), mutex_(), has_job_(mutex_) {}
+        virtual ~BlockingQueue()
+        {
+            Stop();
+        }
 
-		return PopOne(job, Order());
-	}
+    public:
+        virtual void Push(const JobType& job)
+        {
+            LockGuard lock(mutex_);
+            queue_.push(job);
+            has_job_.NotifyOne();
+        }
 
-	virtual JobType Pop()
-	{
-		LockGuard lock(mutex_);
-		while (queue_.empty() && !stopFlag_)
-		{
-			has_job_.Wait();
-		}
-		if (stopFlag_)
-		{
-			return false;
-		}
+        virtual bool Pop(JobType& job)
+        {
+            LockGuard lock(mutex_);
+            while (queue_.empty() && !stopFlag_)
+            {
+                has_job_.Wait();
+            }
+            if (stopFlag_)
+            {
+                return false;
+            }
 
-		JobType job;
-		PopOne(job, Order());
-		return job;
-	}
+            return PopOne(job, Order());
+        }
 
-	virtual bool TryPop(JobType& job)
-	{
-		LockGuard lock(mutex_);
+        virtual JobType Pop()
+        {
+            LockGuard lock(mutex_);
+            while (queue_.empty() && !stopFlag_)
+            {
+                has_job_.Wait();
+            }
+            if (stopFlag_)
+            {
+                return false;
+            }
 
-		if (queue_.empty() && !stopFlag_)
-			return false;
+            JobType job;
+            PopOne(job, Order());
+            return job;
+        }
 
-		return PopOne(job, Order());
-	}
+        virtual bool TryPop(JobType& job)
+        {
+            LockGuard lock(mutex_);
 
-	virtual void Stop()
-	{
-		stopFlag_ = true;
-		has_job_.NotifyAll();
-	}
+            if (queue_.empty() && !stopFlag_)
+                return false;
 
-	size_t Size()
-	{
-		LockGuard lock(mutex_);
-		return queue_.size();
-	}
+            return PopOne(job, Order());
+        }
 
-	bool Empty()
-	{
-		LockGuard lock(mutex_);
-		return queue_.empty();
-	}
+        virtual void Stop()
+        {
+            stopFlag_ = true;
+            has_job_.NotifyAll();
+        }
 
-	template < typename Func >
-	void Foreach(const Func& func)
-	{
-		LockGuard lock(mutex_);
-		std::for_each(queue_.begin(), queue_.end(), func);
-	}
+        size_t Size()
+        {
+            LockGuard lock(mutex_);
+            return queue_.size();
+        }
 
-private:
-	template <typename T>
-	bool PopOne(JobType& job, T tag);
+        bool Empty()
+        {
+            LockGuard lock(mutex_);
+            return queue_.empty();
+        }
 
-	template <>
-	bool PopOne(JobType& job, tagFIFO tag)
-	{
-		job = queue_.front();
-		queue_.pop();
-		return true;
-	}
+        template < typename Func >
+        void Foreach(const Func& func)
+        {
+            LockGuard lock(mutex_);
+            std::for_each(queue_.begin(), queue_.end(), func);
+        }
 
-	template <>
-	bool PopOne(JobType& job, tagFILO tag)
-	{
-		job = queue_.top();
-		queue_.pop();
-		return true;
-	}
+    private:
+        template <typename T>
+        bool PopOne(JobType& job, T tag);
 
-	template <>
-	bool PopOne(JobType& job, tagPRIO tag)
-	{
-		job = queue_.top();
-		queue_.pop();
-		return true;
-	}
+        template <>
+        bool PopOne(JobType& job, tagFIFO tag)
+        {
+            job = queue_.front();
+            queue_.pop();
+            return true;
+        }
 
-protected:
-	bool             stopFlag_;
-	MutexType        mutex_;
-	ConditionType    has_job_;
-	QueueType        queue_;
-};
+        template <>
+        bool PopOne(JobType& job, tagFILO tag)
+        {
+            job = queue_.top();
+            queue_.pop();
+            return true;
+        }
 
-/* using is not support in VS2010*/
-//template< typename Job>
-//using FifoJobQueue = ZL::BlockingQueue<Job, std::queue<Job>, tagFIFO>;
+        template <>
+        bool PopOne(JobType& job, tagPRIO tag)
+        {
+            job = queue_.top();
+            queue_.pop();
+            return true;
+        }
 
-//template< typename Job>
-//using FiloJobQueue = ZL::BlockingQueue<Job, std::stack<Job>, tagFILO>;
-//
-//template< typename Job>
-//using PrioJobQueue = ZL::BlockingQueue<Job, std::priority_queue<Job>, tagPRIO>;
+    protected:
+        bool             stopFlag_;
+        MutexType        mutex_;
+        ConditionType    has_job_;
+        QueueType        queue_;
+    };
+
+    /* using is not support in VS2010*/
+    //template< typename Job>
+    //using FifoJobQueue = ZL::BlockingQueue<Job, std::queue<Job>, tagFIFO>;
+
+    //template< typename Job>
+    //using FiloJobQueue = ZL::BlockingQueue<Job, std::stack<Job>, tagFILO>;
+    //
+    //template< typename Job>
+    //using PrioJobQueue = ZL::BlockingQueue<Job, std::priority_queue<Job>, tagPRIO>;
 
 } /* namespace ZL */
 

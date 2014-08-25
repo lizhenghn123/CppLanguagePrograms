@@ -15,7 +15,6 @@
 #include "NonCopy.h"
 #include "Mutex.h"
 #ifdef OS_LINUX
-#define OS_LINUX
 #include <unistd.h>
 #include <pthread.h>
 #include <errno.h>
@@ -26,7 +25,6 @@
 
 namespace ZL
 {
-
     class Condition : public ZL::NonCopy
     {
     public:
@@ -73,7 +71,7 @@ namespace ZL
             WakeAllConditionVariable(&condition_);
         #elif defined(OS_LINUX)
             pthread_cond_broadcast(&condition_);
-        #endif
+       #endif
         }
 
     private:

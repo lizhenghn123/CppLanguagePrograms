@@ -6,7 +6,7 @@
 //
 // Last Modified By : LIZHENG
 // Last Modified On : 2014-05-16
-// 
+//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_NONCOPY_FILE_H
@@ -14,14 +14,14 @@
 
 namespace ZL
 {
-	class NonCopy
-	{
-	protected:
-		NonCopy() {}
-		~NonCopy() {}
-	private:
-		NonCopy( const NonCopy& );
-		const NonCopy& operator=( const NonCopy& );
-	};
+    class NonCopy
+    {
+    protected:
+        NonCopy() {}
+        ~NonCopy() {}
+    private:
+        NonCopy( const NonCopy& );
+        const NonCopy& operator=( const NonCopy& );
+    };
 }
 #endif /* ZL_NONCOPY_FILE_H */
