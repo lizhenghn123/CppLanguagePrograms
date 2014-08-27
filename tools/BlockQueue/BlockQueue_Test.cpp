@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-#include "BlockingQueue.h"
-#include "BoundedBlockingQueue.h"
+#include "thread/BlockingQueue.h"
+#include "thread/BoundedBlockingQueue.h"
 using namespace std;
 
 void test_block_queue()
