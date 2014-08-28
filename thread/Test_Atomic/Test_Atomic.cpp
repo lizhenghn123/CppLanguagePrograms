@@ -9,9 +9,29 @@ int main()
 		ZL::Atomic ato;
 		ato++;
 		++ato;
-		ato.IncAndFetch(10);
+		ato.FetchAndInc(10);
 		ato += 100;
 		ato -= 3;
+		std::cout << ato.Value() << "\n";
+
+		long t = ato.DecAndFetch(3);
+		std::cout << ato << "\t" << t << "\n";
+	}
+	{
+		std::cout << "========================================\n";
+		ZL::Atomic ato;
+
+		std::cout << ato.FetchAndInc(2) << "\t" ;
+		std::cout << ato.Value() << "\n";
+
+		std::cout << ato.FetchAndDec(3) << "\t" ;
+		std::cout << ato.Value() << "\n";
+	}
+	{
+		std::cout << "========================================\n";
+		ZL::Atomic ato;
+
+		std::cout << ato.IncAndFetch(2) << "\t" ;
 		std::cout << ato << "\n";
 	}
 	system("pause");

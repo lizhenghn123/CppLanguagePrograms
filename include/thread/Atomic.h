@@ -37,6 +37,11 @@
 #include <Windows.h>
 #define ATOMIC_ADD(ptr, v)            ::InterlockedIncrement(ptr)
 #define ATOMIC_SUB(ptr, v)            ::InterlockedDecrement(ptr)
+//#define ATOMIC_ADD_AND_FETCH(ptr, v)  ::InterlockedExchangeAdd(ptr, v)
+//#define ATOMIC_SUB_AND_FETCH(ptr, v)  ::InterlockedExchangeAdd(ptr, -v)
+#define ATOMIC_FETCH_AND_ADD(ptr, v)  ::InterlockedExchangeAdd(ptr, v)    /*返回加之前的值*/
+#define ATOMIC_FETCH_AND_SUB(ptr, v)  ::InterlockedExchangeAdd(ptr, -v)
+#define ATOMIC_FETCH(ptr)             ::InterlockedExchangeAdd(ptr, 0)
 #endif
 
 namespace ZL
@@ -50,79 +55,55 @@ namespace ZL
         {}
         ~Atomic()
         {}
-	public:
-        inline void Inc(int n = 1)
+    public:
+        inline atomic_t Inc(int n = 1)
         {
-            ATOMIC_ADD(&atomic_, n);
+            return ATOMIC_ADD(&atomic_, n);
         }
         inline atomic_t IncAndFetch(int n = 1)
         {
 #ifdef OS_LINUX
             return ATOMIC_ADD_AND_FETCH(&atomic_, n);
 #else
-            MutexGuard lock(mutex_);
-            atomic_ += n;
-            return atomic_;
+			MutexGuard lock(mutex_);
+			atomic_ += n;
+			return atomic_;
 #endif
         }
         inline atomic_t FetchAndInc(int n = 1)
         {
-#ifdef OS_LINUX
-            return ATOMIC_ADD_AND_FETCH(&atomic_, n);
-#else
-            MutexGuard lock(mutex_);
-            atomic_t old = atomic_;
-            atomic_ += n;
-            return old;
-#endif
+            return ATOMIC_FETCH_AND_ADD(&atomic_, n);
         }
-        inline void Dec(int n = 1)
+        inline atomic_t Dec(int n = 1)
         {
-            ATOMIC_SUB(&atomic_, n);
+            return ATOMIC_SUB(&atomic_, n);
         }
         inline atomic_t DecAndFetch(int n = 1)
         {
 #ifdef OS_LINUX
-            return ATOMIC_SUB_AND_FETCH(&atomic_, n);
+			return ATOMIC_SUB_AND_FETCH(&atomic_, n);
 #else
-            MutexGuard lock(mutex_);
-            atomic_ -= n;
-            return atomic_;
+			MutexGuard lock(mutex_);
+			atomic_ -= n;
+			return atomic_;
 #endif
         }
         inline atomic_t FetchAndDec(int n = 1)
         {
-#ifdef OS_LINUX
             return ATOMIC_FETCH_AND_SUB(&atomic_, n);
-#else
-            MutexGuard lock(mutex_);
-            atomic_t old = atomic_;
-            atomic_ -= n;
-            return old;
-#endif
-        }
-        inline bool DecAndCheckZero(int n = 1)
-        {
-#ifdef OS_LINUX
-			return 0 == ATOMIC_SUB_AND_FETCH(&atomic_, n);
-#else
-			MutexGuard lock(mutex_);
-			atomic_ -= n;
-			return 0 == atomic_;
-#endif
         }
         inline atomic_t Value()
         {
-            return IncAndFetch(0);
+            return ATOMIC_FETCH(&atomic_);
         }
     public:
         atomic_t operator++()
         {
-            return ATOMIC_ADD(&atomic_);
+            return Inc(1);
         }
         atomic_t operator--()
         {
-            return ATOMIC_SUB(&atomic_);
+            return Dec(1);
         }
         atomic_t operator++(int)
         {
@@ -140,18 +121,14 @@ namespace ZL
         {
             return DecAndFetch(num);
         }
-        bool operator=(long lValue)
+        bool operator==(long value)
         {
-            return (atomic_ = lValue);
+            return (atomic_ == value);
         }
-		bool operator==(long value)
+		operator long() const
 		{
-			return (atomic_ = value);
+			return atomic_;
 		}
-        operator long() const
-        {
-            return atomic_;
-        }
 
     private:
         atomic_t atomic_;
