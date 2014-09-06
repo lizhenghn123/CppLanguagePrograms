@@ -35,6 +35,20 @@
 #define Safe_Delete(p)        do { delete p; p = NULL; } while (0)
 #define Safe_Delete_Array(p)  do { delete[] p; p = NULL; } while (0)
 
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus > 199711L || __cplusplus == 201103L
+#define ZL_CXX11_ENABLED 1
+#endif
+
+#ifdef ZL_CXX11_ENABLED
+#define DISALLOW_COPY_AND_ASSIGN(TypeName)            \
+        TypeName(const TypeName&) = delete;           \
+        TypeName& operator=(const TypeName&) = delete
+#else
+#define TOFT_DECLARE_STATIC_CLASS(Name)               \
+        private:                                      \
+            TypeName(const TypeName&);                \
+            TypeName& operator=(const TypeName&)
+#endif
 
 // Run-time assertion
 // #define ZL_NDEBUG
