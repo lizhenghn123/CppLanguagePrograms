@@ -203,7 +203,6 @@ std::string encode_persons()
 	fb_offset<zl::persons::personal_info> info[ARRAY_SIZE];
 	fb_offset<fb_vector<fb_offset<zl::persons::personal_info>>> info_array;
 	fb_offset<zl::persons::personal_info_list> info_list;
-	int data_buf_len;
 
 	for (idx = 0; idx < ARRAY_SIZE; idx++) {
 		id = idx;
@@ -236,7 +235,6 @@ void decode_persons(const char* data_buf, int len)
 	flatbuffers::Verifier verifier(	reinterpret_cast<const uint8_t *>(data_buf), len);
 	TEST_EQ(zl::persons::Verifypersonal_info_listBuffer(verifier), true);
 
-	int idx = 0;
 	const zl::persons::personal_info* info_ptr = NULL;
 	unsigned info_vector_size = 0;
 	const fb_vector<fb_offset<zl::persons::personal_info>>* info_vector = NULL;
@@ -254,7 +252,7 @@ void decode_persons(const char* data_buf, int len)
 	info_vector_size = fb_vector_size(info_vector);
 	assert(ARRAY_SIZE == info_vector_size);
 	printf("info vecotor size:%u, its right size:%u\n", info_vector_size, ARRAY_SIZE);
-	for (idx = 0; idx < info_vector_size; idx++) 
+	for (unsigned int idx = 0; idx < info_vector_size; idx++) 
 	{
 		info_ptr = fb_vector_at(info_vector, idx);
 		printf("info{id = %d, name = %s, age = %d, gender = %s, phone = %llu}\n",
@@ -296,7 +294,6 @@ void ParseOnePerson(const char* data_buf, int len)
 	flatbuffers::Verifier verifier(	reinterpret_cast<const uint8_t *>(data_buf), len);
 	TEST_EQ(zl::persons::Verifypersonal_info_listBuffer(verifier), true);
 
-	int idx = 0;
 	const zl::persons::personal_info* info_ptr = NULL;
 	unsigned info_vector_size = 0;
 	const fb_vector<fb_offset<zl::persons::personal_info>>* info_vector = NULL;
@@ -313,7 +310,7 @@ void ParseOnePerson(const char* data_buf, int len)
 	//personal_info* info = fb_vector_at(info_vector, 0);
 	info_vector_size = fb_vector_size(info_vector);
 
-	for (idx = 0; idx < info_vector_size; idx++) 
+	for (unsigned int idx = 0; idx < info_vector_size; idx++) 
 	{
 		info_ptr = fb_vector_at(info_vector, idx);
 		printf("info{id = %d, name = %s, age = %d, gender = %s, phone = %llu}\n",

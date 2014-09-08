@@ -101,7 +101,7 @@ int main()
 
 	std::cout << "Origin Str: " << orgin_str << "\n\n";
 	int ret;
-	for(int i = 0; i < vec_str.size(); i++)
+	for(size_t i = 0; i < vec_str.size(); i++)
 	{
 		ret = fnmatch(vec_str.at(i), orgin_str, FNM_PATHNAME);
 		if(ret == FNM_NOMATCH)

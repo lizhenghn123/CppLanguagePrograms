@@ -69,14 +69,14 @@ void test_do_while_3()
 {
 	do
 	{
-		int key;
+		//int key;
 		//std::string value;
 		//dosomething for this key,value;
 	}while(0);
 
 	do
 	{
-		int key;
+		//int key;
 		//std::string value;
 		//dosomething for this key,value;
 	}while(0);

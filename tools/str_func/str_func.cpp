@@ -26,11 +26,11 @@ void test_strcpy()
 //兼容性：linux下特有
 void test_stpcpy()
 {
-    char string[10];
     char *str1 = "abcdefghi";
 #ifdef OS_WINDOWS
     printf("There is no ==strcpy== in windows platform\n");
 #elif defined(OS_LINUX)
+    char string[10];
     stpcpy(string, str1);
     printf("%s\n", string);
 #endif

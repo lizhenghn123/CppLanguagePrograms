@@ -8,7 +8,7 @@ using namespace std;
 
 void print_vec_int(const vector<int>& vec)
 {
-	for (int i=0; i<vec.size(); i++)
+	for (size_t i=0; i<vec.size(); i++)
 		cout<<vec[i]<<" ";
 	cout<<"\n";
 }
