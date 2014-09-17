@@ -1,0 +1,12 @@
+namespace zl.persons;  
+
+table Score
+{
+	scores:[float];
+}
+table StuScore  
+{  
+    ids:[int];
+}  
+  
+root_type StuScore;
