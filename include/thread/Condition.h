@@ -30,58 +30,58 @@ namespace ZL
     public:
         explicit Condition(Mutex& mu) : mutex_(mu), signaled_(false)
         {
-        #ifdef OS_WINDOWS
+#ifdef OS_WINDOWS
             InitializeConditionVariable(&condition_);
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             pthread_cond_init(&condition_, NULL);
-        #endif
+#endif
         }
 
         ~Condition()
         {
-        #ifdef OS_WINDOWS
+#ifdef OS_WINDOWS
             //nothing
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             pthread_cond_destroy(&condition_);
-        #endif
+#endif
         }
 
     public:
         void Wait()
         {
-        #ifdef OS_WINDOWS
+#ifdef OS_WINDOWS
             SleepConditionVariableCS(&condition_, mutex_.GetMutex(), INFINITE);
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             pthread_cond_wait(&condition_, mutex_.GetMutex());
-        #endif
+#endif
         }
 
         void NotifyOne()
         {
-        #ifdef OS_WINDOWS
+#ifdef OS_WINDOWS
             WakeConditionVariable(&condition_);
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             pthread_cond_signal(&condition_);
-        #endif
+#endif
         }
 
         void NotifyAll()
         {
-        #ifdef OS_WINDOWS
+#ifdef OS_WINDOWS
             WakeAllConditionVariable(&condition_);
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             pthread_cond_broadcast(&condition_);
-       #endif
+#endif
         }
 
     private:
         bool signaled_;
         Mutex&		mutex_;
-    #ifdef OS_WINDOWS
+#ifdef OS_WINDOWS
         CONDITION_VARIABLE condition_;
-    #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
         pthread_cond_t     condition_;
-    #endif
+#endif
     };
 
 } /* namespace ZL */

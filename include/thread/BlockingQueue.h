@@ -51,11 +51,11 @@ namespace ZL
         virtual bool Pop(JobType& job)
         {
             LockGuard lock(mutex_);
-            while (queue_.empty() && !stopFlag_)
+            while(queue_.empty() && !stopFlag_)
             {
                 has_job_.Wait();
             }
-            if (stopFlag_)
+            if(stopFlag_)
             {
                 return false;
             }
@@ -66,11 +66,11 @@ namespace ZL
         virtual JobType Pop()
         {
             LockGuard lock(mutex_);
-            while (queue_.empty() && !stopFlag_)
+            while(queue_.empty() && !stopFlag_)
             {
                 has_job_.Wait();
             }
-            if (stopFlag_)
+            if(stopFlag_)
             {
                 return false;
             }
@@ -84,7 +84,7 @@ namespace ZL
         {
             LockGuard lock(mutex_);
 
-            if (queue_.empty() && !stopFlag_)
+            if(queue_.empty() && !stopFlag_)
                 return false;
 
             return PopOne(job, Order());

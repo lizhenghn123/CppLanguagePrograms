@@ -68,7 +68,7 @@
             file, lineno, func)))
 #endif
 
-// Compile-time assertion 
+// Compile-time assertion
 #define ZL_STATIC_ASSERT(expr) ZL_STATIC_ASSERT_IMPL(expr, __FILE__, __LINE__)
 #define ZL_STATIC_ASSERT_IMPL(expr, file, line) typedef char static_assert_fail_on_##file_and_##line[2*((expr)!=0)-1]
 

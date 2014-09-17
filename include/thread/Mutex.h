@@ -24,7 +24,7 @@
 
 namespace ZL
 {
-    #define DISALLOW_COPY_AND_ASSIGN(TypeName)         \
+#define DISALLOW_COPY_AND_ASSIGN(TypeName)         \
 				 TypeName(const TypeName&);            \
                  TypeName& operator=(const TypeName&)  \
  
@@ -44,52 +44,52 @@ namespace ZL
     public:
         void Lock()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             EnterCriticalSection(&mutex_);
-        #elif defined(OS_LINUX)
-            if (pthread_mutex_lock(&mutex_) != 0)
+#elif defined(OS_LINUX)
+            if(pthread_mutex_lock(&mutex_) != 0)
             {
                 throw std::exception();
             }
-        #endif
+#endif
         }
 
         bool TryLock() //const
         {
-        #ifdef	OS_WINDOWS
-            #if(_WIN32_WINNT >= 0x0400)
+#ifdef	OS_WINDOWS
+#if(_WIN32_WINNT >= 0x0400)
             return TryEnterCriticalSection(&mutex_) != 0;
-            #else
+#else
             return false;
-            #endif
-        #elif defined(OS_LINUX)
+#endif
+#elif defined(OS_LINUX)
             int ret = pthread_mutex_trylock(&mutex_);
-            if (ret != 0)
+            if(ret != 0)
             {
                 printf("pthread_mutex_trylock fail,code = %d\n", ret);
                 return false;
             }
             return true;
-        #endif
+#endif
         }
 
         void Unlock()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             LeaveCriticalSection(&mutex_);
-        #elif defined(OS_LINUX)
-            if (pthread_mutex_unlock(&mutex_) != 0)
+#elif defined(OS_LINUX)
+            if(pthread_mutex_unlock(&mutex_) != 0)
             {
                 printf("pthread_mutex_unlock\n");
             }
-        #endif
+#endif
         }
 
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
         CRITICAL_SECTION	*GetMutex()
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
         pthread_mutex_t	*GetMutex()
-        #endif
+#endif
         {
             return &mutex_;
         }
@@ -97,67 +97,67 @@ namespace ZL
     private:
         void Init_()
         {
-        #ifdef	OS_WINDOWS
-            #if (_WIN32_WINNT >= 0x0403)
-            if (!InitializeCriticalSectionAndSpinCount(&mutex_, 0x80000400))
-            #endif /* _WIN32_WINNT >= 0x0403 */
+#ifdef	OS_WINDOWS
+#if (_WIN32_WINNT >= 0x0403)
+            if(!InitializeCriticalSectionAndSpinCount(&mutex_, 0x80000400))
+#endif /* _WIN32_WINNT >= 0x0403 */
                 InitializeCriticalSection(&mutex_);
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             pthread_mutex_init(&mutex_, NULL);
-        #endif
+#endif
         }
 
         void Close_()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             DeleteCriticalSection(&mutex_);
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             pthread_mutex_destroy(&mutex_);
-        #endif
+#endif
         }
 
     private:
-    #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
         mutable CRITICAL_SECTION mutex_;
-    #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
         pthread_mutex_t mutex_;
-    #endif
+#endif
     };
 
-	class NullMutex
-	{
-		DISALLOW_COPY_AND_ASSIGN(NullMutex);
-	public:
-		NullMutex()
-		{
-		}
-		~NullMutex()
-		{
-		}
+    class NullMutex
+    {
+        DISALLOW_COPY_AND_ASSIGN(NullMutex);
+    public:
+        NullMutex()
+        {
+        }
+        ~NullMutex()
+        {
+        }
 
-	public:
-		void Lock()
-		{
-		}
+    public:
+        void Lock()
+        {
+        }
 
-		bool TryLock()
-		{
-			return true;
-		}
+        bool TryLock()
+        {
+            return true;
+        }
 
-		void Unlock()
-		{
-		}
+        void Unlock()
+        {
+        }
 
 #ifdef	OS_WINDOWS
-		CRITICAL_SECTION	*GetMutex()
+        CRITICAL_SECTION	*GetMutex()
 #elif defined(OS_LINUX)
-		pthread_mutex_t	*GetMutex()
+        pthread_mutex_t	*GetMutex()
 #endif
-		{
-			return NULL;
-		}
-	};
+        {
+            return NULL;
+        }
+    };
 
     class RWMutex
     {
@@ -174,191 +174,200 @@ namespace ZL
     public:
         bool ReadLock()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             ::AcquireSRWLockShared(&rwlock_);
             return true;
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             return pthread_rwlock_rdlock(&rwlock_) == 0;
-        #endif
+#endif
         }
         bool ReadUnLock()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             ::ReleaseSRWLockShared(&rwlock_);
             return true;
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             return pthread_rwlock_unlock(&rwlock_) == 0;
-        #endif
+#endif
         }
         bool WriteLock()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             ::AcquireSRWLockExclusive(&rwlock_);
             return true;
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             return pthread_rwlock_wrlock(&rwlock_) == 0;
-        #endif
+#endif
         }
         bool WriteUnLock()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             ::ReleaseSRWLockExclusive(&rwlock_);
             return true;
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             return pthread_rwlock_unlock(&rwlock_) == 0;
-        #endif
+#endif
         }
         bool TryReadLock()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             return ::TryAcquireSRWLockShared(&rwlock_) == TRUE;
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             return pthread_rwlock_tryrdlock(&rwlock_) == 0;
-        #endif
+#endif
         }
         bool TryWriteLock()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             return ::TryAcquireSRWLockShared(&rwlock_) == TRUE;
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             return pthread_rwlock_trywrlock(&rwlock_) == 0;
-        #endif
+#endif
         }
 
     private:
         void Init_()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             ::InitializeSRWLock(&rwlock_);
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             pthread_rwlock_init(&rwlock_, NULL);
-        #endif
+#endif
         }
         void Close_()
         {
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
             //nothing
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
             pthread_rwlock_destroy(&rwlock_);
-        #endif
+#endif
         }
 
     private:
-        #ifdef	OS_WINDOWS
+#ifdef	OS_WINDOWS
         SRWLOCK          rwlock_;  //not support Windows XP
-        #elif defined(OS_LINUX)
+#elif defined(OS_LINUX)
         pthread_rwlock_t rwlock_;
-        #endif
+#endif
     };
 
 
-	class MutexLocker
-	{
-		DISALLOW_COPY_AND_ASSIGN(MutexLocker);
-	public:
-		explicit MutexLocker(Mutex& mutex) : mutex_(mutex)
-		{
-			mutex_.Lock();
-		}
-		~MutexLocker()
-		{
-			mutex_.Unlock();
-		}
-	private:
-		mutable Mutex& mutex_;
-	};
+    class MutexLocker
+    {
+        DISALLOW_COPY_AND_ASSIGN(MutexLocker);
+    public:
+        explicit MutexLocker(Mutex& mutex) : mutex_(mutex)
+        {
+            mutex_.Lock();
+        }
+        ~MutexLocker()
+        {
+            mutex_.Unlock();
+        }
+    private:
+        mutable Mutex& mutex_;
+    };
 
-	class MutexTryLocker
-	{
-		DISALLOW_COPY_AND_ASSIGN(MutexTryLocker);
-	public:
-		explicit MutexTryLocker(Mutex& mutex) : mutex_(mutex)
-		{
-			isLocked_ = mutex_.TryLock();
-		}
-		~MutexTryLocker()
-		{
-			if(isLocked_)
-				mutex_.Unlock();
-		}
-		bool IsLocked() { return isLocked_; }
+    class MutexTryLocker
+    {
+        DISALLOW_COPY_AND_ASSIGN(MutexTryLocker);
+    public:
+        explicit MutexTryLocker(Mutex& mutex) : mutex_(mutex)
+        {
+            isLocked_ = mutex_.TryLock();
+        }
+        ~MutexTryLocker()
+        {
+            if(isLocked_)
+                mutex_.Unlock();
+        }
+        bool IsLocked()
+        {
+            return isLocked_;
+        }
 
-	private:
-		bool  isLocked_;
-		mutable Mutex& mutex_;
-	};
+    private:
+        bool  isLocked_;
+        mutable Mutex& mutex_;
+    };
 
-	class RWMutexReadLocker
-	{
-		DISALLOW_COPY_AND_ASSIGN(RWMutexReadLocker);
-	public:
-		explicit RWMutexReadLocker(RWMutex& mutex) : mutex_(mutex)
-		{
-			mutex_.ReadLock();
-		}
-		~RWMutexReadLocker()
-		{
-			mutex_.ReadUnLock();
-		}
-	private:
-		mutable RWMutex& mutex_;
-	};
+    class RWMutexReadLocker
+    {
+        DISALLOW_COPY_AND_ASSIGN(RWMutexReadLocker);
+    public:
+        explicit RWMutexReadLocker(RWMutex& mutex) : mutex_(mutex)
+        {
+            mutex_.ReadLock();
+        }
+        ~RWMutexReadLocker()
+        {
+            mutex_.ReadUnLock();
+        }
+    private:
+        mutable RWMutex& mutex_;
+    };
 
-	class RWMutexReadTryLocker
-	{
-		DISALLOW_COPY_AND_ASSIGN(RWMutexReadTryLocker);
-	public:
-		explicit RWMutexReadTryLocker(RWMutex& mutex) : mutex_(mutex)
-		{
-			isLocked_ = mutex_.TryReadLock();
-		}
-		~RWMutexReadTryLocker()
-		{
-			if(isLocked_)
-				mutex_.ReadUnLock();
-		}
-		bool IsLocked() { return isLocked_; }
+    class RWMutexReadTryLocker
+    {
+        DISALLOW_COPY_AND_ASSIGN(RWMutexReadTryLocker);
+    public:
+        explicit RWMutexReadTryLocker(RWMutex& mutex) : mutex_(mutex)
+        {
+            isLocked_ = mutex_.TryReadLock();
+        }
+        ~RWMutexReadTryLocker()
+        {
+            if(isLocked_)
+                mutex_.ReadUnLock();
+        }
+        bool IsLocked()
+        {
+            return isLocked_;
+        }
 
-	private:
-		bool  isLocked_;
-		mutable RWMutex& mutex_;
-	};
+    private:
+        bool  isLocked_;
+        mutable RWMutex& mutex_;
+    };
 
-	class RWMutexWriteLocker
-	{
-		DISALLOW_COPY_AND_ASSIGN(RWMutexWriteLocker);
-	public:
-		explicit RWMutexWriteLocker(RWMutex& mutex) : mutex_(mutex)
-		{
-			mutex_.WriteLock();
-		}
-		~RWMutexWriteLocker()
-		{
-			mutex_.WriteUnLock();
-		}
-	private:
-		mutable RWMutex& mutex_;
-	};
+    class RWMutexWriteLocker
+    {
+        DISALLOW_COPY_AND_ASSIGN(RWMutexWriteLocker);
+    public:
+        explicit RWMutexWriteLocker(RWMutex& mutex) : mutex_(mutex)
+        {
+            mutex_.WriteLock();
+        }
+        ~RWMutexWriteLocker()
+        {
+            mutex_.WriteUnLock();
+        }
+    private:
+        mutable RWMutex& mutex_;
+    };
 
-	class RWMutexWriteTryLocker
-	{
-		DISALLOW_COPY_AND_ASSIGN(RWMutexWriteTryLocker);
-	public:
-		explicit RWMutexWriteTryLocker(RWMutex& mutex) : mutex_(mutex)
-		{
-			isLocked_ = mutex_.TryWriteLock();
-		}
-		~RWMutexWriteTryLocker()
-		{
-			if(isLocked_)
-				mutex_.WriteUnLock();
-		}
-		bool IsLocked() { return isLocked_; }
+    class RWMutexWriteTryLocker
+    {
+        DISALLOW_COPY_AND_ASSIGN(RWMutexWriteTryLocker);
+    public:
+        explicit RWMutexWriteTryLocker(RWMutex& mutex) : mutex_(mutex)
+        {
+            isLocked_ = mutex_.TryWriteLock();
+        }
+        ~RWMutexWriteTryLocker()
+        {
+            if(isLocked_)
+                mutex_.WriteUnLock();
+        }
+        bool IsLocked()
+        {
+            return isLocked_;
+        }
 
-	private:
-		bool  isLocked_;
-		mutable RWMutex& mutex_;
-	};
+    private:
+        bool  isLocked_;
+        mutable RWMutex& mutex_;
+    };
 } /* namespace ZL */
 
 #endif  /* ZL_MUTEX_H */

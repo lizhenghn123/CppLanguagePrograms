@@ -65,9 +65,9 @@ namespace ZL
 #ifdef OS_LINUX
             return ATOMIC_ADD_AND_FETCH(&atomic_, n);
 #else
-			MutexLocker lock(mutex_);
-			atomic_ += n;
-			return atomic_;
+            MutexLocker lock(mutex_);
+            atomic_ += n;
+            return atomic_;
 #endif
         }
         inline atomic_t FetchAndInc(int n = 1)
@@ -81,11 +81,11 @@ namespace ZL
         inline atomic_t DecAndFetch(int n = 1)
         {
 #ifdef OS_LINUX
-			return ATOMIC_SUB_AND_FETCH(&atomic_, n);
+            return ATOMIC_SUB_AND_FETCH(&atomic_, n);
 #else
-			MutexLocker lock(mutex_);
-			atomic_ -= n;
-			return atomic_;
+            MutexLocker lock(mutex_);
+            atomic_ -= n;
+            return atomic_;
 #endif
         }
         inline atomic_t FetchAndDec(int n = 1)
@@ -125,10 +125,10 @@ namespace ZL
         {
             return (atomic_ == value);
         }
-		operator long() const
-		{
-			return atomic_;
-		}
+        operator long() const
+        {
+            return atomic_;
+        }
 
     private:
         atomic_t atomic_;

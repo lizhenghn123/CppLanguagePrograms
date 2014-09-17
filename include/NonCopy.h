@@ -20,8 +20,8 @@ namespace ZL
         NonCopy() {}
         ~NonCopy() {}
     private:
-        NonCopy( const NonCopy& );
-        const NonCopy& operator=( const NonCopy& );
+        NonCopy(const NonCopy&);
+        const NonCopy& operator=(const NonCopy&);
     };
 }
 #endif /* ZL_NONCOPY_FILE_H */

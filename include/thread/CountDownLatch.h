@@ -28,7 +28,7 @@ namespace ZL
         void Wait()
         {
             MutexGuard lock(mutex_);
-            while (count_ > 0)
+            while(count_ > 0)
             {
                 condition_.wait();
             }
@@ -38,7 +38,7 @@ namespace ZL
         {
             MutexGuard lock(mutex_);
             --count_;
-            if (count_ == 0)
+            if(count_ == 0)
             {
                 condition_.NotifyAll();
             }

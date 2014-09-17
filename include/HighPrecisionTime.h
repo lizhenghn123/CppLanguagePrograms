@@ -40,7 +40,7 @@ public:
         LARGE_INTEGER liPerfNow;
         ::QueryPerformanceCounter(&liPerfNow);
 
-        return ( (liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1.0 ) / m_liPerfFreq.QuadPart ;
+        return ((liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1.0) / m_liPerfFreq.QuadPart ;
     }
 
     double ElapsedTimeInMill()
@@ -48,14 +48,14 @@ public:
         LARGE_INTEGER liPerfNow;
         ::QueryPerformanceCounter(&liPerfNow);
 
-        return ( (liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1000.0 ) / m_liPerfFreq.QuadPart ;
+        return ((liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1000.0) / m_liPerfFreq.QuadPart ;
     }
     double ElapsedTimeInMicro()
     {
         LARGE_INTEGER liPerfNow;
         ::QueryPerformanceCounter(&liPerfNow);
 
-        return ( (liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1000000.0 ) / m_liPerfFreq.QuadPart ;
+        return ((liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1000000.0) / m_liPerfFreq.QuadPart ;
     }
 private:
     void Start()

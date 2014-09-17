@@ -50,7 +50,7 @@ namespace ZL
         virtual void Push(const JobType& job)
         {
             LockGuard lock(mutex_);
-            while (queue_.size() == maxSize_) // already full
+            while(queue_.size() == maxSize_)  // already full
             {
                 notFull_.Wait();
             }
@@ -61,11 +61,11 @@ namespace ZL
         virtual bool Pop(JobType& job)
         {
             LockGuard lock(mutex_);
-            while (queue_.empty() && !stopFlag_)
+            while(queue_.empty() && !stopFlag_)
             {
                 notEmpty_.Wait();
             }
-            if (stopFlag_)
+            if(stopFlag_)
             {
                 return false;
             }
@@ -78,11 +78,11 @@ namespace ZL
         virtual JobType Pop()
         {
             LockGuard lock(mutex_);
-            while (queue_.empty() && !stopFlag_)
+            while(queue_.empty() && !stopFlag_)
             {
                 notEmpty_.Wait();
             }
-            if (stopFlag_)
+            if(stopFlag_)
             {
                 return false;
             }
@@ -97,7 +97,7 @@ namespace ZL
         {
             LockGuard lock(mutex_);
 
-            if (queue_.empty() && !stopFlag_)
+            if(queue_.empty() && !stopFlag_)
                 return false;
 
             PopOne(job, Order());
