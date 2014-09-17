@@ -1,8 +1,15 @@
+#ignore specificity dirs
+Debug
+bin
+log
+Release
+
 # Compiled Object files
 *.slo
 *.lo
 *.o
-  #VisualStudio temp files
+
+# VisualStudio temp files
 *.obj
 *.user
 *.sdf
@@ -15,6 +22,9 @@
 *.res
 *cache
 *.manifest
+*.log
+*.lastbuildstate
+*.idb
 
 # Compiled Dynamic libraries
 *.so
