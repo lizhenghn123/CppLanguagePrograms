@@ -1,6 +1,21 @@
 #include <iostream>
+#include "Date.h"
 #include "DateTimeUtil.h"
 using namespace std;
+
+void testDate()
+{
+	Date d(2014,9,17);
+	cout << d.ToString()<<"\n";
+
+	Date d2 = d + 3;
+	cout << d2.DaysDiff(d) << "\n";
+
+	Date d3 = d + 245;
+	cout << Date::DaysDiff(d, d3) << "\n";
+
+	cout << (d < d3) << "\n";
+}
 
 int main()
 {
@@ -35,6 +50,9 @@ int main()
 		cout << DateTimeUtil::CurrentDate() << "\n";
 		cout << DateTimeUtil::CurrentTime() << "\n";
 	}
+	cout << "\n--------------------------\n";
+
+	testDate();
 	system("pause");
 	return 0;
 }

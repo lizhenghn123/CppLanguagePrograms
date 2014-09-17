@@ -75,9 +75,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\Date.h" />
     <ClInclude Include="..\..\include\DateTimeUtil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\include\Date.cpp" />
     <ClCompile Include="..\..\include\DateTimeUtil.cpp" />
     <ClCompile Include="DateTimeUtilTest.cpp" />
   </ItemGroup>

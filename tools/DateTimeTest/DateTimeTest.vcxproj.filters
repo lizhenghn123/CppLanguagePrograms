@@ -18,12 +18,18 @@
     <ClInclude Include="..\..\include\DateTimeUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Date.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\DateTimeUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DateTimeUtilTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\Date.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
