@@ -65,7 +65,7 @@ namespace ZL
 #ifdef OS_LINUX
             return ATOMIC_ADD_AND_FETCH(&atomic_, n);
 #else
-			MutexGuard lock(mutex_);
+			MutexLocker lock(mutex_);
 			atomic_ += n;
 			return atomic_;
 #endif
@@ -83,7 +83,7 @@ namespace ZL
 #ifdef OS_LINUX
 			return ATOMIC_SUB_AND_FETCH(&atomic_, n);
 #else
-			MutexGuard lock(mutex_);
+			MutexLocker lock(mutex_);
 			atomic_ -= n;
 			return atomic_;
 #endif

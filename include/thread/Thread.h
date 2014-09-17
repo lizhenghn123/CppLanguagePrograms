@@ -9,9 +9,10 @@
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
+#ifndef ZL_THREAD_H
+#define ZL_THREAD_H
 #include "Define.h"
 #include "Mutex.h"
-
 NAMESPACE_ZL_START
 
 // HACK: Mac OS X and early MinGW do not support thread-local storage
@@ -27,7 +28,6 @@ NAMESPACE_ZL_START
 #endif
 #endif
 
-/// Thread class.
 class thread 
 {
 public:
@@ -260,3 +260,6 @@ namespace this_thread
 }
 
 NAMESPACE_ZL_END
+
+
+#endif  /* ZL_THREAD_H */

@@ -39,7 +39,7 @@ void ThreadLock(void * aArg)
 {
 	for(int i = 0; i < 10000; ++ i)
 	{
-		MutexGuard lock(gMutex);
+		MutexLocker lock(gMutex);
 		++ gCount;
 	}
 }
@@ -47,7 +47,7 @@ void ThreadLock(void * aArg)
 // Thread function: Condition notifier
 void ThreadCondition1(void * aArg)
 {
-	MutexGuard lock(gMutex);
+	MutexLocker lock(gMutex);
 	-- gCount;
 	gCond.NotifyAll();
 }
@@ -56,7 +56,7 @@ void ThreadCondition1(void * aArg)
 void ThreadCondition2(void * aArg)
 {
 	cout << " Wating..." << flush;
-	MutexGuard lock(gMutex);
+	MutexLocker lock(gMutex);
 	while(gCount > 0)
 	{
 		cout << "." << flush;
@@ -244,6 +244,7 @@ void exec_testt(void *arg)
 	pt->print_num(6);
 	this_thread::sleep_for(chrono::milliseconds(1000));
 }
+
 int main()
 {
 	test_thread();

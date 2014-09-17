@@ -30,7 +30,7 @@ namespace ZL
         typedef Job                                 JobType;
         typedef Queue	                            QueueType;
         typedef ZL::Mutex							MutexType;
-        typedef ZL::MutexGuard	         		    LockGuard;
+        typedef ZL::MutexLocker	         		    LockGuard;
         typedef ZL::Condition            		    ConditionType;
 
     public:

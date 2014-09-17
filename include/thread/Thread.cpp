@@ -38,7 +38,7 @@ void * thread::wrapper_function(void * aArg)
 	}
 
 	// The thread is no longer executing
-	MutexGuard guard(ti->mThread->mDataMutex);
+	MutexLocker guard(ti->mThread->mDataMutex);
 	ti->mThread->mNotAThread = true;
 
 	// The thread is responsible for freeing the startup information
@@ -50,7 +50,7 @@ void * thread::wrapper_function(void * aArg)
 thread::thread(void (*aFunction)(void *), void * aArg)
 {
 	// Serialize access to this thread structure
-	MutexGuard guard(mDataMutex);
+	MutexLocker guard(mDataMutex);
 
 	// Fill out the thread startup information (passed to the thread wrapper,
 	// which will eventually free it)
@@ -99,14 +99,14 @@ void thread::join()
 
 bool thread::joinable() const
 {
-	MutexGuard lock(mDataMutex);
+	MutexLocker lock(mDataMutex);
 	bool result = !mNotAThread;
 	return result;
 }
 
 void thread::detach()
 {
-	MutexGuard lock(mDataMutex);
+	MutexLocker lock(mDataMutex);
 	if(!mNotAThread)
 	{
 #if defined(OS_WINDOWS)
