@@ -58,14 +58,13 @@
 #else
 #define ZL_ASSERT(expr)                                    \
 			((void) ((expr) ? 0 :                          \
-		    printf("%s:%d: %s:  Assertion `%s' failed.\n", \
-			__FILE__, __LINE__, __FUNCTION__, #expr)))
+		    printf("Assertion `%s' failed. called from func %s(%s:%d)\n", \
+			#expr, __FUNCTION__, __FILE__, __LINE__)))
+
 #define ZL_ASSERTEX(expr, file, lineno, func)              \
 	        ((void) ((expr) ? 0 :                          \
-		    printf("%s:%d: %s: Assertion `%s' failed. "    \
-		    "(called from %s:%d:%s)\n",                    \
-		     __FILE__, __LINE__, __FUNCTION__, #expr,      \
-            file, lineno, func)))
+            printf("Assertion `%s' failed. called from func %s(%s:%d)\n", \
+            #expr, func, file, lineno)))
 #endif
 
 // Compile-time assertion
