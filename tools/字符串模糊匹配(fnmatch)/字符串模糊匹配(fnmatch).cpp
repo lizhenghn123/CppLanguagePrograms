@@ -25,50 +25,49 @@ using namespace std;
 #define fnmatch fnmatch_win
 
 /**copy from Google-glog*/
-bool SafeFNMatch(const char* pattern,size_t patt_len,const char* str,size_t str_len)
+bool SafeFNMatch(const char *pattern, size_t patt_len, const char *str, size_t str_len)
 {
-	size_t p = 0;
-	size_t s = 0;
-	while (1)
-	{
-		if (p == patt_len  &&  s == str_len)
-			return true;
-		if (p == patt_len)
-			return false;
-		if (s == str_len)
-			return p+1 == patt_len  &&  pattern[p] == '*';
-		if (pattern[p] == str[s]  ||  pattern[p] == '?')
-		{
-			p += 1;
-			s += 1;
-			continue;
-		}
-		if (pattern[p] == '*')
-		{
-			if (p+1 == patt_len) return true;
-			do
-			{
-				if (SafeFNMatch(pattern+(p+1), patt_len-(p+1), str+s, str_len-s))
-				{
-					return true;
-				}
-				s += 1;
-			} while (s != str_len);
-
-			return false;
-		}
-
-		return false;
-	}
+    size_t p = 0;
+    size_t s = 0;
+    while (1)
+    {
+        if (p == patt_len  &&  s == str_len)
+            return true;
+        if (p == patt_len)
+            return false;
+        if (s == str_len)
+            return p + 1 == patt_len  &&  pattern[p] == '*';
+        if (pattern[p] == str[s]  ||  pattern[p] == '?')
+        {
+            p += 1;
+            s += 1;
+            continue;
+        }
+        if (pattern[p] == '*')
+        {
+            if (p + 1 == patt_len) return true;
+            do
+            {
+                if (SafeFNMatch(pattern + (p + 1), patt_len - (p + 1), str + s, str_len - s))
+                {
+                    return true;
+                }
+                s += 1;
+            }
+            while (s != str_len);
+            return false;
+        }
+        return false;
+    }
 }
 
 /**注意：Windows平台下尚未实现最后一个参数flags的功能！！！*/
 int fnmatch_win(const char *pattern, const char *name, int flags = 0)
 {
-	if(SafeFNMatch(pattern,strlen(pattern),name,strlen(name)))
-		return 0;
-	else
-		return FNM_NOMATCH;
+    if(SafeFNMatch(pattern, strlen(pattern), name, strlen(name)))
+        return 0;
+    else
+        return FNM_NOMATCH;
 }
 
 #else
@@ -77,42 +76,40 @@ int fnmatch_win(const char *pattern, const char *name, int flags = 0)
 
 int main()
 {
-	const char* orgin_str = "sina|weibo|pusher";
-	char pattern_arr[][20] = {
-		{"sina|*|pusher"},
-		{"sina|*|*"},
-		{"*|weibo|*"},
-		//不能被匹配的
-		{"sina|pic|*"},
-		{"*|*|sign"},
-		{"*|weibo|sign"},
-		{"*|pic|sign"},
-		{"sina|pic|sign"},
+    const char *orgin_str = "sina|weibo|pusher";
+    char pattern_arr[][20] =
+    {
+        {"sina|*|pusher"},
+        {"sina|*|*"},
+        {"*|weibo|*"},
+        //不能被匹配的
+        {"sina|pic|*"},
+        {"*|*|sign"},
+        {"*|weibo|sign"},
+        {"*|pic|sign"},
+        {"sina|pic|sign"},
 
-		{"*|*|*"}
-	};
-	static int pattern_arr_size = sizeof(pattern_arr) / sizeof(pattern_arr[0]);
-
-	vector<char *> vec_str;
-	for(int i = 0; i < pattern_arr_size; i ++)
-	{
-		vec_str.push_back(pattern_arr[i]);
-	}
-
-	std::cout << "Origin Str: " << orgin_str << "\n\n";
-	int ret;
-	for(size_t i = 0; i < vec_str.size(); i++)
-	{
-		ret = fnmatch(vec_str.at(i), orgin_str, FNM_PATHNAME);
-		if(ret == FNM_NOMATCH)
-		{
-			cout<<"sorry, I'm failed: ["<< vec_str.at(i) <<"]\n";
-		}
-		else
-		{
-			cout<<"OK, I'm success: ["<< vec_str.at(i) <<"]\n";
-		}
-	}
-
-	return 0;
+        {"*|*|*"}
+    };
+    static int pattern_arr_size = sizeof(pattern_arr) / sizeof(pattern_arr[0]);
+    vector<char *> vec_str;
+    for(int i = 0; i < pattern_arr_size; i ++)
+    {
+        vec_str.push_back(pattern_arr[i]);
+    }
+    std::cout << "Origin Str: " << orgin_str << "\n\n";
+    int ret;
+    for(size_t i = 0; i < vec_str.size(); i++)
+    {
+        ret = fnmatch(vec_str.at(i), orgin_str, FNM_PATHNAME);
+        if(ret == FNM_NOMATCH)
+        {
+            cout << "sorry, I'm failed: [" << vec_str.at(i) << "]\n";
+        }
+        else
+        {
+            cout << "OK, I'm success: [" << vec_str.at(i) << "]\n";
+        }
+    }
+    return 0;
 }

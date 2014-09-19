@@ -12,48 +12,39 @@
 void MySleep(long millseconds)
 {
 #ifdef OS_WINDOWS
-	Sleep(millseconds);
+    Sleep(millseconds);
 #else
-	usleep(millseconds*1000);
+    usleep(millseconds * 1000);
 #endif
 }
 
 int main()
 {
-	ZL::StopWatch watch;
-	watch.Reset();
-
-	MySleep(1000);
-	std::cout << watch.ElapsedTime()<<"\n";
-
-	watch.Reset();
-	MySleep(500);
-
-	std::cout << watch.ElapsedTimeInMill()<<"\n";
-
-	watch.Reset();
-	MySleep(800);
-	std::cout << watch.ElapsedTimeInMicro()<<"\n";
-
-	std::cout << "-------------------------------------------\n";
-
-	{
-		#ifdef OS_WINDOWS
-		HighPrecisionTime watch;
-		watch.Reset();
-		Sleep(1000);
-		std::cout << watch.ElapsedTime()<<"\n";
-
-		watch.Reset();
-		Sleep(500);
-		std::cout << watch.ElapsedTimeInMill()<<"\n";
-
-		watch.Reset();
-		Sleep(800);
-		std::cout << watch.ElapsedTimeInMicro()<<"\n";
-		#endif
-	}
-
-	system("pause");
-	return 0;
+    ZL::StopWatch watch;
+    watch.Reset();
+    MySleep(1000);
+    std::cout << watch.ElapsedTime() << "\n";
+    watch.Reset();
+    MySleep(500);
+    std::cout << watch.ElapsedTimeInMill() << "\n";
+    watch.Reset();
+    MySleep(800);
+    std::cout << watch.ElapsedTimeInMicro() << "\n";
+    std::cout << "-------------------------------------------\n";
+    {
+#ifdef OS_WINDOWS
+        HighPrecisionTime watch;
+        watch.Reset();
+        Sleep(1000);
+        std::cout << watch.ElapsedTime() << "\n";
+        watch.Reset();
+        Sleep(500);
+        std::cout << watch.ElapsedTimeInMill() << "\n";
+        watch.Reset();
+        Sleep(800);
+        std::cout << watch.ElapsedTimeInMicro() << "\n";
+#endif
+    }
+    system("pause");
+    return 0;
 }

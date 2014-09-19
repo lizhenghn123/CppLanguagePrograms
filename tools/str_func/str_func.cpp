@@ -44,11 +44,9 @@ void test_strncpy()
 {
     char string[10];
     char *str1 = "abcdefghi";
-
     strncpy(string, str1, 3);
     string[3] = '\0';
     printf("%s\n", string);
-
     char chardes[] = "Hello,iam!";
     char charsource[] = "abc\0def";
     strncpy(chardes, charsource, 5);
@@ -62,11 +60,9 @@ void test_strcat()
 {
     char destination[25];
     char *blank = " ", *c = "C++", *Borland = "Borland";
-
     strcpy(destination, Borland);
     strcat(destination, blank);
     strcat(destination, c);
-
     printf("%s\n", destination);
 }
 
@@ -77,13 +73,11 @@ void test_strcmp()
 {
     char *buf1 = "aaa", *buf2 = "bbb", *buf3 = "ccc";
     int ptr;
-
     ptr = strcmp(buf2, buf1);
     if (ptr > 0)
         printf("buffer 2 is greater than buffer 1\n");
     else
         printf("buffer 2 is less than buffer 1\n");
-
     ptr = strcmp(buf2, buf3);
     if (ptr > 0)
         printf("buffer 2 is greater than buffer 3\n");
@@ -100,7 +94,6 @@ void test_stricmp()
 #ifdef OS_WINDOWS
     char *buf1 = "BBB", *buf2 = "bbb";
     int ptr = stricmp(buf2, buf1);
-
     if (ptr > 0)
         printf("buffer 2 is greater than buffer 1\n");
     else if (ptr < 0)
@@ -121,7 +114,6 @@ void test_strncmpi()
 #ifdef OS_WINDOWS
     char *buf1 = "BBB", *buf2 = "bbb";
     int ptr = strnicmp(buf2, buf1, strlen(buf1));
-
     if (ptr > 0)
         printf("buffer 2 is greater than buffer 1\n");
     else if (ptr < 0)
@@ -142,7 +134,6 @@ void test_strcmpi()
 #ifdef OS_WINDOWS
     char *buf1 = "BBB", *buf2 = "bbb";
     int ptr = strcmpi(buf2, buf1);
-
     if (ptr > 0)
         printf("buffer 2 is greater than buffer 1\n");
     else if (ptr < 0)
@@ -168,7 +159,6 @@ void test_strncmp()
         printf("buffer 2 is greater than buffer 1\n");
     else
         printf("buffer 2 is less than buffer 1\n");
-
     ptr = strncmp(buf2, buf3, 3);
     if (ptr > 0)
         printf("buffer 2 is greater than buffer 3\n");
@@ -189,7 +179,6 @@ void test_strnicmp()
 #ifdef OS_WINDOWS
     char *buf1 = "BBBccc", *buf2 = "bbbccc";
     int ptr = strnicmp(buf2, buf1, 3);
-
     if (ptr > 0)
         printf("buffer 2 is greater than buffer 1\n");
     else if (ptr < 0)
@@ -239,7 +228,6 @@ void test_strchr()
 {
     char string[15];
     char *ptr, c = 'r';
-
     strcpy(string, "This is a string");
     ptr = strchr(string, c);
     if (ptr)
@@ -265,7 +253,6 @@ void test_strspn()
 {
     char *string1 = "1234567890";
     char *string2 = "123DC8";
-
     int length = strspn(string1, string2);
     printf("Character where strings differ is at position %d\n", length);
 }
@@ -277,7 +264,6 @@ void test_strcspn()
 {
     char *string1 = "1234567890";
     char *string2 = "747DC8";
-
     int length = strcspn(string1, string2);
     printf("Character where strings intersect is at position %d\n", length);
 }
@@ -290,7 +276,6 @@ void test_strpbrk()
     char *string1 = "abcdefghijklmnopqrstuvwxyz";
     char *string2 = "onm";
     char *ptr = strpbrk(string1, string2);
-
     if (ptr)
         printf("strpbrk found first character: %c\n", *ptr);
     else
@@ -304,7 +289,6 @@ void test_strrchr()
 {
     char string[15];
     char *ptr, c = 'r';
-
     strcpy(string, "This is a string");
     ptr = strrchr(string, c);
     if (ptr)
@@ -319,7 +303,6 @@ void test_strrchr()
 void test_strdup()
 {
     char *dup_str, *string = "abcde";
-
     dup_str = strdup(string);
     printf("%s\n", dup_str);
     free(dup_str);
@@ -378,7 +361,6 @@ void test_strnset()
 void test_strtod()
 {
     char input[80], *endptr;
-
     printf("Enter a floating point number:");
     gets(input);
     double value = strtod(input, &endptr);
@@ -392,7 +374,6 @@ void test_strtol()
 {
     char *string = "87654321", *endptr;
     long lnumber;
-
     /* strtol converts string to long integer  */
     lnumber = strtol(string, &endptr, 10);
     printf("string = %s  long = %ld\n", string, lnumber);
@@ -416,12 +397,10 @@ void test_strtok()
 {
     char input[16] = "abc,d";
     char *p;
-
     /* strtok places a NULL terminator
     in front of the token, if found */
     p = strtok(input, ",");
     if (p)   printf("%s\n", p);
-
     /* A second call to strtok using a NULL
     as the first parameter returns a pointer
     to the character following the token  */
@@ -437,7 +416,6 @@ void test_strupr()
 {
 #ifdef OS_WINDOWS
     char *string = "abcdefghijklmnopqrstuvwxyz", *ptr;
-
     /* converts string to upper case characters */
     ptr = strupr(string);
     printf("%s\n", ptr);
@@ -469,7 +447,6 @@ void test_strerror()
 int main(int argc, char *argv[])
 {
     test_swab();
-
     system("pause");
     return 0;
 }

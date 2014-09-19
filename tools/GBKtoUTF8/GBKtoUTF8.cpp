@@ -20,130 +20,117 @@
 
 std::string ConvertGBKToUtf8(const std::string& strGBK )
 {
-	int len = MultiByteToWideChar( CP_ACP, 0, (LPCTSTR)strGBK.c_str(), -1, NULL, 0 );
-	unsigned short *wszUtf8 = new unsigned short[len + 1];
-	memset(wszUtf8, 0, len * 2 + 2);
-	MultiByteToWideChar( CP_ACP, 0, (LPCTSTR)strGBK.c_str(), -1, (LPWSTR)wszUtf8, len );
-	len = WideCharToMultiByte( CP_UTF8, 0, (LPWSTR)wszUtf8, -1, NULL, 0, NULL, NULL );
-	char *szUtf8 = new char[len + 1];
-	memset( szUtf8, 0, len + 1 );
-	WideCharToMultiByte ( CP_UTF8, 0, (LPWSTR)wszUtf8, -1, (LPSTR)szUtf8, len, NULL, NULL );
-	std::string strUtf8 = szUtf8;
-	delete[] szUtf8;
-	delete[] wszUtf8;
-
-	return strUtf8;
+    int len = MultiByteToWideChar( CP_ACP, 0, (LPCTSTR)strGBK.c_str(), -1, NULL, 0 );
+    unsigned short *wszUtf8 = new unsigned short[len + 1];
+    memset(wszUtf8, 0, len * 2 + 2);
+    MultiByteToWideChar( CP_ACP, 0, (LPCTSTR)strGBK.c_str(), -1, (LPWSTR)wszUtf8, len );
+    len = WideCharToMultiByte( CP_UTF8, 0, (LPWSTR)wszUtf8, -1, NULL, 0, NULL, NULL );
+    char *szUtf8 = new char[len + 1];
+    memset( szUtf8, 0, len + 1 );
+    WideCharToMultiByte ( CP_UTF8, 0, (LPWSTR)wszUtf8, -1, (LPSTR)szUtf8, len, NULL, NULL );
+    std::string strUtf8 = szUtf8;
+    delete[] szUtf8;
+    delete[] wszUtf8;
+    return strUtf8;
 }
 
-std::string ConvertGBKToUtf8(const char* strGBK, int len)
+std::string ConvertGBKToUtf8(const char *strGBK, int len)
 {
-	std::string gbk(strGBK, len);
-	return ConvertGBKToUtf8(gbk);
+    std::string gbk(strGBK, len);
+    return ConvertGBKToUtf8(gbk);
 }
 
-std::string ConvertUtf8ToGBK(const std::string &strUtf8)
+std::string ConvertUtf8ToGBK(const std::string& strUtf8)
 {
-	int len = MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUtf8.c_str(), -1, NULL, 0);
-	unsigned short *wszGBK = new unsigned short[len + 1];
-	memset(wszGBK, 0, len * 2 + 2);
-	MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUtf8.c_str(), -1, (LPWSTR)wszGBK, len);
-	len = WideCharToMultiByte(CP_ACP, 0, (LPWSTR)wszGBK, -1, NULL, 0, NULL, NULL);
-	char *szGBK = new char[len + 1];
-	memset(szGBK, 0, len + 1);
-	WideCharToMultiByte (CP_ACP, 0, (LPWSTR)wszGBK, -1, (LPSTR)szGBK, len, NULL, NULL);
-	std::string strGBK = szGBK;
-	delete[] szGBK;
-	delete[] wszGBK;
-
-	return strGBK;
+    int len = MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUtf8.c_str(), -1, NULL, 0);
+    unsigned short *wszGBK = new unsigned short[len + 1];
+    memset(wszGBK, 0, len * 2 + 2);
+    MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUtf8.c_str(), -1, (LPWSTR)wszGBK, len);
+    len = WideCharToMultiByte(CP_ACP, 0, (LPWSTR)wszGBK, -1, NULL, 0, NULL, NULL);
+    char *szGBK = new char[len + 1];
+    memset(szGBK, 0, len + 1);
+    WideCharToMultiByte (CP_ACP, 0, (LPWSTR)wszGBK, -1, (LPSTR)szGBK, len, NULL, NULL);
+    std::string strGBK = szGBK;
+    delete[] szGBK;
+    delete[] wszGBK;
+    return strGBK;
 }
 
-std::string ConvertUtf8ToGBK(const char* strUtf8, int len)
+std::string ConvertUtf8ToGBK(const char *strUtf8, int len)
 {
-	std::string utf8(strUtf8, len);
-	return ConvertUtf8ToGBK(utf8);
+    std::string utf8(strUtf8, len);
+    return ConvertUtf8ToGBK(utf8);
 }
 
 #elif defined(OS_LINUX)
 
 bool code_convert(const char *from_charset, const char *to_charset, char *inbuf, size_t inlen , char *outbuf, size_t outlen);
 
-std::string ConvertGBKToUtf8(const char* strGBK, int len)
+std::string ConvertGBKToUtf8(const char *strGBK, int len)
 {
-	char *cname = new char[len + 1];
-	memset(cname, '\0', len + 1);
-	memcpy(cname, strGBK, len);
-
-	char *cdst = new char[len * 3];
-	memset(cdst, '\0', len * 3);
-
-	bool code = code_convert("gbk", "utf-8", cname, len, cdst, len * 3);
-	std::string strUtf8;
-	if (code)
-	{
-		strUtf8 = cdst;
-	}
-
-	delete[] cname;
-	delete[] cdst;
-
-	return strUtf8;
+    char *cname = new char[len + 1];
+    memset(cname, '\0', len + 1);
+    memcpy(cname, strGBK, len);
+    char *cdst = new char[len * 3];
+    memset(cdst, '\0', len * 3);
+    bool code = code_convert("gbk", "utf-8", cname, len, cdst, len * 3);
+    std::string strUtf8;
+    if (code)
+    {
+        strUtf8 = cdst;
+    }
+    delete[] cname;
+    delete[] cdst;
+    return strUtf8;
 }
 
-std::string ConvertGBKToUtf8(const std::string &strGBK)
+std::string ConvertGBKToUtf8(const std::string& strGBK)
 {
-	return ConvertGBKToUtf8(strGBK.c_str(), strGBK.size());
+    return ConvertGBKToUtf8(strGBK.c_str(), strGBK.size());
 }
 
-std::string ConvertUtf8ToGBK(const char* strUtf8, int len)
+std::string ConvertUtf8ToGBK(const char *strUtf8, int len)
 {
-	char *cname = new char[len + 1];
-	memset(cname, '\0', len + 1);
-	memcpy(cname, strUtf8, len);
-
-	char *cdst = new char[len + 1];
-	memset(cdst, '\0', len + 1);
-
-	bool code = code_convert("utf-8", "gbk", cname, len, cdst, len);
-	std::string strGBK;
-	if (code)
-	{
-		strGBK = cdst;
-	}
-
-	delete[] cname;
-	delete[] cdst;
-
-	return strGBK;
+    char *cname = new char[len + 1];
+    memset(cname, '\0', len + 1);
+    memcpy(cname, strUtf8, len);
+    char *cdst = new char[len + 1];
+    memset(cdst, '\0', len + 1);
+    bool code = code_convert("utf-8", "gbk", cname, len, cdst, len);
+    std::string strGBK;
+    if (code)
+    {
+        strGBK = cdst;
+    }
+    delete[] cname;
+    delete[] cdst;
+    return strGBK;
 }
 
-std::string ConvertUtf8ToGBK(const std::string &strUtf8)
+std::string ConvertUtf8ToGBK(const std::string& strUtf8)
 {
-	return ConvertUtf8ToGBK(strUtf8.c_str(), strUtf8.size());
+    return ConvertUtf8ToGBK(strUtf8.c_str(), strUtf8.size());
 }
 
 bool code_convert(const char *from_charset, const char *to_charset, char *inbuf, size_t inlen, char *outbuf, size_t outlen)
 {
-	iconv_t cd ;
-	char **pin = &inbuf ;
-	char **pout = &outbuf ;
-
-	cd = iconv_open( to_charset , from_charset );
-	if( cd == 0 )
-	{
-		return false;
-	}
-
-	memset( outbuf , 0 , outlen );
-	int convert = iconv( cd , pin , &inlen , pout , &outlen );
-	if( convert == -1 )
-	{
-		iconv_close( cd );
-		return false ;
-	}
-	iconv_close(cd);
-
-	return true ;
+    iconv_t cd ;
+    char **pin = &inbuf ;
+    char **pout = &outbuf ;
+    cd = iconv_open( to_charset , from_charset );
+    if( cd == 0 )
+    {
+        return false;
+    }
+    memset( outbuf , 0 , outlen );
+    int convert = iconv( cd , pin , &inlen , pout , &outlen );
+    if( convert == -1 )
+    {
+        iconv_close( cd );
+        return false ;
+    }
+    iconv_close(cd);
+    return true ;
 }
 #endif
 
@@ -161,10 +148,8 @@ bool IsTextUTF8(const char *str, int length)
     for(i = 0; i < length; i++)
     {
         chr = (UCHAR) * (str + i);
-
         if( (chr & 0x80) != 0 ) // 判断是否ASCII编码,如果不是,说明有可能是UTF-8,ASCII用7位编码,但用一个字节存,最高位标记为0,o0xxxxxxx
             bAllAscii = false;
-
         if(nBytes == 0) //如果不是ASCII码,应该是多字节符,计算字节数
         {
             if(chr >= 0x80)
@@ -203,7 +188,6 @@ bool IsTextUTF8(const char *str, int length)
     {
         return false;
     }
-
     return true;
 }
 
@@ -220,7 +204,7 @@ int is_utf8_special_byte(unsigned char c)
     }
 }
 
-bool IsTextUTF8(const std::string &str)
+bool IsTextUTF8(const std::string& str)
 {
     unsigned one_byte   = 0X00;    //binary 00000000
     unsigned two_byte   = 0X06;    //binary 00000110
@@ -228,13 +212,11 @@ bool IsTextUTF8(const std::string &str)
     unsigned four_byte  = 0X1E;    //binary 00011110
     unsigned five_byte  = 0X3E;    //binary 00111110
     unsigned six_byte   = 0X7E;    //binary 01111110
-
     unsigned char k = 0;
     unsigned char m = 0;
     unsigned char n = 0;
     unsigned char p = 0;
     unsigned char q = 0;
-
     unsigned char c = 0;
     bool	isUtf8 = false;
     for (size_t i = 0; i < str.size();)
@@ -314,13 +296,11 @@ bool IsTextUTF8(const std::string &str)
                 continue;
             }
         }
-
         if(!isUtf8)
             return false;
         else
             i++;
     }
-
     return true;
 }
 
@@ -346,7 +326,6 @@ std::string PrintIntAsBinaryString(T v)
         stream << Bit_Value(v, i);
         --i;
     }
-
     return stream.str();
 }
 
@@ -363,7 +342,7 @@ std::string PrintStringAsBinaryString(const char *p)
 }
 
 /**计算字符串的二进制表示*/
-std::string PrintStringAsBinaryString(const std::string &str)
+std::string PrintStringAsBinaryString(const std::string& str)
 {
     std::stringstream stream;
     for (size_t i = 0; i < str.size(); ++i)
@@ -388,42 +367,40 @@ unsigned short one_gbk_to_unicode(unsigned char ch, unsigned char cl)
 
 unsigned short one_unicode_to_gbk(unsigned short unicode)
 {
-	const static int  TABLE_SIZE = (sizeof(unicode_to_gbk_table)/sizeof(unicode_to_gbk_table[0]));
-	int i, b, e;
-	b = 0;
-	e = TABLE_SIZE - 1;
-	while (b <= e)
-	{
-		i = (b + e) / 2;
-		if (unicode_to_gbk_table[i].unicode == unicode)
-			return unicode_to_gbk_table[i].gbk;
-
-		if (unicode_to_gbk_table[i].unicode < unicode)
-			b = i + 1;
-		else
-			e = i - 1;
-	}
-	return 0;
+    const static int  TABLE_SIZE = (sizeof(unicode_to_gbk_table) / sizeof(unicode_to_gbk_table[0]));
+    int i, b, e;
+    b = 0;
+    e = TABLE_SIZE - 1;
+    while (b <= e)
+    {
+        i = (b + e) / 2;
+        if (unicode_to_gbk_table[i].unicode == unicode)
+            return unicode_to_gbk_table[i].gbk;
+        if (unicode_to_gbk_table[i].unicode < unicode)
+            b = i + 1;
+        else
+            e = i - 1;
+    }
+    return 0;
 }
 
-void unicode_to_gbk(unsigned short * punicode, char * pgbk, int len)
+void unicode_to_gbk(unsigned short *punicode, char *pgbk, int len)
 {
-	while (*punicode && len > 0)
-	{
-		unsigned short dbcs;
-		dbcs = one_unicode_to_gbk(*punicode);
-		if (dbcs > 0x0ff || dbcs < 0)
-		{
-			*pgbk = dbcs >> 8;
-			++pgbk;
-		}
-
-		*pgbk = U2W_LOBYTE(dbcs);
-		++pgbk;
-		--len;
-		++punicode;
-	}
-	*pgbk = 0x00;
+    while (*punicode && len > 0)
+    {
+        unsigned short dbcs;
+        dbcs = one_unicode_to_gbk(*punicode);
+        if (dbcs > 0x0ff || dbcs < 0)
+        {
+            *pgbk = dbcs >> 8;
+            ++pgbk;
+        }
+        *pgbk = U2W_LOBYTE(dbcs);
+        ++pgbk;
+        --len;
+        ++punicode;
+    }
+    *pgbk = 0x00;
 }
 
 /*****************************************************************************
@@ -448,7 +425,6 @@ int one_unicode_to_utf8(unsigned long unic, unsigned char *pOutput, int outSize)
 {
     assert(pOutput != NULL);
     assert(outSize >= 6);
-
     if ( unic <= 0x0000007F )
     {
         // * U-00000000 - U-0000007F:  0xxxxxxx
@@ -500,7 +476,6 @@ int one_unicode_to_utf8(unsigned long unic, unsigned char *pOutput, int outSize)
         *pOutput     = ((unic >> 30) & 0x01) | 0xFC;
         return 6;
     }
-
     return 0;
 }
 
@@ -509,7 +484,7 @@ int one_unicode_to_utf8(unsigned long unic, unsigned char *pOutput, int outSize)
  * 参数1是UTF8字符串当前位置指针，这里必须要是指针，因为必须要通过第1个字符进行判断才知道一个完整的字符的编码要向后取多少个字符
  * 参数2是返回的UCS-2编码的Unicode字符
  ****************************************************************************/
-int one_utf8_to_unicode(const char *utf8, unsigned short &wch)
+int one_utf8_to_unicode(const char *utf8, unsigned short& wch)
 {
     //首字符的Ascii码大于0xC0才需要向后判断，否则，就肯定是单个ANSI字符了
     unsigned char firstCh = utf8[0];
@@ -547,7 +522,6 @@ int one_utf8_to_unicode(const char *utf8, unsigned short &wch)
             wch = firstCh;
             return 1;
         }
-
         //知道了字节数量之后，还需要向后检查一下，如果检查失败，就简单的认为此UTF8编码有问题，或者不是UTF8编码，于是当成一个ANSI来返回处理
         for(int k = 1; k < afters; ++ k)
         {
@@ -557,11 +531,9 @@ int one_utf8_to_unicode(const char *utf8, unsigned short &wch)
                 wch = firstCh;
                 return 1;
             }
-
             code <<= 6;
             code |= (unsigned char)utf8[k] & 0x3F;
         }
-
         wch = code;
         return afters;
     }
@@ -569,7 +541,6 @@ int one_utf8_to_unicode(const char *utf8, unsigned short &wch)
     {
         wch = firstCh;
     }
-
     return 1;
 }
 
@@ -589,7 +560,6 @@ int utf8_to_unicode(const char *utf8Buf, unsigned short *pUniBuf, int utf8Leng)
         i += one_utf8_to_unicode(utf8Buf + i, pUniBuf[count]);
         count ++;
     }
-
     return count;
 }
 
@@ -635,6 +605,5 @@ int unicode_to_utf8(unsigned short wchar, char *utf8)
         utf8[len ++] = 0x80 | ((wchar >> 6) & 0x3f);
         utf8[len ++] = 0x80 | (wchar & 0x3f);
     }
-
     return len;
 }
