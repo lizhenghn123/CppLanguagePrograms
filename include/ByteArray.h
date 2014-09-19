@@ -21,7 +21,8 @@ enum Endian
 
 class ByteArray
 {
-	typedef unsigned char Byte;
+public:
+    typedef unsigned char Byte;
 public:
     ByteArray(int allocSize);
     virtual ~ByteArray();
@@ -42,7 +43,7 @@ public:    //Data Write
 
 public:    //Data Read
     bool ReadBool();
-    unsigned char ReadByte();
+    Byte ReadByte();
     void ReadChars(char *val, int size);
     std::string ReadString();
     template <typename Number>
@@ -120,8 +121,8 @@ private:
     Byte        *bytesBuf_;
     int         writePos_;
     int         readPos_;
-	Endian      writeEndian_;
-	Endian      readEndian_;
+    Endian      writeEndian_;
+    Endian      readEndian_;
 };
 
 #endif /* ZL_BYTEARRAY_H */

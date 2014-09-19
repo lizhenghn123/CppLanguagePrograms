@@ -53,9 +53,9 @@ bool ByteArray::ReadBool()
 
 unsigned char ByteArray::ReadByte()
 {
-    unsigned char *val = NULL;
-    ReadBytes(val, 1);
-    return *val;
+    Byte val;
+    ReadBytes(&val, 1);
+    return val;
 }
 
 void ByteArray::ReadBytes(Byte *val, int size, int offset/* = 0*/)
