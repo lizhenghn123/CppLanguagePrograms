@@ -2,7 +2,7 @@
 // Filename         : ByteArray.h
 // Author           : LIZHENG
 // Created          : 2014-09-19
-// Description      : 字节流
+// Description      : 字节流，TODO：动态扩充大小（现在必须预先分配足够大的空间）
 //
 // Last Modified By : LIZHENG
 // Last Modified On : 2014-09-19
