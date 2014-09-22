@@ -2,16 +2,17 @@
 // Filename         : ByteArray.h
 // Author           : LIZHENG
 // Created          : 2014-09-19
-// Description      : 字节流，TODO：动态扩充大小（现在必须预先分配足够大的空间）
+// Description      : 二进制字节流
 //
 // Last Modified By : LIZHENG
-// Last Modified On : 2014-09-19
+// Last Modified On : 2014-09-22
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_BYTEARRAY_H
 #define ZL_BYTEARRAY_H
 #include <string>
+#include <vector>
 
 enum Endian
 {
@@ -69,9 +70,14 @@ public:    //Data Read
         return val;
     }
 public:    //Property Access
-    int GetAvailable()
+    int Size()
     {
-        return writePos_ - readEndian_;
+        return writePos_;
+    }
+
+    int Available()
+    {
+        return bytesBuf_.size() - writePos_;
     }
 
     void SetEndian(Endian writeEndian, Endian readEndian)
@@ -114,15 +120,16 @@ public:    //Property Access
     static void ReversalArray(Byte *bytes, int size);
 
 private:
-    void WriteBytes(Byte *val, int size, int offset = 0);
-    void ReadBytes(Byte *val, int size, int offset = 0);
+    bool WriteBytes(Byte *val, int size, int offset = 0);
+    bool ReadBytes(Byte *val, int size, int offset = 0);
 
 private:
-    Byte        *bytesBuf_;
-    int         writePos_;
-    int         readPos_;
     Endian      writeEndian_;
     Endian      readEndian_;
+
+    int         writePos_;
+    int         readPos_;
+    std::vector<char> bytesBuf_;
 };
 
 #endif /* ZL_BYTEARRAY_H */

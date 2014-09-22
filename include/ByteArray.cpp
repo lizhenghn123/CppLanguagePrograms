@@ -4,15 +4,15 @@ ByteArray::ByteArray(int allocSize)
 {
     writePos_ = 0;
     readPos_ = 0;
-    bytesBuf_ = (Byte *)malloc(allocSize);
+    bytesBuf_.reserve(allocSize <= 0 ? 1 : allocSize);
+    bytesBuf_.clear();
     Endian cpuEndian = GetCPUEndian();
     SetEndian(cpuEndian, cpuEndian);
 }
 
 ByteArray::~ByteArray()
 {
-    //if(bytesBuf_)
-    //	free(bytesBuf_);
+    std::vector<char>().swap(bytesBuf_);
 }
 
 void ByteArray::WriteBool(bool val)
@@ -36,12 +36,16 @@ void ByteArray::WriteString(const std::string& val)
     WriteBytes((Byte *)val.c_str(), val.size(), 0);
 }
 
-void ByteArray::WriteBytes(Byte *val, int size, int offset/* = 0*/)
+bool ByteArray::WriteBytes(Byte *val, int size, int offset/* = 0*/)
 {
     Byte *srcByte = val + offset;
-    Byte *desByte = bytesBuf_ + writePos_;
-    memcpy(desByte, srcByte, size);
+    if((int)bytesBuf_.size() < (writePos_ + size))
+    {
+        bytesBuf_.resize(writePos_ + size);  //每次只按需扩展所需大小，避免多分配内存, 也可直接resize 2倍大小，就像stl那样
+    }
+    ::memcpy(&bytesBuf_[writePos_], srcByte, size);
     writePos_ += size;
+    return true;
 }
 
 bool ByteArray::ReadBool()
@@ -58,12 +62,17 @@ unsigned char ByteArray::ReadByte()
     return val;
 }
 
-void ByteArray::ReadBytes(Byte *val, int size, int offset/* = 0*/)
+bool ByteArray::ReadBytes(Byte *val, int size, int offset/* = 0*/)
 {
-    Byte *desByte = val + offset;
-    Byte *srcByte = bytesBuf_ + readPos_;
-    memcpy(desByte, srcByte, size);
+    Byte *dstByte = val + offset;
+    if(readPos_ + size > (int)bytesBuf_.size())
+    {
+        *dstByte = 0;
+        return false;
+    }
+    ::memcpy(dstByte, &bytesBuf_[readPos_], size);
     readPos_ += size;
+    return true;
 }
 
 void ByteArray::ReadChars(char *val, int size)
@@ -85,20 +94,17 @@ std::string ByteArray::ReadString()
 
 Endian ByteArray::GetCPUEndian()
 {
-    union
+    union w
     {
-        short s;
-        char c[sizeof(short)];
-    } un;
-    un.s = 0x0102;
-    if(un.c[0] == 0x2)
-    {
+        int i;
+        char c;
+    } u;
+    u.i = 1;
+
+    if(u.c == 1)
         return LIT_ENDIAN;
-    }
     else
-    {
         return BIG_ENDIAN;
-    }
 }
 
 void ByteArray::ReversalArray(Byte *bytes, int size)
