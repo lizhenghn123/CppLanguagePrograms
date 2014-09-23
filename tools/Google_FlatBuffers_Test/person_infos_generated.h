@@ -5,170 +5,101 @@
 
 #include "flatbuffers/flatbuffers.h"
 
-namespace zl
-{
-    namespace persons
-    {
+namespace zl {
+namespace persons {
 
-        enum
-        {
-            GENDER_TYPE_MALE = 0,
-            GENDER_TYPE_FEMALE = 1,
-            GENDER_TYPE_OTHER = 2,
-        };
+enum {
+  GENDER_TYPE_MALE = 0,
+  GENDER_TYPE_FEMALE = 1,
+  GENDER_TYPE_OTHER = 2,
+};
 
-        inline const char **EnumNamesGENDER_TYPE()
-        {
-            static const char *names[] = { "MALE", "FEMALE", "OTHER", nullptr };
-            return names;
-        }
+inline const char **EnumNamesGENDER_TYPE() {
+  static const char *names[] = { "MALE", "FEMALE", "OTHER", nullptr };
+  return names;
+}
 
-        inline const char *EnumNameGENDER_TYPE(int e)
-        {
-            return EnumNamesGENDER_TYPE()[e];
-        }
+inline const char *EnumNameGENDER_TYPE(int e) { return EnumNamesGENDER_TYPE()[e]; }
 
-        struct personal_info;
-        struct personal_info_list;
+struct personal_info;
+struct personal_info_list;
 
-        struct personal_info : private flatbuffers::Table
-        {
-            uint32_t id() const
-            {
-                return GetField<uint32_t>(4, 0);
-            }
-            const flatbuffers::String *name() const
-            {
-                return GetPointer<const flatbuffers::String *>(6);
-            }
-            int8_t age() const
-            {
-                return GetField<int8_t>(8, 0);
-            }
-            int8_t gender() const
-            {
-                return GetField<int8_t>(10, 0);
-            }
-            uint64_t phone_num() const
-            {
-                return GetField<uint64_t>(12, 0);
-            }
-            bool Verify(const flatbuffers::Verifier& verifier) const
-            {
-                return VerifyTable(verifier) &&
-                       VerifyField<uint32_t>(verifier, 4 /* id */) &&
-                       VerifyField<flatbuffers::uoffset_t>(verifier, 6 /* name */) &&
-                       verifier.Verify(name()) &&
-                       VerifyField<int8_t>(verifier, 8 /* age */) &&
-                       VerifyField<int8_t>(verifier, 10 /* gender */) &&
-                       VerifyField<uint64_t>(verifier, 12 /* phone_num */);
-            }
-        };
+struct personal_info : private flatbuffers::Table {
+  uint32_t id() const { return GetField<uint32_t>(4, 0); }
+  const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(6); }
+  int8_t age() const { return GetField<int8_t>(8, 0); }
+  int8_t gender() const { return GetField<int8_t>(10, 0); }
+  uint64_t phone_num() const { return GetField<uint64_t>(12, 0); }
+  bool Verify(const flatbuffers::Verifier &verifier) const {
+    return VerifyTable(verifier) &&
+           VerifyField<uint32_t>(verifier, 4 /* id */) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 6 /* name */) &&
+           verifier.Verify(name()) &&
+           VerifyField<int8_t>(verifier, 8 /* age */) &&
+           VerifyField<int8_t>(verifier, 10 /* gender */) &&
+           VerifyField<uint64_t>(verifier, 12 /* phone_num */);
+  }
+};
 
-        struct personal_infoBuilder
-        {
-            flatbuffers::FlatBufferBuilder& fbb_;
-            flatbuffers::uoffset_t start_;
-            void add_id(uint32_t id)
-            {
-                fbb_.AddElement<uint32_t>(4, id, 0);
-            }
-            void add_name(flatbuffers::Offset<flatbuffers::String> name)
-            {
-                fbb_.AddOffset(6, name);
-            }
-            void add_age(int8_t age)
-            {
-                fbb_.AddElement<int8_t>(8, age, 0);
-            }
-            void add_gender(int8_t gender)
-            {
-                fbb_.AddElement<int8_t>(10, gender, 0);
-            }
-            void add_phone_num(uint64_t phone_num)
-            {
-                fbb_.AddElement<uint64_t>(12, phone_num, 0);
-            }
-            personal_infoBuilder(flatbuffers::FlatBufferBuilder& _fbb) : fbb_(_fbb)
-            {
-                start_ = fbb_.StartTable();
-            }
-            personal_infoBuilder& operator=(const personal_infoBuilder&);
-            flatbuffers::Offset<personal_info> Finish()
-            {
-                return flatbuffers::Offset<personal_info>(fbb_.EndTable(start_, 5));
-            }
-        };
+struct personal_infoBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_id(uint32_t id) { fbb_.AddElement<uint32_t>(4, id, 0); }
+  void add_name(flatbuffers::Offset<flatbuffers::String> name) { fbb_.AddOffset(6, name); }
+  void add_age(int8_t age) { fbb_.AddElement<int8_t>(8, age, 0); }
+  void add_gender(int8_t gender) { fbb_.AddElement<int8_t>(10, gender, 0); }
+  void add_phone_num(uint64_t phone_num) { fbb_.AddElement<uint64_t>(12, phone_num, 0); }
+  personal_infoBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  personal_infoBuilder &operator=(const personal_infoBuilder &);
+  flatbuffers::Offset<personal_info> Finish() { return flatbuffers::Offset<personal_info>(fbb_.EndTable(start_, 5)); }
+};
 
-        inline flatbuffers::Offset<personal_info> Createpersonal_info(flatbuffers::FlatBufferBuilder& _fbb,
-                uint32_t id = 0,
-                flatbuffers::Offset<flatbuffers::String> name = 0,
-                int8_t age = 0,
-                int8_t gender = 0,
-                uint64_t phone_num = 0)
-        {
-            personal_infoBuilder builder_(_fbb);
-            builder_.add_phone_num(phone_num);
-            builder_.add_name(name);
-            builder_.add_id(id);
-            builder_.add_gender(gender);
-            builder_.add_age(age);
-            return builder_.Finish();
-        }
+inline flatbuffers::Offset<personal_info> Createpersonal_info(flatbuffers::FlatBufferBuilder &_fbb,
+   uint32_t id = 0,
+   flatbuffers::Offset<flatbuffers::String> name = 0,
+   int8_t age = 0,
+   int8_t gender = 0,
+   uint64_t phone_num = 0) {
+  personal_infoBuilder builder_(_fbb);
+  builder_.add_phone_num(phone_num);
+  builder_.add_name(name);
+  builder_.add_id(id);
+  builder_.add_gender(gender);
+  builder_.add_age(age);
+  return builder_.Finish();
+}
 
-        struct personal_info_list : private flatbuffers::Table
-        {
-            const flatbuffers::Vector<flatbuffers::Offset<personal_info>> *info() const
-            {
-                return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<personal_info>> *>(4);
-            }
-            bool Verify(const flatbuffers::Verifier& verifier) const
-            {
-                return VerifyTable(verifier) &&
-                       VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* info */) &&
-                       verifier.Verify(info()) &&
-                       verifier.VerifyVectorOfTables(info());
-            }
-        };
+struct personal_info_list : private flatbuffers::Table {
+  const flatbuffers::Vector<flatbuffers::Offset<personal_info>> *info() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<personal_info>> *>(4); }
+  bool Verify(const flatbuffers::Verifier &verifier) const {
+    return VerifyTable(verifier) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, 4 /* info */) &&
+           verifier.Verify(info()) &&
+           verifier.VerifyVectorOfTables(info());
+  }
+};
 
-        struct personal_info_listBuilder
-        {
-            flatbuffers::FlatBufferBuilder& fbb_;
-            flatbuffers::uoffset_t start_;
-            void add_info(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<personal_info>>> info)
-            {
-                fbb_.AddOffset(4, info);
-            }
-            personal_info_listBuilder(flatbuffers::FlatBufferBuilder& _fbb) : fbb_(_fbb)
-            {
-                start_ = fbb_.StartTable();
-            }
-            personal_info_listBuilder& operator=(const personal_info_listBuilder&);
-            flatbuffers::Offset<personal_info_list> Finish()
-            {
-                return flatbuffers::Offset<personal_info_list>(fbb_.EndTable(start_, 1));
-            }
-        };
+struct personal_info_listBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_info(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<personal_info>>> info) { fbb_.AddOffset(4, info); }
+  personal_info_listBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  personal_info_listBuilder &operator=(const personal_info_listBuilder &);
+  flatbuffers::Offset<personal_info_list> Finish() { return flatbuffers::Offset<personal_info_list>(fbb_.EndTable(start_, 1)); }
+};
 
-        inline flatbuffers::Offset<personal_info_list> Createpersonal_info_list(flatbuffers::FlatBufferBuilder& _fbb,
-                flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<personal_info>>> info = 0)
-        {
-            personal_info_listBuilder builder_(_fbb);
-            builder_.add_info(info);
-            return builder_.Finish();
-        }
+inline flatbuffers::Offset<personal_info_list> Createpersonal_info_list(flatbuffers::FlatBufferBuilder &_fbb,
+   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<personal_info>>> info = 0) {
+  personal_info_listBuilder builder_(_fbb);
+  builder_.add_info(info);
+  return builder_.Finish();
+}
 
-        inline const personal_info_list *Getpersonal_info_list(const void *buf)
-        {
-            return flatbuffers::GetRoot<personal_info_list>(buf);
-        }
+inline const personal_info_list *Getpersonal_info_list(const void *buf) { return flatbuffers::GetRoot<personal_info_list>(buf); }
 
-        inline bool Verifypersonal_info_listBuffer(const flatbuffers::Verifier& verifier)
-        {
-            return verifier.VerifyBuffer<personal_info_list>();
-        }
+inline bool Verifypersonal_info_listBuffer(const flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<personal_info_list>(); }
 
-    };  // namespace zl
+};  // namespace zl
 };  // namespace persons
 
 #endif  // FLATBUFFERS_GENERATED_PERSON_INFOS_ZL_PERSONS_H_
