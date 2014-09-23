@@ -18,12 +18,12 @@
     <ClCompile Include="Test_Base64Encode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\Base64.cpp">
+    <ClCompile Include="..\..\include\base\Base64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\Base64.h">
+    <ClInclude Include="..\..\include\base\Base64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

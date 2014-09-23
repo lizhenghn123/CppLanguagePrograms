@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C1206099-740D-4210-9229-111196DE9845}</ProjectGuid>
+    <ProjectGuid>{EAFB62E6-7E1C-487A-B3DE-C299CC8467BC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ByteArrayTest</RootNamespace>
+    <RootNamespace>str_hash</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -50,7 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -75,11 +75,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\base\ByteArray.cpp" />
-    <ClCompile Include="ByteArrayTest.cpp" />
+    <ClCompile Include="..\..\include\base\StringHash.cpp" />
+    <ClCompile Include="str_hash_test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\base\ByteArray.h" />
+    <ClInclude Include="..\..\include\base\StringHash.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

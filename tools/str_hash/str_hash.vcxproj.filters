@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ByteArrayTest.cpp">
+    <ClCompile Include="str_hash_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\base\ByteArray.cpp">
+    <ClCompile Include="..\..\include\base\StringHash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\base\ByteArray.h">
+    <ClInclude Include="..\..\include\base\StringHash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
