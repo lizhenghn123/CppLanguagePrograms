@@ -1,6 +1,6 @@
 #include <iostream>
-#include "../../include/StopWatch.h"
-#include "../../include/HighPrecisionTime.h"
+#include "base/StopWatch.h"
+#include "base/HighPrecisionTime.h"
 
 #ifdef OS_WINDOWS
 #include <Windows.h>

@@ -11,7 +11,9 @@
 // ***********************************************************************
 #ifndef STOPWTACH_FILE_H
 #define STOPWTACH_FILE_H
+
 #include "OsDefine.h"
+
 #ifdef OS_WINDOWS
 #include <Windows.h>
 #include <time.h>
@@ -27,6 +29,7 @@
 
 namespace ZL
 {
+
     class StopWatch
     {
     public:
