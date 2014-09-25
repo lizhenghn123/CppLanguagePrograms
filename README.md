@@ -21,7 +21,8 @@ Content：
 15. 2014-09-16 增加Base64编解码功能；
 16. 2014-09-19 增加ByteArray；
 17. 2014-09-23 增加字符串的几种hash函数计算；
-18. 2014-09-24 增加与进程相关的性能统计工具ProcessTimeCounter
+18. 2014-09-24 增加与进程相关的性能统计工具ProcessTimeCounter;
+19. 2014-09-25 增加google gtest库；
 
 Created by lizhenghn@gmail.com 
 
