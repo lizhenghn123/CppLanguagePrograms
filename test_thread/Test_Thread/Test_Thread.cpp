@@ -245,9 +245,22 @@ void exec_testt(void *arg)
 	this_thread::sleep_for(chrono::milliseconds(1000));
 }
 
+void func_one(void *arg)
+{
+	//int i = *((int*)arg);
+	int i = (int)arg;
+	cout << "func_one : " << i << "\n";
+}
+
+void func_two(void *arg/*, int j*/)
+{
+	int i = (int)arg;
+	cout << "func_two : " << i << "\n";
+}
+
 int main()
 {
-	test_thread();
+	//test_thread();
 	
 	// Test 9: detach,  这个在windows下有问题, 因为t释放时，其回调函数并没有结束
 	cout << endl << "PART IX: Detach" << endl;
@@ -257,11 +270,19 @@ int main()
 		this_thread::sleep_for(chrono::milliseconds(100));
 		cout << " Detached from thread." << endl;
 	}
+	{
+		TestT test;
+		test.num = 101;
+		thread t1(exec_testt, &test);
+		t1.join();
+	}
+	{
+		int i = 2;
+        //thread t1(func_one, (void *)&i);
+		thread t1(func_one, (void *)2);
+		t1.join();
+	}
 
-	TestT test;
-	test.num = 101;
-	thread t1(exec_testt, &test);
-	t1.join();
 
 	system("pause");
 	return 0;

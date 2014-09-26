@@ -18,9 +18,6 @@
     <ClCompile Include="performance_counter_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\base\ProcessTimeCounter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\base\ProcessTimeCounter.h">

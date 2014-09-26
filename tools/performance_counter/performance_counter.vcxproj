@@ -75,7 +75,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\base\ProcessTimeCounter.cpp" />
     <ClCompile Include="performance_counter_test.cpp" />
   </ItemGroup>
   <ItemGroup>

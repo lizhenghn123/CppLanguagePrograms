@@ -1,8 +1,8 @@
-// ***********************************************************************
+﻿// ***********************************************************************
 // Filename         : Thread.h
 // Author           : LIZHENG
 // Created          : 2014-09-04
-// Description      : come from http://tinythreadpp.bitsnbites.eu/
+// Description      : Refer : http://tinythreadpp.bitsnbites.eu/
 //
 // Last Modified By : LIZHENG
 // Last Modified On : 2014-09-04
@@ -122,8 +122,7 @@ class thread::id
 {
 public:
     /// Default constructor.
-    /// The default constructed ID is that of thread without a thread of
-    /// execution.
+    /// The default constructed ID is that of thread without a thread of execution.
     id() : mId(0) {};
 
     id(unsigned long int aId) : mId(aId) {};
