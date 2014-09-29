@@ -137,6 +137,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "performance_counter", "tool
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_gtest", "tools\test_gtest\test_gtest.vcxproj", "{3DE3D570-69EA-472D-9423-3681C19CF17E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tmp-meta", "tmp-meta", "{38B3A38D-C84F-4B14-AA6D-657CE21F6949}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_tmp_meta", "test_tmp-meta\test_tmp_meta\test_tmp_meta.vcxproj", "{F6D4CC49-B7CB-4F21-8319-AAE679B336BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -391,6 +395,10 @@ Global
 		{3DE3D570-69EA-472D-9423-3681C19CF17E}.Debug|Win32.Build.0 = Debug|Win32
 		{3DE3D570-69EA-472D-9423-3681C19CF17E}.Release|Win32.ActiveCfg = Release|Win32
 		{3DE3D570-69EA-472D-9423-3681C19CF17E}.Release|Win32.Build.0 = Release|Win32
+		{F6D4CC49-B7CB-4F21-8319-AAE679B336BC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F6D4CC49-B7CB-4F21-8319-AAE679B336BC}.Debug|Win32.Build.0 = Debug|Win32
+		{F6D4CC49-B7CB-4F21-8319-AAE679B336BC}.Release|Win32.ActiveCfg = Release|Win32
+		{F6D4CC49-B7CB-4F21-8319-AAE679B336BC}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -458,5 +466,6 @@ Global
 		{42E71172-9D61-468A-9868-12A65F0028D4} = {80CB5B60-A899-4D3E-84AD-6CF56754E698}
 		{BF8AEC0B-0114-43BB-8229-BC24D8C1DE44} = {80CB5B60-A899-4D3E-84AD-6CF56754E698}
 		{F6FB4A3E-01C7-40E8-A952-8442BB51DABF} = {0F593BF1-3DA9-4BAE-AFAF-E5344D1DFA85}
+		{F6D4CC49-B7CB-4F21-8319-AAE679B336BC} = {38B3A38D-C84F-4B14-AA6D-657CE21F6949}
 	EndGlobalSection
 EndGlobal
