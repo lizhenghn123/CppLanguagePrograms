@@ -7,153 +7,147 @@
 
 NAMESPACE_ZL_START
 
-/// Information to pass to the new thread (what to run).
-struct _thread_start_info
+struct ThreadImplDataInfo
 {
-    void (*mFunction)(void *); ///< Pointer to the function to be executed.
-    void *mArg;                ///< Function argument for the thread function.
-    thread *mThread;           ///< Pointer to the thread object.
+	typedef Thread::ThreadFunc ThreadFunc;
+	ThreadFunc            threadFunc_;
+	Thread                *thread_;
+	native_thread_handle  threadId_;
+
+	ThreadImplDataInfo(const ThreadFunc& func, Thread *thread, native_thread_handle tid)
+		: threadFunc_(func), thread_(thread), threadId_(tid)
+	{
+
+	}
+
+	void RunThread()
+	{
+		try
+		{
+			// Call the actual client thread function
+			threadFunc_();
+		}
+		catch(...)
+		{
+			// Uncaught exceptions will terminate the application (default behavior according to C++11)
+			std::terminate();
+		}
+
+		// The thread is no longer executing
+		MutexLocker guard(thread_->threadMutex_);
+		thread_->notAThread = true;
+	}
 };
 
-// Thread wrapper function.
 #if defined(OS_WINDOWS)
-unsigned WINAPI thread::wrapper_function(void *aArg)
+unsigned WINAPI StartThread(void *aArg)
 #else
-void *thread::wrapper_function(void *aArg)
+void* StartThread(void *aArg)
 #endif
 {
-    // Get thread startup information
-    _thread_start_info *ti = (_thread_start_info *) aArg;
-
-    try
-    {
-        // Call the actual client thread function
-        ti->mFunction(ti->mArg);
-    }
-    catch(...)
-    {
-        // Uncaught exceptions will terminate the application (default behavior
-        // according to C++11)
-        std::terminate();
-    }
-
-    // The thread is no longer executing
-    MutexLocker guard(ti->mThread->mDataMutex);
-    ti->mThread->mNotAThread = true;
-
-    // The thread is responsible for freeing the startup information
-    delete ti;
-
-    return 0;
+	ThreadImplDataInfo* data = static_cast<ThreadImplDataInfo*>(aArg);
+	data->RunThread();
+	delete data;
+	return NULL;
 }
 
-thread::thread(void (*aFunction)(void *), void *aArg)
+Thread::Thread(const ThreadFunc& func, const std::string& n)
+	: threadId_(0), threadFunc_(func), threadName_(n), notAThread(true)
 {
-    // Serialize access to this thread structure
-    MutexLocker guard(mDataMutex);
+	ThreadImplDataInfo* data = new ThreadImplDataInfo(threadFunc_, this, threadId_);
 
-    // Fill out the thread startup information (passed to the thread wrapper,
-    // which will eventually free it)
-    _thread_start_info *ti = new _thread_start_info;
-    ti->mFunction = aFunction;
-    ti->mArg = aArg;
-    ti->mThread = this;
-
-    // The thread is now alive
-    mNotAThread = false;
-
-    // Create the thread
+	// Create the thread
 #if defined(OS_WINDOWS)
-    mHandle = (HANDLE) _beginthreadex(0, 0, wrapper_function, (void *) ti, 0, &mWin32ThreadID);
+	threadId_ = (HANDLE) _beginthreadex(0, 0, StartThread, (void *)data, 0, &win32ThreadID_);
 #elif defined(_TTHREAD_POSIX_)
-    if(pthread_create(&mHandle, NULL, wrapper_function, (void *) ti) != 0)
-        mHandle = 0;
+	if(pthread_create(&threadId_, NULL, StartThread, (void *)data) != 0)
+		threadId_ = 0;
 #endif
 
-    // Did we fail to create the thread?
-    if(!mHandle)
-    {
-        mNotAThread = true;
-        delete ti;
-    }
+	if(!threadId_)
+	{
+		delete data;
+		abort();
+	}
+
+	// The thread is now alive
+	notAThread = false;
 }
 
-thread::~thread()
+Thread::~Thread()
 {
-    if(joinable())
-        std::terminate();
+	if(joinable())
+		std::terminate();
 }
 
-void thread::join()
+void Thread::join()
 {
-    if(joinable())
-    {
+	if(joinable())
+	{
 #if defined(OS_WINDOWS)
-        WaitForSingleObject(mHandle, INFINITE);
-        CloseHandle(mHandle);
+		WaitForSingleObject(threadId_, INFINITE);
+		CloseHandle(threadId_);
 #elif defined(_TTHREAD_POSIX_)
-        pthread_join(mHandle, NULL);
+		pthread_join(threadId_, NULL);
 #endif
-    }
+	}
 }
 
-bool thread::joinable() const
+bool Thread::joinable() const
 {
-    MutexLocker lock(mDataMutex);
-    bool result = !mNotAThread;
-    return result;
+	MutexLocker lock(threadMutex_);
+	return !notAThread;
 }
 
-void thread::detach()
+void Thread::detach()
 {
-    MutexLocker lock(mDataMutex);
-    if(!mNotAThread)
-    {
+	MutexLocker lock(threadMutex_);
+	if(!notAThread)
+	{
 #if defined(OS_WINDOWS)
-        CloseHandle(mHandle);
+		CloseHandle(threadId_);
 #elif defined(_TTHREAD_POSIX_)
-        pthread_detach(mHandle);
+		pthread_detach(threadId_);
 #endif
-        mNotAThread = true;
-    }
+		notAThread = true;
+	}
 }
 
-thread::id thread::get_id() const
+Thread::id Thread::get_id() const
 {
-    if(!joinable())
-        return id();
+	if(!joinable())
+		return id();
 #if defined(OS_WINDOWS)
-    return id((unsigned long int) mWin32ThreadID);
+	return id((unsigned long int) win32ThreadID_);
 #elif defined(_TTHREAD_POSIX_)
-    return _pthread_t_to_ID(mHandle);
+	return _pthread_t_to_ID(mHandle);
 #endif
 }
 
-unsigned thread::hardware_concurrency()
+/*static*/ unsigned int Thread::hardware_concurrency()
 {
 #if defined(OS_WINDOWS)
-    SYSTEM_INFO si;
-    GetSystemInfo(&si);
-    return (int) si.dwNumberOfProcessors;
+	SYSTEM_INFO si;
+	GetSystemInfo(&si);
+	return (int) si.dwNumberOfProcessors;
 #elif defined(_SC_NPROCESSORS_ONLN)
-    return (int) sysconf(_SC_NPROCESSORS_ONLN);
+	return (int) sysconf(_SC_NPROCESSORS_ONLN);
 #elif defined(_SC_NPROC_ONLN)
-    return (int) sysconf(_SC_NPROC_ONLN);
+	return (int) sysconf(_SC_NPROC_ONLN);
 #else
-    // The standard requires this function to return zero if the number of
-    // hardware cores could not be determined.
-    return 0;
+	// The standard requires this function to return zero if the number of
+	// hardware cores could not be determined.
+	return 0;
 #endif
 }
-
 
 //------------------------------------------------------------------------------
 // this_thread
 //------------------------------------------------------------------------------
-thread::id this_thread::get_id()
+Thread::id this_thread::get_id()
 {
 #if defined(OS_WINDOWS)
-    return thread::id((unsigned long int) GetCurrentThreadId());
+    return Thread::id((unsigned long int) GetCurrentThreadId());
 #elif defined(_TTHREAD_POSIX_)
     return _pthread_t_to_ID(pthread_self());
 #endif

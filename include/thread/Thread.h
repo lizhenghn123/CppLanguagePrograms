@@ -28,97 +28,53 @@ NAMESPACE_ZL_START
 #endif
 #endif
 
-class thread
+#if defined(OS_WINDOWS)
+typedef HANDLE native_thread_handle;
+#else
+typedef pthread_t native_thread_handle;
+#endif
+
+class Thread
 {
 public:
-#if defined(OS_WINDOWS)
-    typedef HANDLE native_handle_type;
-#else
-    typedef pthread_t native_handle_type;
-#endif
+  typedef std::function<void ()> ThreadFunc;
 
-    class id;
+  class id;
 
-    /// Default constructor.
-    /// Construct a @c thread object without an associated thread of execution
-    /// (i.e. non-joinable).
-    thread() : mHandle(0), mNotAThread(true)
-#if defined(OS_WINDOWS)
-        , mWin32ThreadID(0)
-#endif
-    {}
+public:
+  explicit Thread(const ThreadFunc& func, const std::string& name = std::string());
+  ~Thread();
 
-    /// Thread starting constructor.
-    /// Construct a @c thread object with a new thread of execution.
-    /// @param[in] aFunction A function pointer to a function of type:
-    ///          <tt>void fun(void * arg)</tt>
-    /// @param[in] aArg Argument to the thread function.
-    /// @note This constructor is not fully compatible with the standard C++
-    /// thread class. It is more similar to the pthread_create() (POSIX) and
-    /// CreateThread() (Windows) functions.
-    thread(void (*aFunction)(void *), void *aArg);
-
-    /// Destructor.
-    /// @note If the thread is joinable upon destruction, @c std::terminate()
-    /// will be called, which terminates the process. It is always wise to do
-    /// @c join() before deleting a thread object.
-    ~thread();
-
-    /// Wait for the thread to finish (join execution flows).
-    /// After calling @c join(), the thread object is no longer associated with
-    /// a thread of execution (i.e. it is not joinable, and you may not join
-    /// with it nor detach from it).
+    void start();
     void join();
-
-    /// Check if the thread is joinable.
-    /// A thread object is joinable if it has an associated thread of execution.
     bool joinable() const;
-
-    /// Detach from the thread.
-    /// After calling @c detach(), the thread object is no longer assicated with
-    /// a thread of execution (i.e. it is not joinable). The thread continues
-    /// execution without the calling thread blocking, and when the thread
-    /// ends execution, any owned resources are released.
     void detach();
 
-    /// Return the thread ID of a thread object.
-    id get_id() const;
+  /// Return the thread ID of a thread object.
+  //id get_id() const;
+  // pthread_t pthreadId() const { return pthreadId_; }
+  native_thread_handle ThreadHandle() const { return threadId_; }
+  const std::string& ThreadName() const { return threadName_; }
+  id get_id() const;
 
-    /// Get the native handle for this thread.
-    /// @note Under Windows, this is a @c HANDLE, and under POSIX systems, this
-    /// is a @c pthread_t.
-    inline native_handle_type native_handle()
-    {
-        return mHandle;
-    }
-
-    /// Determine the number of threads which can possibly execute concurrently.
-    /// This function is useful for determining the optimal number of threads to
-    /// use for a task.
-    /// @return The number of hardware thread contexts in the system.
-    /// @note If this value is not defined, the function returns zero (0).
-    static unsigned hardware_concurrency();
+  static unsigned int hardware_concurrency();
 
 private:
-    native_handle_type mHandle;   ///< Thread handle.
-    mutable Mutex mDataMutex;     ///< Serializer for access to the thread private data.
-    bool mNotAThread;             ///< True if this object is not a thread of execution.
+    friend struct ThreadImplDataInfo;
+    native_thread_handle   threadId_;
+    ThreadFunc             threadFunc_;
+    std::string            threadName_;
+    mutable Mutex          threadMutex_;     ///< Serializer for access to the thread private data.
+    bool                   notAThread;       ///< True if this object is not a thread of execution.
 #if defined(OS_WINDOWS)
-    unsigned int mWin32ThreadID;  ///< Unique thread ID (filled out by _beginthreadex).
-#endif
-
-    // This is the internal thread wrapper function.
-#if defined(OS_WINDOWS)
-    static unsigned WINAPI wrapper_function(void *aArg);
-#else
-    static void *wrapper_function(void *aArg);
+  unsigned int             win32ThreadID_;  ///< Unique thread ID (filled out by _beginthreadex).
 #endif
 };
 
 /// Thread ID.
 /// The thread ID is a unique identifier for each thread.
 /// @see thread::get_id()
-class thread::id
+class Thread::id
 {
 public:
     /// Default constructor.
@@ -230,7 +186,7 @@ namespace chrono
 namespace this_thread
 {
     /// Return the thread ID of the calling thread.
-    thread::id get_id();
+    Thread::id get_id();
 
     /// Yield execution to another thread.
     /// Offers the operating system the opportunity to schedule another thread
