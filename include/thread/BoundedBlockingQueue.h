@@ -69,7 +69,6 @@ namespace ZL
             {
                 return false;
             }
-
             PopOne(job, Order());
             notFull_.NotifyOne();
             return true;
@@ -86,7 +85,6 @@ namespace ZL
             {
                 return false;
             }
-
             JobType job;
             PopOne(job, Order());
             notFull_.NotifyOne();
@@ -96,10 +94,8 @@ namespace ZL
         virtual bool TryPop(JobType& job)
         {
             LockGuard lock(mutex_);
-
             if(queue_.empty() && !stopFlag_)
                 return false;
-
             PopOne(job, Order());
             notFull_.NotifyOne();
             return true;

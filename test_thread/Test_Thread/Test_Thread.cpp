@@ -2,9 +2,10 @@
 #include "thread/Thread.h"
 #include "thread/Mutex.h"
 #include "thread/Condition.h"
+#include "thread/ThreadPool.h"
+#include "thread/CountDownLatch.h"
 using namespace std;
 using namespace ZL;
-
 
 
 // Thread local storage variable
@@ -79,7 +80,7 @@ void ThreadDetach(int a)
 	this_thread::sleep_for(chrono::milliseconds(100));
 }
 
-void test_thread()
+void test_thread1()
 {
 	// Test 1: Show number of CPU cores in the system
 	cout << "PART I: Info" << "\n";
@@ -251,10 +252,8 @@ void func_two(int i, float j)
 	cout << "func_two : " << i << "\t" << j << "\n";
 }
 
-int main()
+void test_thread2()
 {
-	test_thread();
-	
 	// Test 9: detach,  这个在windows下有问题, 因为t释放时，其回调函数并没有结束
 	cout << "\n" << "PART IX: Detach" << "\n";
 	{
@@ -263,8 +262,6 @@ int main()
 		this_thread::sleep_for(chrono::milliseconds(100));
 		cout << " Detached from thread." << "\n";
 	}
-
-	//-----------------
 	{
 		Thread t1(func, "ff");
 		//thread t1(func);
@@ -284,6 +281,35 @@ int main()
 		Thread t1(std::bind(exec_testt, &test));
 		t1.join();
 	}
+}
+
+void test_threadpoll()
+{
+	ThreadPool pool("ThreadPool");
+	pool.Start(10);
+
+	pool.Run(func);
+	pool.Run(std::bind(func_one, 12345));
+	for (int i = 0; i < 15; ++i)
+	{
+		pool.Run(std::bind(func_two, i, i * 2.0));
+	}
+	this_thread::sleep_for(chrono::milliseconds(1000));
+	//CountDownLatch latch(1);
+	//pool.Run(std::bind(&CountDownLatch::CountDown, &latch));
+	//latch.Wait();
+	pool.Stop();
+}
+int main()
+{
+	cout << "------------------------------ test_thread1\n";
+	//test_thread1();
+
+	cout << "------------------------------ test_thread2\n";
+	//test_thread2();
+
+	cout << "------------------------------ test_threadpoll\n";
+	test_threadpoll();
 
 	system("pause");
 	return 0;

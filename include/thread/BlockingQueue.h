@@ -59,7 +59,6 @@ namespace ZL
             {
                 return false;
             }
-
             return PopOne(job, Order());
         }
 
@@ -74,7 +73,6 @@ namespace ZL
             {
                 return false;
             }
-
             JobType job;
             PopOne(job, Order());
             return job;
@@ -83,10 +81,8 @@ namespace ZL
         virtual bool TryPop(JobType& job)
         {
             LockGuard lock(mutex_);
-
             if(queue_.empty() && !stopFlag_)
                 return false;
-
             return PopOne(job, Order());
         }
 

@@ -28,13 +28,11 @@ namespace ZL
         JobWorker(QueueType& queue, FunctionType function, int thread_num = 1):
             queue_(queue), function_(function), thread_num_(thread_num)
         {
-
         }
 
         JobWorker(QueueType& queue, int thread_num = 1):
             queue_(queue), thread_num_(thread_num)
         {
-
         }
 
         ~JobWorker()
@@ -45,7 +43,6 @@ namespace ZL
         void Start()
         {
             if(threads_.size() > 0) return;
-
             for(int i = 0; i < thread_num_; ++i)
             {
                 threads_.create_thread(boost::bind(&JobWorker::DoWork, this));

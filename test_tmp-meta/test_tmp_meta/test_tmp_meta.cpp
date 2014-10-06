@@ -54,14 +54,14 @@ void test_be_subscriptable()
 	{	};
 
 	{
-		must_be_subscriptable<int[]>    a; // OK, int*可以按下标方式访问
+		//must_be_subscriptable<int[]>    a; // OK, int*可以按下标方式访问
 		must_be_subscriptable<int*>     b; // OK, int*可以按下标方式访问
 		must_be_subscriptable<subs>     c; // OK, subs可以按下标方式访问
 		//	must_be_subscriptable<not_subs> d; // Error, not_subs不可以按下标方式访问，编译错误
 		must_be_subscriptable<std::vector<int>> e; // OK, std::vector 也可以按下标方式访问
 	}
 	{
-		must_be_subscriptable_as_decayable_pointer<int[]>    a; // OK, int*可以按下标方式访问
+		//must_be_subscriptable_as_decayable_pointer<int[]>    a; // OK, int*可以按下标方式访问
 		must_be_subscriptable_as_decayable_pointer<int*>     b; // OK, int*可以按下标方式访问
 		//	must_be_subscriptable_as_decayable_pointer<subs>     c; // Error, subs是重载[]的，并不是原生指针
 		//	must_be_subscriptable_as_decayable_pointer<not_subs> d; // not_subs不可以按下标方式访问，编译错误

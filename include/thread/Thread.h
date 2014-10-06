@@ -12,6 +12,7 @@
 #ifndef ZL_THREAD_H
 #define ZL_THREAD_H
 #include "Define.h"
+#include "NonCopy.h"
 #include "Mutex.h"
 NAMESPACE_ZL_START
 
@@ -34,30 +35,37 @@ typedef HANDLE native_thread_handle;
 typedef pthread_t native_thread_handle;
 #endif
 
-class Thread
+class Thread : NonCopy
 {
 public:
-  typedef std::function<void ()> ThreadFunc;
+    typedef std::function<void ()> ThreadFunc;
 
-  class id;
+    class id;
 
 public:
-  explicit Thread(const ThreadFunc& func, const std::string& name = std::string());
-  ~Thread();
+    explicit Thread(const ThreadFunc& func, const std::string& name = "unknown");
+    ~Thread();
 
+public:
     void start();
     void join();
     bool joinable() const;
     void detach();
 
-  /// Return the thread ID of a thread object.
-  //id get_id() const;
-  // pthread_t pthreadId() const { return pthreadId_; }
-  native_thread_handle ThreadHandle() const { return threadId_; }
-  const std::string& ThreadName() const { return threadName_; }
-  id get_id() const;
+    /// Return the thread ID of a thread object.
+    //id get_id() const;
+    // pthread_t pthreadId() const { return pthreadId_; }
+    native_thread_handle ThreadHandle() const
+    {
+        return threadId_;
+    }
+    const std::string& ThreadName() const
+    {
+        return threadName_;
+    }
+    id get_id() const;
 
-  static unsigned int hardware_concurrency();
+    static unsigned int hardware_concurrency();
 
 private:
     friend struct ThreadImplDataInfo;
@@ -67,7 +75,7 @@ private:
     mutable Mutex          threadMutex_;     ///< Serializer for access to the thread private data.
     bool                   notAThread;       ///< True if this object is not a thread of execution.
 #if defined(OS_WINDOWS)
-  unsigned int             win32ThreadID_;  ///< Unique thread ID (filled out by _beginthreadex).
+    unsigned int             win32ThreadID_;  ///< Unique thread ID (filled out by _beginthreadex).
 #endif
 };
 
@@ -220,6 +228,4 @@ namespace this_thread
 }
 
 NAMESPACE_ZL_END
-
-
 #endif  /* ZL_THREAD_H */

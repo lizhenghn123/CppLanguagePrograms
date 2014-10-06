@@ -76,11 +76,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\StopWatch.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\StopWatch.h" />
     <ClInclude Include="monster_generated.h" />
     <ClInclude Include="person_infos_generated.h" />
   </ItemGroup>

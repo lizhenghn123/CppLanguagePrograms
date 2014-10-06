@@ -27,16 +27,16 @@ namespace ZL
 
         void Wait()
         {
-            MutexGuard lock(mutex_);
+            MutexLocker guard(mutex_);
             while(count_ > 0)
             {
-                condition_.wait();
+                condition_.Wait();
             }
         }
 
         void CountDown()
         {
-            MutexGuard lock(mutex_);
+            MutexLocker guard(mutex_);
             --count_;
             if(count_ == 0)
             {
@@ -46,14 +46,14 @@ namespace ZL
 
         int GetCount() const
         {
-            MutexGuard lock(mutex_);
+            MutexLocker guard(mutex_);
             return count_;
         }
 
     private:
-        int         count_;
-        Mutex       mutex_;
-        Condition   condition_;
+        int              count_;
+        mutable Mutex    mutex_;
+        Condition        condition_;
     };
 
 } /* namespace ZL */
