@@ -21,6 +21,9 @@
     <ClInclude Include="..\..\include\thread\ThreadPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\thread\ThreadLocal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\thread\Thread.cpp">

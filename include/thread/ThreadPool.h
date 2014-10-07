@@ -1,5 +1,5 @@
 ﻿// ***********************************************************************
-// Filename         : Threadpool.h
+// Filename         : ThreadPool.h
 // Author           : LIZHENG
 // Created          : 2014-10-06
 // Description      :

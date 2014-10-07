@@ -76,6 +76,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\thread\Thread.h" />
+    <ClInclude Include="..\..\include\thread\ThreadLocal.h" />
     <ClInclude Include="..\..\include\thread\ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>
