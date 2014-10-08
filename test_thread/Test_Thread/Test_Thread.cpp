@@ -1,16 +1,31 @@
 #include <iostream>
+#include <fstream>
 #include "thread/Thread.h"
 #include "thread/Mutex.h"
 #include "thread/Condition.h"
 #include "thread/ThreadPool.h"
+#include "thread/ThreadLocal.h"
 #include "thread/CountDownLatch.h"
 using namespace std;
 using namespace ZL;
 
+// HACK: Mac OS X and early MinGW do not support thread-local storage
+#if defined(__APPLE__) || (defined(__MINGW32__) && (__GNUC__ < 4))
+#define NO_TLS
+#endif
+
+#if !defined(_TTHREAD_CPP11_) && !defined(thread_local)
+#if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__SUNPRO_CC) || defined(__IBMCPP__)
+#define thread_local __thread
+#else
+#define thread_local __declspec(thread)
+#endif
+#endif
 
 // Thread local storage variable
 #ifndef NO_TLS
 thread_local int gLocalVar;
+//ThreadLocal<int> gLocalVar;
 #endif
 
 // Mutex + global count variable
@@ -300,6 +315,45 @@ void test_threadpoll()
 	//latch.Wait();
 	pool.Stop();
 }
+
+class TestTLS
+{
+public:
+	TestTLS() 
+	{
+		num = -1; 
+		cout << "TestTLS : [" << this << "] " << num << "\n"; 
+	}
+	~TestTLS()
+	{
+		cout << "~TestTLS : [" << this << "] " << num << "\n"; 
+	}
+	void set(int n) 
+	{ num = n; }
+	void plus(int n)
+	{ num +=n; }
+	void print() { cout << "plus : [" << this << "] " << num << "\n"; }
+private:
+	int num;
+};
+ThreadLocal<TestTLS> g_tls;
+
+void testTLS()
+{
+	g_tls->plus(100);
+	g_tls->print();
+}
+void test_threadlocalstroage()
+{
+	g_tls->set(10);
+	g_tls->print();
+
+	Thread t1(testTLS);
+	t1.join();
+
+	g_tls->print();
+}
+
 int main()
 {
 	cout << "------------------------------ test_thread1\n";
@@ -309,8 +363,10 @@ int main()
 	//test_thread2();
 
 	cout << "------------------------------ test_threadpoll\n";
-	test_threadpoll();
+	//test_threadpoll();
 
+	cout << "------------------------------ test_threadpoll\n";
+	test_threadlocalstroage();
 	system("pause");
 	return 0;
 }

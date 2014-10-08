@@ -16,19 +16,6 @@
 #include "Mutex.h"
 NAMESPACE_ZL_START
 
-// HACK: Mac OS X and early MinGW do not support thread-local storage
-#if defined(__APPLE__) || (defined(__MINGW32__) && (__GNUC__ < 4))
-#define NO_TLS
-#endif
-
-#if !defined(_TTHREAD_CPP11_) && !defined(thread_local)
-#if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__SUNPRO_CC) || defined(__IBMCPP__)
-#define thread_local __thread
-#else
-#define thread_local __declspec(thread)
-#endif
-#endif
-
 #if defined(OS_WINDOWS)
 typedef HANDLE native_thread_handle;
 #else
