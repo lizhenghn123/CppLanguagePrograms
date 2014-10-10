@@ -32,16 +32,20 @@ namespace ZL
     public:
         StopWatch();
         ~StopWatch();
+
     public:
-        bool     Reset();
-        timeval  Now();
+        static   timeval  Now();
+		static   void     GetTimeOfDay(timeval *tv, void *tz);
+
+    public:
+        bool     Reset();        
         double   ElapsedTime();
         double   ElapsedTimeInMill();
         double   ElapsedTimeInMicro();
 
     private:
-        bool Start();
-        void GetTimeOfDay(timeval *tv, void *tz);
+        bool     Start();
+        
     private:
         timeval		m_startTime;
     };
@@ -72,7 +76,7 @@ namespace ZL
 		return true;
 	}
 
-	timeval StopWatch::Now()
+	/*static*/ timeval StopWatch::Now()
 	{
 		timeval now;
 		GetTimeOfDay(&now, NULL);
@@ -103,7 +107,7 @@ namespace ZL
 		return (now.tv_sec - m_startTime.tv_sec) * 1000000 + 1.0 * (now.tv_usec - m_startTime.tv_usec);
 	}
 
-	void StopWatch::GetTimeOfDay(timeval *tv, void *tz)
+	/*static*/ void StopWatch::GetTimeOfDay(timeval *tv, void *tz)
 	{
 #ifdef OS_LINUX
 		gettimeofday(tv, tz);
