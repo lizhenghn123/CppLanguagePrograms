@@ -13,8 +13,8 @@
 #define ZL_BLOCKINGQUEUE_H
 #include <queue>
 #include <stack>
-#include "Mutex.h"
-#include "Condition.h"
+#include "thread/Mutex.h"
+#include "thread/Condition.h"
 
 namespace ZL
 {
@@ -34,7 +34,11 @@ namespace ZL
         typedef ZL::Condition            		    ConditionType;
 
     public:
-        BlockingQueue() : stopFlag_(false), mutex_(), has_job_(mutex_) {}
+        BlockingQueue() : stopFlag_(false), mutex_(), has_job_(mutex_)
+		{
+
+		}
+
         virtual ~BlockingQueue()
         {
             Stop();
@@ -84,6 +88,32 @@ namespace ZL
             if(queue_.empty() && !stopFlag_)
                 return false;
             return PopOne(job, Order());
+        }
+
+        virtual bool Pop(std::vector<JobType>& vec, int pop_size = 1)
+        {
+            LockGuard lock(mutex_);
+            while(queue_.empty() && !stopFlag_)
+            {
+                has_job_.Wait();
+            }
+            if(stopFlag_)
+            {
+                return false;
+            }
+            int num = 0;
+            while (num < pop_size)
+            {
+                JobType job;
+                if(!PopOne(job, Order()))
+                    break;
+                else
+                {
+                    num ++;
+                    vec.push_back(job);
+                }
+            }
+            return true;
         }
 
         virtual void Stop()

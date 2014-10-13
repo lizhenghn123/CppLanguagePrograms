@@ -13,9 +13,9 @@
 #define ZL_BOUNDEDBLOCKINGQUEUE_H
 #include <queue>
 #include <stack>
-#include "Mutex.h"
-#include "Condition.h"
-#include "BlockingQueue.h"
+#include "thread/Mutex.h"
+#include "thread/Condition.h"
+#include "thread/BlockingQueue.h"
 
 namespace ZL
 {
@@ -98,6 +98,32 @@ namespace ZL
                 return false;
             PopOne(job, Order());
             notFull_.NotifyOne();
+            return true;
+        }
+
+        virtual bool Pop(std::vector<JobType>& vec, int pop_size = 1)
+        {
+            LockGuard lock(mutex_);
+            while(queue_.empty() && !stopFlag_)
+            {
+                notEmpty_.Wait();
+            }
+            if(stopFlag_)
+            {
+                return false;
+            }
+            int num = 0;
+            while (num < pop_size)
+            {
+                JobType job;
+                if(!PopOne(job, Order()))
+                    break;
+                else
+                {
+                    num ++;
+                    vec.push_back(job);
+                }
+            }
             return true;
         }
 

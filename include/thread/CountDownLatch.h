@@ -12,8 +12,8 @@
 #ifndef ZL_COUNTDOWNLATCH_H
 #define ZL_COUNTDOWNLATCH_H
 #include "NonCopy.h"
-#include "Mutex.h"
-#include "Condition.h"
+#include "thread/Mutex.h"
+#include "thread/Condition.h"
 namespace ZL
 {
     class CountDownLatch : NonCopy
