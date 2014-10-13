@@ -17,21 +17,21 @@
 #include "thread/Condition.h"
 #include "thread/BlockingQueue.h"
 
-namespace ZL
+namespace zl
 {
     //struct tagFIFO {};  //先进先出
     //struct tagFILO {};  //先进后出
     //struct tagPRIO {};  //按优先级
 
     template <typename Job, typename Queue = std::queue<Job>, typename Order = tagFIFO >
-    class BoundedBlockingQueue : public ZL::NonCopy
+    class BoundedBlockingQueue : public zl::NonCopy
     {
     public:
         typedef Job                                 JobType;
         typedef Queue	                            QueueType;
-        typedef ZL::Mutex							MutexType;
-        typedef ZL::MutexLocker	         		    LockGuard;
-        typedef ZL::Condition            		    ConditionType;
+        typedef zl::Mutex							MutexType;
+        typedef zl::MutexLocker	         		    LockGuard;
+        typedef zl::Condition            		    ConditionType;
 
     public:
         explicit BoundedBlockingQueue(int maxSize)
@@ -198,14 +198,14 @@ namespace ZL
 
     /* using is not support in VS2010*/
     //template< typename Job>
-    //using BoundedBlockingFifoQueue = ZL::BoundedBlockingQueue<Job, std::queue<Job>, ZL::tagFIFO>;
+    //using BoundedBlockingFifoQueue = zl::BoundedBlockingQueue<Job, std::queue<Job>, zl::tagFIFO>;
 
     //template< typename Job>
-    //using BoundedBlockingFiloQueue = ZL::BoundedBlockingQueue<Job, std::stack<Job>, ZL::tagFILO>;
+    //using BoundedBlockingFiloQueue = zl::BoundedBlockingQueue<Job, std::stack<Job>, zl::tagFILO>;
     //
     //template< typename Job>
-    //using BoundedBlockingPrioQueue = ZL::BoundedBlockingQueue<Job, std::priority_queue<Job>, ZL::tagPRIO>;
+    //using BoundedBlockingPrioQueue = zl::BoundedBlockingQueue<Job, std::priority_queue<Job>, zl::tagPRIO>;
 
-} /* namespace ZL */
+} /* namespace zl */
 
 #endif /* ZL_BOUNDEDBLOCKINGQUEUE_H */

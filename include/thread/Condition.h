@@ -23,9 +23,9 @@
 #include <Windows.h>
 #endif
 
-namespace ZL
+namespace zl
 {
-    class Condition : public ZL::NonCopy
+    class Condition : public zl::NonCopy
     {
     public:
         explicit Condition(Mutex& mu) : mutex_(mu), signaled_(false)

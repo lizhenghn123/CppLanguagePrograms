@@ -22,7 +22,7 @@
 #include <semaphore.h>
 #endif
 
-namespace ZL
+namespace zl
 {
 #define DISALLOW_COPY_AND_ASSIGN(TypeName)         \
 				 TypeName(const TypeName&);            \

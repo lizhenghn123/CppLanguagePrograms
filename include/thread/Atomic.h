@@ -44,7 +44,7 @@
 #define ATOMIC_FETCH(ptr)             ::InterlockedExchangeAdd(ptr, 0)
 #endif
 
-namespace ZL
+namespace zl
 {
     class Atomic
     {

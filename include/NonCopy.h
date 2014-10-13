@@ -12,7 +12,7 @@
 #ifndef ZL_NONCOPY_FILE_H
 #define ZL_NONCOPY_FILE_H
 
-namespace ZL
+namespace zl
 {
     class NonCopy
     {

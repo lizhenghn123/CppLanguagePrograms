@@ -23,8 +23,8 @@
 #include <numeric>
 #include "OsDefine.h"
 
-#define NAMESPACE_ZL_START namespace ZL {
-#define NAMESPACE_ZL_END   }  /* namespace ZL */
+#define NAMESPACE_ZL_START namespace zl {
+#define NAMESPACE_ZL_END   }  /* namespace zl */
 
 #ifdef OS_WINDOWS
 #define ZL_SNPRINTF  _snprintf

@@ -14,7 +14,7 @@
 #include "NonCopy.h"
 #include "thread/Mutex.h"
 #include "thread/Condition.h"
-namespace ZL
+namespace zl
 {
     class CountDownLatch : NonCopy
     {

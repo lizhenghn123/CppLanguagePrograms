@@ -8,7 +8,7 @@
 #include "thread/ThreadPool.h"
 #include "thread/CountDownLatch.h"
 using namespace std;
-using namespace ZL;
+using namespace zl;
 
 //template<class TQueue>
 class TestBlockingQueue
@@ -62,7 +62,7 @@ private:
 void test_blockingqueue()
 {
     {
-        ZL::BlockingQueue<int, std::queue<int>, ZL::tagFIFO> queue;
+        zl::BlockingQueue<int, std::queue<int>, zl::tagFIFO> queue;
         queue.Push(1);
         queue.Push(3);
         queue.Push(2);
@@ -79,7 +79,7 @@ void test_blockingqueue()
         std::cout << "================\n";
     }
     {
-        ZL::BlockingQueue<int, std::stack<int>, ZL::tagFILO> queue;
+        zl::BlockingQueue<int, std::stack<int>, zl::tagFILO> queue;
         queue.Push(1);
         queue.Push(3);
         queue.Push(2);
@@ -96,8 +96,8 @@ void test_blockingqueue()
         std::cout << "================\n";
     }
     {
-        ZL::BlockingQueue<int, std::priority_queue<int>, ZL::tagPRIO> queue;
-        //ZL::BlockingQueue<int> queue;
+        zl::BlockingQueue<int, std::priority_queue<int>, zl::tagPRIO> queue;
+        //zl::BlockingQueue<int> queue;
         queue.Push(1);
         queue.Push(3);
         queue.Push(2);
@@ -114,7 +114,7 @@ void test_blockingqueue()
         std::cout << "================\n";
     }
     {
-        ZL::BlockingQueue<int> queue;
+        zl::BlockingQueue<int> queue;
 
         for (int i = 0; i<100; ++i)
              queue.Push(i);

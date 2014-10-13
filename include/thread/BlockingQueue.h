@@ -16,7 +16,7 @@
 #include "thread/Mutex.h"
 #include "thread/Condition.h"
 
-namespace ZL
+namespace zl
 {
 
     struct tagFIFO {};  //先进先出
@@ -24,14 +24,14 @@ namespace ZL
     struct tagPRIO {};  //按优先级
 
     template <typename Job, typename Queue = std::queue<Job>, typename Order = tagFIFO >
-    class BlockingQueue : public ZL::NonCopy
+    class BlockingQueue : public zl::NonCopy
     {
     public:
         typedef Job                                 JobType;
         typedef Queue	                            QueueType;
-        typedef ZL::Mutex							MutexType;
-        typedef ZL::MutexLocker	         		    LockGuard;
-        typedef ZL::Condition            		    ConditionType;
+        typedef zl::Mutex							MutexType;
+        typedef zl::MutexLocker	         		    LockGuard;
+        typedef zl::Condition            		    ConditionType;
 
     public:
         BlockingQueue() : stopFlag_(false), mutex_(), has_job_(mutex_)
@@ -178,14 +178,14 @@ namespace ZL
 
     /* using is not support in VS2010*/
     //template< typename Job>
-    //using FifoJobQueue = ZL::BlockingQueue<Job, std::queue<Job>, tagFIFO>;
+    //using FifoJobQueue = zl::BlockingQueue<Job, std::queue<Job>, tagFIFO>;
 
     //template< typename Job>
-    //using FiloJobQueue = ZL::BlockingQueue<Job, std::stack<Job>, tagFILO>;
+    //using FiloJobQueue = zl::BlockingQueue<Job, std::stack<Job>, tagFILO>;
     //
     //template< typename Job>
-    //using PrioJobQueue = ZL::BlockingQueue<Job, std::priority_queue<Job>, tagPRIO>;
+    //using PrioJobQueue = zl::BlockingQueue<Job, std::priority_queue<Job>, tagPRIO>;
 
-} /* namespace ZL */
+} /* namespace zl */
 
 #endif /* ZL_BLOCKINGQUEUE_H */

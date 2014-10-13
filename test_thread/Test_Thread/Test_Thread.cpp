@@ -7,7 +7,7 @@
 #include "thread/ThreadLocal.h"
 #include "thread/CountDownLatch.h"
 using namespace std;
-using namespace ZL;
+using namespace zl;
 
 // HACK: Mac OS X and early MinGW do not support thread-local storage
 #if defined(__APPLE__) || (defined(__MINGW32__) && (__GNUC__ < 4))
