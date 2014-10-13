@@ -9,8 +9,8 @@
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
-#ifndef ZL_BLOCKINGQUEUE_H
-#define ZL_BLOCKINGQUEUE_H
+#ifndef ZL_COUNTDOWNLATCH_H
+#define ZL_COUNTDOWNLATCH_H
 #include "NonCopy.h"
 #include "Mutex.h"
 #include "Condition.h"
