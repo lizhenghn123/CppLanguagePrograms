@@ -11,9 +11,9 @@
 // ***********************************************************************
 #ifndef ZL_CONTDITION_H
 #define ZL_CONTDITION_H
-#include "OsDefine.h"
+#include "Define.h"
 #include "NonCopy.h"
-#include "Mutex.h"
+#include "thread/Mutex.h"
 #ifdef OS_LINUX
 #include <unistd.h>
 #include <pthread.h>
@@ -23,67 +23,67 @@
 #include <Windows.h>
 #endif
 
-namespace zl
+NAMESPACE_ZL_THREAD_START
+
+class Condition : public zl::NonCopy
 {
-    class Condition : public zl::NonCopy
+public:
+    explicit Condition(Mutex& mu) : mutex_(mu), signaled_(false)
     {
-    public:
-        explicit Condition(Mutex& mu) : mutex_(mu), signaled_(false)
-        {
 #ifdef OS_WINDOWS
-            InitializeConditionVariable(&condition_);
+        InitializeConditionVariable(&condition_);
 #elif defined(OS_LINUX)
-            pthread_cond_init(&condition_, NULL);
+        pthread_cond_init(&condition_, NULL);
 #endif
-        }
+    }
 
-        ~Condition()
-        {
+    ~Condition()
+    {
 #ifdef OS_WINDOWS
-            //nothing
+        //nothing
 #elif defined(OS_LINUX)
-            pthread_cond_destroy(&condition_);
+        pthread_cond_destroy(&condition_);
 #endif
-        }
+    }
 
-    public:
-        void Wait()
-        {
+public:
+    void Wait()
+    {
 #ifdef OS_WINDOWS
-            SleepConditionVariableCS(&condition_, mutex_.GetMutex(), INFINITE);
+        SleepConditionVariableCS(&condition_, mutex_.GetMutex(), INFINITE);
 #elif defined(OS_LINUX)
-            pthread_cond_wait(&condition_, mutex_.GetMutex());
+        pthread_cond_wait(&condition_, mutex_.GetMutex());
 #endif
-        }
+    }
 
-        void NotifyOne()
-        {
+    void NotifyOne()
+    {
 #ifdef OS_WINDOWS
-            WakeConditionVariable(&condition_);
+        WakeConditionVariable(&condition_);
 #elif defined(OS_LINUX)
-            pthread_cond_signal(&condition_);
+        pthread_cond_signal(&condition_);
 #endif
-        }
+    }
 
-        void NotifyAll()
-        {
+    void NotifyAll()
+    {
 #ifdef OS_WINDOWS
-            WakeAllConditionVariable(&condition_);
+        WakeAllConditionVariable(&condition_);
 #elif defined(OS_LINUX)
-            pthread_cond_broadcast(&condition_);
+        pthread_cond_broadcast(&condition_);
 #endif
-        }
+    }
 
-    private:
-        bool signaled_;
-        Mutex&		mutex_;
+private:
+    bool signaled_;
+    Mutex&		mutex_;
 #ifdef OS_WINDOWS
-        CONDITION_VARIABLE condition_;
+    CONDITION_VARIABLE condition_;
 #elif defined(OS_LINUX)
-        pthread_cond_t     condition_;
+    pthread_cond_t     condition_;
 #endif
-    };
+};
 
-} /* namespace ZL */
+NAMESPACE_ZL_THREAD_END
 
 #endif /* ZL_CONTDITION_H */

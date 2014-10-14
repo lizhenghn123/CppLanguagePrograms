@@ -1,7 +1,7 @@
 ﻿#include "ThreadPool.h"
 #include "Thread.h"
 #include <assert.h>
-NAMESPACE_ZL_START
+NAMESPACE_ZL_THREAD_START
 
 ThreadPool::ThreadPool(const std::string& name/* = "ThreadPool"*/)
     : mutex_(), cond_(mutex_), name_(name), running_(false)
@@ -90,4 +90,4 @@ ThreadPool::Task ThreadPool::PopOne()
     return task;
 }
 
-NAMESPACE_ZL_END
+NAMESPACE_ZL_THREAD_END

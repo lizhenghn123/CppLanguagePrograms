@@ -1,7 +1,7 @@
 #include "ThreadGroup.h"
-#include "Thread.h"
+#include "thread/Thread.h"
 #include "base/StrUtil.h"
-NAMESPACE_ZL_START
+NAMESPACE_ZL_THREAD_START
 
 ThreadGroup::ThreadGroup()
 {
@@ -56,4 +56,4 @@ size_t ThreadGroup::Size() const
     return vecThreads_.size();
 }
 
-NAMESPACE_ZL_END
+NAMESPACE_ZL_THREAD_END

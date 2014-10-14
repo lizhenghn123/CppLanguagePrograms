@@ -11,8 +11,8 @@
 // ***********************************************************************
 #ifndef ZL_ATOMIC_H
 #define ZL_ATOMIC_H
-#include "OsDefine.h"
-#include "Mutex.h"
+#include "Define.h"
+#include "thread/Mutex.h"
 #ifdef OS_LINUX
 #include <pthread.h>
 #include <unistd.h>  //for usleep
@@ -44,98 +44,98 @@
 #define ATOMIC_FETCH(ptr)             ::InterlockedExchangeAdd(ptr, 0)
 #endif
 
-namespace zl
+NAMESPACE_ZL_THREAD_START
+
+class Atomic
 {
-    class Atomic
+public:
+    typedef  volatile long atomic_t;
+public:
+    Atomic() : atomic_(0)
+    {}
+    ~Atomic()
+    {}
+public:
+    inline atomic_t Inc(int n = 1)
     {
-    public:
-        typedef  volatile long atomic_t;
-    public:
-        Atomic() : atomic_(0)
-        {}
-        ~Atomic()
-        {}
-    public:
-        inline atomic_t Inc(int n = 1)
-        {
-            return ATOMIC_ADD(&atomic_, n);
-        }
-        inline atomic_t IncAndFetch(int n = 1)
-        {
+        return ATOMIC_ADD(&atomic_, n);
+    }
+    inline atomic_t IncAndFetch(int n = 1)
+    {
 #ifdef OS_LINUX
-            return ATOMIC_ADD_AND_FETCH(&atomic_, n);
+        return ATOMIC_ADD_AND_FETCH(&atomic_, n);
 #else
-            MutexLocker lock(mutex_);
-            atomic_ += n;
-            return atomic_;
+        MutexLocker lock(mutex_);
+        atomic_ += n;
+        return atomic_;
 #endif
-        }
-        inline atomic_t FetchAndInc(int n = 1)
-        {
-            return ATOMIC_FETCH_AND_ADD(&atomic_, n);
-        }
-        inline atomic_t Dec(int n = 1)
-        {
-            return ATOMIC_SUB(&atomic_, n);
-        }
-        inline atomic_t DecAndFetch(int n = 1)
-        {
+    }
+    inline atomic_t FetchAndInc(int n = 1)
+    {
+        return ATOMIC_FETCH_AND_ADD(&atomic_, n);
+    }
+    inline atomic_t Dec(int n = 1)
+    {
+        return ATOMIC_SUB(&atomic_, n);
+    }
+    inline atomic_t DecAndFetch(int n = 1)
+    {
 #ifdef OS_LINUX
-            return ATOMIC_SUB_AND_FETCH(&atomic_, n);
+        return ATOMIC_SUB_AND_FETCH(&atomic_, n);
 #else
-            MutexLocker lock(mutex_);
-            atomic_ -= n;
-            return atomic_;
+        MutexLocker lock(mutex_);
+        atomic_ -= n;
+        return atomic_;
 #endif
-        }
-        inline atomic_t FetchAndDec(int n = 1)
-        {
-            return ATOMIC_FETCH_AND_SUB(&atomic_, n);
-        }
-        inline atomic_t Value()
-        {
-            return ATOMIC_FETCH(&atomic_);
-        }
-    public:
-        atomic_t operator++()
-        {
-            return Inc(1);
-        }
-        atomic_t operator--()
-        {
-            return Dec(1);
-        }
-        atomic_t operator++(int)
-        {
-            return FetchAndInc(1);
-        }
-        atomic_t operator--(int)
-        {
-            return FetchAndDec(1);
-        }
-        atomic_t operator+=(int num)
-        {
-            return IncAndFetch(num);
-        }
-        atomic_t operator-=(int num)
-        {
-            return DecAndFetch(num);
-        }
-        bool operator==(long value)
-        {
-            return (atomic_ == value);
-        }
-        operator long() const
-        {
-            return atomic_;
-        }
+    }
+    inline atomic_t FetchAndDec(int n = 1)
+    {
+        return ATOMIC_FETCH_AND_SUB(&atomic_, n);
+    }
+    inline atomic_t Value()
+    {
+        return ATOMIC_FETCH(&atomic_);
+    }
+public:
+    atomic_t operator++()
+    {
+        return Inc(1);
+    }
+    atomic_t operator--()
+    {
+        return Dec(1);
+    }
+    atomic_t operator++(int)
+    {
+        return FetchAndInc(1);
+    }
+    atomic_t operator--(int)
+    {
+        return FetchAndDec(1);
+    }
+    atomic_t operator+=(int num)
+    {
+        return IncAndFetch(num);
+    }
+    atomic_t operator-=(int num)
+    {
+        return DecAndFetch(num);
+    }
+    bool operator==(long value)
+    {
+        return (atomic_ == value);
+    }
+    operator long() const
+    {
+        return atomic_;
+    }
 
-    private:
-        atomic_t atomic_;
+private:
+    atomic_t atomic_;
 #ifdef OS_WINDOWS
-        Mutex    mutex_;
+    Mutex    mutex_;
 #endif
-    };
-}
+};
 
+NAMESPACE_ZL_THREAD_END
 #endif /* ZL_ATOMIC_H */

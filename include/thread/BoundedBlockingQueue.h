@@ -17,195 +17,194 @@
 #include "thread/Condition.h"
 #include "thread/BlockingQueue.h"
 
-namespace zl
+NAMESPACE_ZL_THREAD_START
+
+//struct tagFIFO {};  //先进先出
+//struct tagFILO {};  //先进后出
+//struct tagPRIO {};  //按优先级
+
+template <typename Job, typename Queue = std::queue<Job>, typename Order = tagFIFO >
+class BoundedBlockingQueue : public zl::NonCopy
 {
-    //struct tagFIFO {};  //先进先出
-    //struct tagFILO {};  //先进后出
-    //struct tagPRIO {};  //按优先级
+public:
+    typedef Job                                 JobType;
+    typedef Queue	                            QueueType;
+    typedef zl::thread::Mutex                   MutexType;
+    typedef zl::thread::MutexLocker             LockGuard;
+    typedef zl::thread::Condition               ConditionType;
 
-    template <typename Job, typename Queue = std::queue<Job>, typename Order = tagFIFO >
-    class BoundedBlockingQueue : public zl::NonCopy
+public:
+    explicit BoundedBlockingQueue(int maxSize)
+        : stopFlag_(false),
+        maxSize_(maxSize),
+        mutex_(),
+        notEmpty_(mutex_),
+        notFull_(mutex_)
+    {}
+    virtual ~BoundedBlockingQueue()
     {
-    public:
-        typedef Job                                 JobType;
-        typedef Queue	                            QueueType;
-        typedef zl::Mutex							MutexType;
-        typedef zl::MutexLocker	         		    LockGuard;
-        typedef zl::Condition            		    ConditionType;
+        Stop();
+    }
 
-    public:
-        explicit BoundedBlockingQueue(int maxSize)
-            : stopFlag_(false),
-              maxSize_(maxSize),
-              mutex_(),
-              notEmpty_(mutex_),
-              notFull_(mutex_)
-        {}
-        virtual ~BoundedBlockingQueue()
+public:
+    virtual void Push(const JobType& job)
+    {
+        LockGuard lock(mutex_);
+        while(queue_.size() == maxSize_)  // already full
         {
-            Stop();
+            notFull_.Wait();
         }
+        queue_.push(job);
+        notEmpty_.NotifyOne();
+    }
 
-    public:
-        virtual void Push(const JobType& job)
+    virtual bool Pop(JobType& job)
+    {
+        LockGuard lock(mutex_);
+        while(queue_.empty() && !stopFlag_)
         {
-            LockGuard lock(mutex_);
-            while(queue_.size() == maxSize_)  // already full
-            {
-                notFull_.Wait();
-            }
-            queue_.push(job);
-            notEmpty_.NotifyOne();
+            notEmpty_.Wait();
         }
-
-        virtual bool Pop(JobType& job)
+        if(stopFlag_)
         {
-            LockGuard lock(mutex_);
-            while(queue_.empty() && !stopFlag_)
-            {
-                notEmpty_.Wait();
-            }
-            if(stopFlag_)
-            {
-                return false;
-            }
-            PopOne(job, Order());
-            notFull_.NotifyOne();
-            return true;
+            return false;
         }
+        PopOne(job, Order());
+        notFull_.NotifyOne();
+        return true;
+    }
 
-        virtual JobType Pop()
+    virtual JobType Pop()
+    {
+        LockGuard lock(mutex_);
+        while(queue_.empty() && !stopFlag_)
         {
-            LockGuard lock(mutex_);
-            while(queue_.empty() && !stopFlag_)
-            {
-                notEmpty_.Wait();
-            }
-            if(stopFlag_)
-            {
-                return false;
-            }
+            notEmpty_.Wait();
+        }
+        if(stopFlag_)
+        {
+            return false;
+        }
+        JobType job;
+        PopOne(job, Order());
+        notFull_.NotifyOne();
+        return job;
+    }
+
+    virtual bool TryPop(JobType& job)
+    {
+        LockGuard lock(mutex_);
+        if(queue_.empty() && !stopFlag_)
+            return false;
+        PopOne(job, Order());
+        notFull_.NotifyOne();
+        return true;
+    }
+
+    virtual bool Pop(std::vector<JobType>& vec, int pop_size = 1)
+    {
+        LockGuard lock(mutex_);
+        while(queue_.empty() && !stopFlag_)
+        {
+            notEmpty_.Wait();
+        }
+        if(stopFlag_)
+        {
+            return false;
+        }
+        int num = 0;
+        while (num < pop_size)
+        {
             JobType job;
-            PopOne(job, Order());
-            notFull_.NotifyOne();
-            return job;
-        }
-
-        virtual bool TryPop(JobType& job)
-        {
-            LockGuard lock(mutex_);
-            if(queue_.empty() && !stopFlag_)
-                return false;
-            PopOne(job, Order());
-            notFull_.NotifyOne();
-            return true;
-        }
-
-        virtual bool Pop(std::vector<JobType>& vec, int pop_size = 1)
-        {
-            LockGuard lock(mutex_);
-            while(queue_.empty() && !stopFlag_)
+            if(!PopOne(job, Order()))
+                break;
+            else
             {
-                notEmpty_.Wait();
+                num ++;
+                vec.push_back(job);
             }
-            if(stopFlag_)
-            {
-                return false;
-            }
-            int num = 0;
-            while (num < pop_size)
-            {
-                JobType job;
-                if(!PopOne(job, Order()))
-                    break;
-                else
-                {
-                    num ++;
-                    vec.push_back(job);
-                }
-            }
-            return true;
         }
+        return true;
+    }
 
-        virtual void Stop()
-        {
-            stopFlag_ = true;
-            notFull_.NotifyAll();
-            notEmpty_.NotifyAll();
-        }
+    virtual void Stop()
+    {
+        stopFlag_ = true;
+        notFull_.NotifyAll();
+        notEmpty_.NotifyAll();
+    }
 
-        size_t Size()
-        {
-            LockGuard lock(mutex_);
-            return queue_.size();
-        }
+    size_t Size()
+    {
+        LockGuard lock(mutex_);
+        return queue_.size();
+    }
 
-        bool Empty()
-        {
-            LockGuard lock(mutex_);
-            return queue_.empty();
-        }
+    bool Empty()
+    {
+        LockGuard lock(mutex_);
+        return queue_.empty();
+    }
 
-        bool Full()
-        {
-            LockGuard lock(mutex_);
-            return queue_.size() == maxSize_;
-        }
+    bool Full()
+    {
+        LockGuard lock(mutex_);
+        return queue_.size() == maxSize_;
+    }
 
-        template < typename Func >
-        void Foreach(const Func& func)
-        {
-            LockGuard lock(mutex_);
-            std::for_each(queue_.begin(), queue_.end(), func);
-        }
+    template < typename Func >
+    void Foreach(const Func& func)
+    {
+        LockGuard lock(mutex_);
+        std::for_each(queue_.begin(), queue_.end(), func);
+    }
 
-    private:
-        template <typename T>
-        bool PopOne(JobType& job, T tag);
+private:
+    template <typename T>
+    bool PopOne(JobType& job, T tag);
 
-        template <>
-        bool PopOne(JobType& job, tagFIFO tag)
-        {
-            job = queue_.front();
-            queue_.pop();
-            return true;
-        }
+    template <>
+    bool PopOne(JobType& job, tagFIFO tag)
+    {
+        job = queue_.front();
+        queue_.pop();
+        return true;
+    }
 
-        template <>
-        bool PopOne(JobType& job, tagFILO tag)
-        {
-            job = queue_.top();
-            queue_.pop();
-            return true;
-        }
+    template <>
+    bool PopOne(JobType& job, tagFILO tag)
+    {
+        job = queue_.top();
+        queue_.pop();
+        return true;
+    }
 
-        template <>
-        bool PopOne(JobType& job, tagPRIO tag)
-        {
-            job = queue_.top();
-            queue_.pop();
-            return true;
-        }
+    template <>
+    bool PopOne(JobType& job, tagPRIO tag)
+    {
+        job = queue_.top();
+        queue_.pop();
+        return true;
+    }
 
-    protected:
-        bool             stopFlag_;
-        int              maxSize_;
-        MutexType        mutex_;
-        ConditionType    notEmpty_;
-        ConditionType    notFull_;
-        QueueType        queue_;
-    };
+protected:
+    bool             stopFlag_;
+    int              maxSize_;
+    MutexType        mutex_;
+    ConditionType    notEmpty_;
+    ConditionType    notFull_;
+    QueueType        queue_;
+};
 
-    /* using is not support in VS2010*/
-    //template< typename Job>
-    //using BoundedBlockingFifoQueue = zl::BoundedBlockingQueue<Job, std::queue<Job>, zl::tagFIFO>;
+/* using is not support in VS2010*/
+//template< typename Job>
+//using BoundedBlockingFifoQueue = zl::BoundedBlockingQueue<Job, std::queue<Job>, zl::tagFIFO>;
 
-    //template< typename Job>
-    //using BoundedBlockingFiloQueue = zl::BoundedBlockingQueue<Job, std::stack<Job>, zl::tagFILO>;
-    //
-    //template< typename Job>
-    //using BoundedBlockingPrioQueue = zl::BoundedBlockingQueue<Job, std::priority_queue<Job>, zl::tagPRIO>;
+//template< typename Job>
+//using BoundedBlockingFiloQueue = zl::BoundedBlockingQueue<Job, std::stack<Job>, zl::tagFILO>;
+//
+//template< typename Job>
+//using BoundedBlockingPrioQueue = zl::BoundedBlockingQueue<Job, std::priority_queue<Job>, zl::tagPRIO>;
 
-} /* namespace zl */
-
+NAMESPACE_ZL_THREAD_END
 #endif /* ZL_BOUNDEDBLOCKINGQUEUE_H */

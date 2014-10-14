@@ -5,7 +5,7 @@
 #include <unistd.h>
 #endif
 
-NAMESPACE_ZL_START
+NAMESPACE_ZL_THREAD_START
 
 struct ThreadImplDataInfo
 {
@@ -148,4 +148,4 @@ Thread::id this_thread::get_id()
 #endif
 }
 
-NAMESPACE_ZL_END
+NAMESPACE_ZL_THREAD_END

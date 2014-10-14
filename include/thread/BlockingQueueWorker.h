@@ -13,10 +13,9 @@
 #define ZL_BLOCKQUEUEWORKER_H
 #include "BlockQueue.h"
 
-namespace ZL
-{
+NAMESPACE_ZL_THREAD_START
 
-    template <typename Queue>
+template <typename Queue>
     class JobWorker
     {
     public:
@@ -84,8 +83,8 @@ namespace ZL
         FunctionType		    function_;
         int						thread_num_;
         boost::thread_group		threads_;
-    };
+    };    
 
-} /* namespace ZL */
+NAMESPACE_ZL_THREAD_END
 
 #endif  /* ZL_BLOCKQUEUEWORKER_H */

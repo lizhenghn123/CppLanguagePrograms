@@ -14,7 +14,7 @@
 #include "Define.h"
 #include "NonCopy.h"
 #include "thread/Mutex.h"
-NAMESPACE_ZL_START
+NAMESPACE_ZL_THREAD_START
 class Thread;
 
 class ThreadGroup : NonCopy
@@ -34,5 +34,5 @@ private:
     std::vector<Thread *>  vecThreads_;
 };
 
-NAMESPACE_ZL_END
+NAMESPACE_ZL_THREAD_END
 #endif  /* ZL_THREADGROU_H */

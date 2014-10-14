@@ -23,8 +23,17 @@
 #include <numeric>
 #include "OsDefine.h"
 
-#define NAMESPACE_ZL_START namespace zl {
-#define NAMESPACE_ZL_END   }  /* namespace zl */
+#define NAMESPACE_ZL_START        namespace zl {
+#define NAMESPACE_ZL_END          }  /* namespace zl */
+
+#define NAMESPACE_ZL_THREAD_START NAMESPACE_ZL_START namespace thread {
+#define NAMESPACE_ZL_THREAD_END   } }  /* namespace zl::thread */
+
+#define NAMESPACE_ZL_NET_START   NAMESPACE_ZL_START namespace net {
+#define NAMESPACE_ZL_NET_END     } }  /* namespace zl::net */
+
+#define NAMESPACE_ZL_UTIL_START   NAMESPACE_ZL_START namespace util {
+#define NAMESPACE_ZL_UTIL_END     } }  /* namespace zl::util */
 
 #ifdef OS_WINDOWS
 #define ZL_SNPRINTF  _snprintf
@@ -44,10 +53,10 @@
         TypeName(const TypeName&) = delete;           \
         TypeName& operator=(const TypeName&) = delete
 #else
-#define TOFT_DECLARE_STATIC_CLASS(Name)               \
+#define DISALLOW_COPY_AND_ASSIGN(TypeName)            \
         private:                                      \
             TypeName(const TypeName&);                \
-            TypeName& operator=(const TypeName&)
+            TypeName& operator=(const TypeName&)      
 #endif
 
 // Run-time assertion

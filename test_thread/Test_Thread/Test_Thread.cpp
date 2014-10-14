@@ -9,6 +9,7 @@
 #include "thread/ThreadGroup.h"
 using namespace std;
 using namespace zl;
+using namespace zl::thread;
 
 // HACK: Mac OS X and early MinGW do not support thread-local storage
 #if defined(__APPLE__) || (defined(__MINGW32__) && (__GNUC__ < 4))
@@ -30,16 +31,16 @@ thread_local int gLocalVar;
 #endif
 
 // Mutex + global count variable
-Mutex gMutex;
+zl::thread::Mutex gMutex;
 int gCount;
 
 // Condition variable
-Condition gCond(gMutex);
+zl::thread::Condition gCond(gMutex);
 
 // Thread function: Thread ID
 void ThreadIDs()
 {
-	cout << " My thread id is " << this_thread::get_id() << "." << "\n";
+	cout << " My thread id is " << zl::thread::this_thread::get_id() << "." << "\n";
 }
 
 #ifndef NO_TLS

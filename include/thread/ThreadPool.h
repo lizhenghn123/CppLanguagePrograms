@@ -15,7 +15,7 @@
 #include "NonCopy.h"
 #include "Mutex.h"
 #include "Condition.h"
-NAMESPACE_ZL_START
+NAMESPACE_ZL_THREAD_START
 
 class Thread;
 
@@ -48,5 +48,5 @@ private:
     std::vector<Thread *>  threads_;
 };
 
-NAMESPACE_ZL_END
+NAMESPACE_ZL_THREAD_END
 #endif  /* ZL_THREADPOOL_H */

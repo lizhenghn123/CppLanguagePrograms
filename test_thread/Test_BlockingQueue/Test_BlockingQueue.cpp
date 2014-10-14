@@ -9,6 +9,7 @@
 #include "thread/CountDownLatch.h"
 using namespace std;
 using namespace zl;
+using namespace zl::thread;
 
 //template<class TQueue>
 class TestBlockingQueue
@@ -52,9 +53,9 @@ private:
 	}
 private:
 	//TQueue  queue_;
-	BoundedBlockingQueue<int> queue_;
-	std::vector<Thread*> threads_;
-	CountDownLatch latch_;
+	zl::thread::BoundedBlockingQueue<int> queue_;
+	std::vector<zl::thread::Thread*> threads_;
+	zl::thread::CountDownLatch latch_;
 	bool running_;
 
 };
@@ -62,7 +63,7 @@ private:
 void test_blockingqueue()
 {
     {
-        zl::BlockingQueue<int, std::queue<int>, zl::tagFIFO> queue;
+        zl::thread::BlockingQueue<int, std::queue<int>, zl::thread::tagFIFO> queue;
         queue.Push(1);
         queue.Push(3);
         queue.Push(2);
@@ -79,7 +80,7 @@ void test_blockingqueue()
         std::cout << "================\n";
     }
     {
-        zl::BlockingQueue<int, std::stack<int>, zl::tagFILO> queue;
+        zl::thread::BlockingQueue<int, std::stack<int>, zl::thread::tagFILO> queue;
         queue.Push(1);
         queue.Push(3);
         queue.Push(2);
@@ -96,7 +97,7 @@ void test_blockingqueue()
         std::cout << "================\n";
     }
     {
-        zl::BlockingQueue<int, std::priority_queue<int>, zl::tagPRIO> queue;
+        zl::thread::BlockingQueue<int, std::priority_queue<int>, zl::thread::tagPRIO> queue;
         //zl::BlockingQueue<int> queue;
         queue.Push(1);
         queue.Push(3);
@@ -114,7 +115,7 @@ void test_blockingqueue()
         std::cout << "================\n";
     }
     {
-        zl::BlockingQueue<int> queue;
+        zl::thread::BlockingQueue<int> queue;
 
         for (int i = 0; i<100; ++i)
              queue.Push(i);
@@ -138,7 +139,7 @@ void test_boundleblockingqueue()
 	 tbq.JoinAll();
 
 	 {
-		 zl::BoundedBlockingQueue<int, std::priority_queue<int>, zl::tagPRIO> queue(3);
+		 zl::thread::BoundedBlockingQueue<int, std::priority_queue<int>, zl::thread::tagPRIO> queue(3);
 		 queue.Push(1);
 		 queue.Push(3);
 		 queue.Push(2);

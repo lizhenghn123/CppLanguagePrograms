@@ -26,7 +26,7 @@
 #else
 #include <pthread.h>
 #endif
-NAMESPACE_ZL_START
+NAMESPACE_ZL_THREAD_START
 
 
 #ifdef OS_WINDOWS
@@ -132,5 +132,5 @@ private:
 };
 #endif
 
-NAMESPACE_ZL_END
+NAMESPACE_ZL_THREAD_END
 #endif  /* ZL_THREADLOCAL_H */

@@ -6,7 +6,7 @@ using namespace std;
 int main()
 {
 	{
-		zl::Atomic ato;
+		zl::thread::Atomic ato;
 		ato++;
 		++ato;
 		ato.FetchAndInc(10);
@@ -19,7 +19,7 @@ int main()
 	}
 	{
 		std::cout << "========================================\n";
-		zl::Atomic ato;
+		zl::thread::Atomic ato;
 
 		std::cout << ato.FetchAndInc(2) << "\t" ;
 		std::cout << ato.Value() << "\n";
@@ -29,7 +29,7 @@ int main()
 	}
 	{
 		std::cout << "========================================\n";
-		zl::Atomic ato;
+		zl::thread::Atomic ato;
 
 		std::cout << ato.IncAndFetch(2) << "\t" ;
 		std::cout << ato << "\n";

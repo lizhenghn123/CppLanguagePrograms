@@ -14,48 +14,50 @@
 #include "NonCopy.h"
 #include "thread/Mutex.h"
 #include "thread/Condition.h"
-namespace zl
+NAMESPACE_ZL_THREAD_START
+
+class CountDownLatch : NonCopy
 {
-    class CountDownLatch : NonCopy
+public:
+    explicit CountDownLatch(int count)
+        : count_(count),
+        mutex_(),
+        condition_(mutex_)
     {
-    public:
-        explicit CountDownLatch(int count)
-            : count_(count),
-              mutex_(),
-              condition_(mutex_)
-        { }
 
-        void Wait()
+    }
+
+    void Wait()
+    {
+        MutexLocker guard(mutex_);
+        while(count_ > 0)
         {
-            MutexLocker guard(mutex_);
-            while(count_ > 0)
-            {
-                condition_.Wait();
-            }
+            condition_.Wait();
         }
+    }
 
-        void CountDown()
+    void CountDown()
+    {
+        MutexLocker guard(mutex_);
+        --count_;
+        if(count_ == 0)
         {
-            MutexLocker guard(mutex_);
-            --count_;
-            if(count_ == 0)
-            {
-                condition_.NotifyAll();
-            }
+            condition_.NotifyAll();
         }
+    }
 
-        int GetCount() const
-        {
-            MutexLocker guard(mutex_);
-            return count_;
-        }
+    int GetCount() const
+    {
+        MutexLocker guard(mutex_);
+        return count_;
+    }
 
-    private:
-        int              count_;
-        mutable Mutex    mutex_;
-        Condition        condition_;
-    };
+private:
+    int              count_;
+    mutable Mutex    mutex_;
+    Condition        condition_;
+};
 
-} /* namespace ZL */
+NAMESPACE_ZL_THREAD_END
 
 #endif /* ZL_BLOCKINGQUEUE_H */

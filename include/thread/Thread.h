@@ -13,8 +13,8 @@
 #define ZL_THREAD_H
 #include "Define.h"
 #include "NonCopy.h"
-#include "Mutex.h"
-NAMESPACE_ZL_START
+#include "thread/Mutex.h"
+NAMESPACE_ZL_THREAD_START
 
 #if defined(OS_WINDOWS)
 typedef HANDLE native_thread_handle;
@@ -214,5 +214,5 @@ namespace this_thread
     }
 }
 
-NAMESPACE_ZL_END
+NAMESPACE_ZL_THREAD_END
 #endif  /* ZL_THREAD_H */
