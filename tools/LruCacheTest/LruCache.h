@@ -4,7 +4,7 @@
 #include <map>
 #include "thread/Mutex.h"
 
-template<typename Key, typename Value, typename LockType = ZL::Mutex>
+template<typename Key, typename Value, typename LockType = zl::thread::Mutex>
 class LruCache
 {
 public:
@@ -24,7 +24,7 @@ public:
 
     bool Get(const Key& key, Value& value)
     {
-        ZL::MutexLocker locker(mutex_);
+        zl::thread::MutexLocker locker(mutex_);
         typename MAP::iterator iter = keyIndex_.find(key);
         if(iter != keyIndex_.end())
         {
@@ -49,7 +49,7 @@ public:
     //更新cache， 如果存在则更新，否则直接存入
     bool Put(const Key& key, const Value& value)
     {
-        ZL::MutexLocker locker(mutex_);
+        zl::thread::MutexLocker locker(mutex_);
         typename MAP::iterator miter = keyIndex_.find(key);
         if(miter != keyIndex_.end()) //存在
         {
@@ -74,19 +74,19 @@ public:
 
     bool Remove(const Key& key)
     {
-        ZL::MutexLocker locker(mutex_);
+        zl::thread::MutexLocker locker(mutex_);
         return RemoveWithHolder(key);
     }
 
     bool HasKey(const Key& key) const
     {
-        ZL::MutexLocker locker(mutex_);
+        zl::thread::MutexLocker locker(mutex_);
         return keyIndex_.find(key) != keyIndex_.end();
     }
 
     size_t Size() const
     {
-        ZL::MutexLocker locker(mutex_);
+        zl::thread::MutexLocker locker(mutex_);
         return valueList_.size();
     }
 
@@ -97,20 +97,20 @@ public:
 
     bool IsEmpty() const
     {
-        ZL::MutexLocker locker(mutex_);
+        zl::thread::MutexLocker locker(mutex_);
         return valueList_.empty();
     }
 
     bool IsFull() const
     {
-        ZL::MutexLocker locker(mutex_);
+        zl::thread::MutexLocker locker(mutex_);
         return keyIndex_.size() == capacity_;
     }
 
 private:
     void Clear()
     {
-        ZL::MutexLocker locker(mutex_);
+        zl::thread::MutexLocker locker(mutex_);
         valueList_.clear();
         keyIndex_.clear();
     }
