@@ -1,6 +1,7 @@
 #include "NetUtil.h"
 #include <stdlib.h>
 #include <string.h>
+NAMESPACE_ZL_NET_START
 
 bool NetUtil::IsBroadcastAddress(const char *str)
 {
@@ -93,3 +94,5 @@ void NetUtil::Net2Host(const void *source, void *result, size_t length)
 {
     Host2Net(source, result, length);
 }
+
+NAMESPACE_ZL_NET_END

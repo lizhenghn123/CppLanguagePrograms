@@ -11,6 +11,8 @@
 // ***********************************************************************
 #ifndef ZL_NETUTIL_H
 #define ZL_NETUTIL_H
+#include "Define.h"
+NAMESPACE_ZL_NET_START
 
 class NetUtil
 {
@@ -142,6 +144,7 @@ public:
     {
         return Host2Net<DataType>(source);
     }
-
 };
+
+NAMESPACE_ZL_NET_END
 #endif  /* ZL_NETUTIL_H */

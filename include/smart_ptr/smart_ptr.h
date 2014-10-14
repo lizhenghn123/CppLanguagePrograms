@@ -11,9 +11,9 @@
 #ifndef ZL_SMART_PTR_H
 #define ZL_SMART_PTR_H
 
-#include "scoped_ptr.h"
-#include "shared_ptr.h"
-#include "weak_ptr.h"
+#include "smart_ptr/unique_ptr.h"
+#include "smart_ptr/shared_ptr.h"
+#include "smart_ptr/weak_ptr.h"
 
 namespace zl
 {
