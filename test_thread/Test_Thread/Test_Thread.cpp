@@ -3,9 +3,10 @@
 #include "thread/Thread.h"
 #include "thread/Mutex.h"
 #include "thread/Condition.h"
+#include "thread/CountDownLatch.h"
 #include "thread/ThreadPool.h"
 #include "thread/ThreadLocal.h"
-#include "thread/CountDownLatch.h"
+#include "thread/ThreadGroup.h"
 using namespace std;
 using namespace zl;
 
@@ -354,6 +355,16 @@ void test_threadlocalstroage()
 	g_tls->print();
 }
 
+void test_threadgroup()
+{
+	ThreadGroup tg;
+	tg.CreateThread(func, 1);
+	tg.CreateThread(std::bind(func_one, 12), 2);
+	tg.CreateThread(std::bind(func_two, 6, 8), 3);
+
+	tg.JoinAll();
+}
+
 int main()
 {
 	cout << "------------------------------ test_thread1\n";
@@ -365,8 +376,12 @@ int main()
 	cout << "------------------------------ test_threadpoll\n";
 	//test_threadpoll();
 
-	cout << "------------------------------ test_threadpoll\n";
-	test_threadlocalstroage();
+	cout << "------------------------------ test_threadlocalstroage\n";
+	//test_threadlocalstroage();
+
+	cout << "------------------------------ test_threadlocalstroage\n";
+	test_threadgroup();
+
 	system("pause");
 	return 0;
 }

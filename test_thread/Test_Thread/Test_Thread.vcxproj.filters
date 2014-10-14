@@ -24,6 +24,9 @@
     <ClInclude Include="..\..\include\thread\ThreadLocal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\thread\ThreadGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\thread\Thread.cpp">
@@ -33,6 +36,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\include\thread\ThreadPool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\thread\ThreadGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

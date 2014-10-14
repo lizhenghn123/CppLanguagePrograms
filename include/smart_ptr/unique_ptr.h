@@ -1,5 +1,5 @@
 // ***********************************************************************
-// Filename         : scoped_ptr.h
+// Filename         : unique_ptr.h
 // Author           : LIZHENG
 // Created          : 2014-10-10
 // Description      :
@@ -37,21 +37,32 @@ namespace zl
 
 
     /************************************************
-    template<typename T> class scoped_ptr
+    template<typename T> class unique_ptr
     ************************************************/
     template<typename T, typename deleter = default_deleter<T> >
-    class scoped_ptr
+    class unique_ptr
     {
     public:
         typedef T element_type;
         typedef deleter deleter_type;
+
     public:
-        explicit scoped_ptr(T *p = NULL): ptr_(p)
+		unique_ptr() : ptr_(NULL)
+		{
+
+		}
+
+        explicit unique_ptr(T *p = NULL) : ptr_(p)
         {
 
         }
 
-        ~scoped_ptr()
+		unique_ptr(unique_ptr&& rhs)
+		{
+			ptr_ = rhs.release();
+		}
+
+        ~unique_ptr()
         {
             deleter_type del;
             del(ptr_);
@@ -64,7 +75,7 @@ namespace zl
 
         void reset(T *p = NULL)
         {
-            scoped_ptr<T>(p).swap(*this);
+            unique_ptr<T>(p).swap(*this);
         }
 
         T *release()
@@ -89,7 +100,7 @@ namespace zl
             return (ptr_ != NULL);
         }
 
-        void swap(scoped_ptr& sp)
+        void swap(unique_ptr& sp)
         {
             T *tmp = sp.ptr_;
             sp.ptr_ = ptr_;
@@ -97,69 +108,69 @@ namespace zl
         }
 
     private:
-        scoped_ptr(const scoped_ptr&);
-        scoped_ptr& operator=(const scoped_ptr&);
-        void operator==(const scoped_ptr&) const;
-        void operator!=(const scoped_ptr&) const;
+        unique_ptr(const unique_ptr&);
+        unique_ptr& operator=(const unique_ptr&);
+        void operator==(const unique_ptr&) const;
+        void operator!=(const unique_ptr&) const;
 
-        template <typename OtherT> bool operator==(const scoped_ptr<OtherT>&) const;
-        template <typename OtherT> bool operator!=(const scoped_ptr<OtherT>&) const;
+        template <typename OtherT> bool operator==(const unique_ptr<OtherT>&) const;
+        template <typename OtherT> bool operator!=(const unique_ptr<OtherT>&) const;
 
     private:
         T *ptr_;
     };
 
     template<typename T>
-    inline void swap(scoped_ptr<T>& lhs, scoped_ptr<T>& rhs)
+    inline void swap(unique_ptr<T>& lhs, unique_ptr<T>& rhs)
     {
         lhs.swap(rhs);
     }
 
     template<typename T>
-    inline T *get_pointer(scoped_ptr<T> const& sp)
+    inline T *get_pointer(unique_ptr<T> const& sp)
     {
         return sp.get();
     }
 
     template <typename T>
-    inline bool operator==(const T *lhs, const scoped_ptr<T>& rhs)
+    inline bool operator==(const T *lhs, const unique_ptr<T>& rhs)
     {
         return lhs == rhs.get();
     }
 
     template <typename T>
-    inline bool operator==(const scoped_ptr<T>& lhs, const T *rhs)
+    inline bool operator==(const unique_ptr<T>& lhs, const T *rhs)
     {
         return rhs == lhs.get();
     }
 
     template <typename T>
-    inline bool operator!=(const T *lhs, const scoped_ptr<T>& rhs)
+    inline bool operator!=(const T *lhs, const unique_ptr<T>& rhs)
     {
         return lhs != rhs.get();
     }
 
     template <typename T>
-    inline bool operator!=(const scoped_ptr<T>& lhs, const T *rhs)
+    inline bool operator!=(const unique_ptr<T>& lhs, const T *rhs)
     {
         return rhs != lhs.get();
     }
 
     /************************************************
-    template<typename T> class scoped_arr
+    template<typename T> class unique_arr
     ************************************************/
     template<typename T, typename deleter = default_deleter<T[]> >
-    class scoped_arr
+    class unique_arr
     {
     public:
         typedef T element_type;
         typedef deleter deleter_type;
     public:
-        explicit scoped_arr(T *p = NULL) : array_(p)
+        explicit unique_arr(T *p = NULL) : array_(p)
         {
         }
 
-        ~scoped_arr()
+        ~unique_arr()
         {
             deleter_type del;
             del(array_);
@@ -177,7 +188,7 @@ namespace zl
 
         void reset(T *p = NULL)
         {
-            scoped_arr<T>(p).swap(*this);
+            unique_arr<T>(p).swap(*this);
         }
 
         T *release()
@@ -192,7 +203,7 @@ namespace zl
             return (array_ != NULL);
         }
 
-        void swap(scoped_arr& rhs)
+        void swap(unique_arr& rhs)
         {
             if(this == &rhs)
                 return;
@@ -202,44 +213,44 @@ namespace zl
         }
 
     private:
-        scoped_arr(const scoped_arr&);
-        scoped_arr& operator=(const scoped_arr&);
-        void operator==(const scoped_arr&) const;
-        void operator!=(const scoped_arr&) const;
+        unique_arr(const unique_arr&);
+        unique_arr& operator=(const unique_arr&);
+        void operator==(const unique_arr&) const;
+        void operator!=(const unique_arr&) const;
 
-        template <typename OtherT> bool operator==(const scoped_arr<OtherT>&) const;
-        template <typename OtherT> bool operator!=(const scoped_arr<OtherT>&) const;
+        template <typename OtherT> bool operator==(const unique_arr<OtherT>&) const;
+        template <typename OtherT> bool operator!=(const unique_arr<OtherT>&) const;
 
     private:
         T *array_;
     };
 
     template<typename T>
-    inline void swap(scoped_arr<T>& a, scoped_arr<T>& b)
+    inline void swap(unique_arr<T>& a, unique_arr<T>& b)
     {
         a.swap(b);
     }
 
     template <typename T>
-    inline bool operator==(const T *lhs, const scoped_arr<T>& rhs)
+    inline bool operator==(const T *lhs, const unique_arr<T>& rhs)
     {
         return lhs == rhs.get();
     }
 
     template <typename T>
-    inline bool operator==(const scoped_arr<T>& lhs, const T *rhs)
+    inline bool operator==(const unique_arr<T>& lhs, const T *rhs)
     {
         return rhs == lhs.get();
     }
 
     template <typename T>
-    inline bool operator!=(const T *lhs, const scoped_arr<T>& rhs)
+    inline bool operator!=(const T *lhs, const unique_arr<T>& rhs)
     {
         return lhs != rhs.get();
     }
 
     template <typename T>
-    inline bool operator!=(const scoped_arr<T>& lhs, const T *rhs)
+    inline bool operator!=(const unique_arr<T>& lhs, const T *rhs)
     {
         return rhs != lhs.get();
     }

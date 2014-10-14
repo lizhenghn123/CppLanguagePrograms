@@ -1,9 +1,7 @@
 #include <iostream>
+#include <vector>
 #include <assert.h>
 #include "smart_ptr/smart_ptr.h"
-//#include "boost/shared_ptr.hpp"
-//#include "boost/scoped_ptr.hpp"
-//https://github.com/davisking/dlib/tree/master/dlib/smart_pointers
 using namespace std;
 using namespace zl;
 
@@ -29,7 +27,7 @@ void test_scoped_ptr()
 {
 	{
 		int *p = new int(123);
-		scoped_ptr<int> sp(p);
+		zl::unique_ptr<int> sp(p);
 		p = sp.release();
 		assert(p && !sp);
 
@@ -39,8 +37,18 @@ void test_scoped_ptr()
 	}
 	cout << "----------------------------------------\n";
 	{
+		std::vector<zl::unique_ptr<Test> > vec;
+		zl::unique_ptr<Test> sp(new Test);
+		//zl::unique_ptr<Test> sp2 = sp;
+		vec.push_back(std::move(sp));
+	    //vec.push_back(new Test);
+		vec[0]->print();
+		//t1->print();
+	}
+	cout << "----------------------------------------\n";
+	{
 		Test *t1 = new Test;
-		scoped_ptr<Test> sp(t1);
+		zl::unique_ptr<Test> sp(t1);
 		sp->print();
 		assert(sp == t1);
 		Test *t2 = new Test;
@@ -49,7 +57,7 @@ void test_scoped_ptr()
 	}
 	cout << "----------------------------------------\n";
 	{
-		scoped_arr<Test> sp(new Test[3]);
+		unique_arr<Test> sp(new Test[3]);
 		sp[0].print();
 	}
 	cout << "----------------------------------------\n";
@@ -59,8 +67,8 @@ void test_share_ptr()
 {
 	{
 		Test *t1 = new Test;
-		shared_ptr<Test> sp1(t1);
-		shared_ptr<Test> sp2(sp1);
+		zl::shared_ptr<Test> sp1(t1);
+		zl::shared_ptr<Test> sp2(sp1);
 		//shared_ptr<Test> sp3(t1);
 		t1->print();
 		sp1->print();
@@ -71,8 +79,8 @@ void test_share_ptr()
 	cout << "----------------------------------------\n";
 	{
 		Test *t1 = new TestChild;
-		const shared_ptr<Test> sp1(t1);
-		shared_ptr<TestChild> sp2 = static_pointer_cast<TestChild, Test>(sp1);
+		const zl::shared_ptr<Test> sp1(t1);
+		zl::shared_ptr<TestChild> sp2 = static_pointer_cast<TestChild, Test>(sp1);
 		t1->foo();
 		sp1->foo();
 		sp2->foo();
@@ -85,9 +93,9 @@ void test_weakptr()
 {
 	{
 		Test *t1 = new Test;
-		shared_ptr<Test> sp1(t1);
-		shared_ptr<Test> sp2(sp1);
-		weak_ptr<Test> wp1(sp1);
+		zl::shared_ptr<Test> sp1(t1);
+		zl::shared_ptr<Test> sp2(sp1);
+		zl::weak_ptr<Test> wp1(sp1);
 		t1->print();
 		sp1->print();
 		//wp1->print();

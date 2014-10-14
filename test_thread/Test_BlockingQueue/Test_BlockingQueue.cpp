@@ -136,6 +136,14 @@ void test_boundleblockingqueue()
 	 tbq.Run(13);
 	 this_thread::sleep_for(chrono::milliseconds(1000));
 	 tbq.JoinAll();
+
+	 {
+		 zl::BoundedBlockingQueue<int, std::priority_queue<int>, zl::tagPRIO> queue(3);
+		 queue.Push(1);
+		 queue.Push(3);
+		 queue.Push(2);
+		 queue.Push(0); // block, queue.Size() > 3;
+	 }
 }
 
 int main()

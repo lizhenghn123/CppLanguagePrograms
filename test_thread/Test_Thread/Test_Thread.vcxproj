@@ -76,11 +76,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\thread\Thread.h" />
+    <ClInclude Include="..\..\include\thread\ThreadGroup.h" />
     <ClInclude Include="..\..\include\thread\ThreadLocal.h" />
     <ClInclude Include="..\..\include\thread\ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\thread\Thread.cpp" />
+    <ClCompile Include="..\..\include\thread\ThreadGroup.cpp" />
     <ClCompile Include="..\..\include\thread\ThreadPool.cpp" />
     <ClCompile Include="Test_Thread.cpp" />
   </ItemGroup>

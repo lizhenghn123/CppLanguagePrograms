@@ -8,8 +8,8 @@
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
-#ifndef ZL_SHARE_PTR_H
-#define ZL_SHARE_PTR_H
+#ifndef ZL_SHARED_PTR_H
+#define ZL_SHARED_PTR_H
 #include <typeinfo>
 #include <exception>
 #include <assert.h>
@@ -376,4 +376,4 @@ namespace zl
     }
 
 } /* namespace zl */
-#endif  /* ZL_SHARE_PTR_H */
+#endif  /* ZL_SHARED_PTR_H */
