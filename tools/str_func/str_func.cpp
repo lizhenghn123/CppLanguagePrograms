@@ -1,13 +1,16 @@
+#include <iostream>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <memory.h>
-#include "../../include/osDefine.h"
+#include "OsDefine.h"
+#include "base/StrUtil.h"
 #ifdef OS_WINDOWS
 #include <stdlib.h>
 #elif defined(OS_LINUX)
 #include <errno.h>
 #endif
+using namespace std;
 
 //原  型: char *strcpy(char* dest, const char *src);
 //功  能: 把从src地址开始且含有NULL结束符的字符串复制到以dest开始的地址空间
@@ -447,6 +450,7 @@ void test_strerror()
 int main(int argc, char *argv[])
 {
     test_swab();
+
     system("pause");
     return 0;
 }
