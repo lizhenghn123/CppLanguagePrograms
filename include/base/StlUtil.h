@@ -19,18 +19,19 @@ NAMESPACE_ZL_START
 template <typename ForwardIterator>
 void StlDeleteContainerPointer(ForwardIterator begin, ForwardIterator end)
 {
-  while (begin != end) 
-  {       
-      ForwardIterator tmp = begin;
-      ++begin;
-      Safe_Delete(*tmp);
-  }
+    while (begin != end)
+    {
+        ForwardIterator tmp = begin;
+        ++begin;
+        Safe_Delete(*tmp);
+    }
 }
 
 /** 删除某一容器包含的指针 */
 template <class T>
-void StlDeleteElems(T& container) {
-    if (container.empty()) 
+void StlDeleteElems(T &container)
+{
+    if (container.empty())
         return;
     StlDeleteContainerPointer(container.begin(), container.end());
     container.clear();
@@ -38,20 +39,21 @@ void StlDeleteElems(T& container) {
 
 /** 删除某一容器包含的指针 */
 template <class T>
-void StlDeleteElems(T *container) {
-  if (!container) 
-      return;
-  StlDeleteContainerPointer(container->begin(), container->end());
-  container->clear();
+void StlDeleteElems(T *container)
+{
+    if (!container)
+        return;
+    StlDeleteContainerPointer(container->begin(), container->end());
+    container->clear();
 }
 
 /** 删除关联容器中的value值（指针） */
 template <class T>
-void StlDeleteValues(T& v) 
+void StlDeleteValues(T &v)
 {
-    if (v.empty()) 
+    if (v.empty())
         return;
-    for (typename T::iterator i = v.begin(); i != v.end(); ++i) 
+    for (typename T::iterator i = v.begin(); i != v.end(); ++i)
     {
         Safe_Delete(i->second);
     }
@@ -60,15 +62,15 @@ void StlDeleteValues(T& v)
 
 /** 删除关联容器中的value值（指针） */
 template <class T>
-void StlDeleteValues(T *v) 
+void StlDeleteValues(T *v)
 {
-  if (!v) 
-      return;
-  for (typename T::iterator i = v->begin(); i != v->end(); ++i) 
-  {
-    Safe_Delete(i->second);
-  }
-  v->clear();
+    if (!v)
+        return;
+    for (typename T::iterator i = v->begin(); i != v->end(); ++i)
+    {
+        Safe_Delete(i->second);
+    }
+    v->clear();
 }
 
 /** 仿函数：删除map/multimap/hash_map中的value指针，可用于for_each等算法中 */
