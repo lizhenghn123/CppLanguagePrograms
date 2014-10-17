@@ -1,19 +1,18 @@
 ﻿// ***********************************************************************
-// Filename         : Utils.h
+// Filename         : FileUtil.h
 // Author           : LIZHENG
 // Created          : 2014-07-01
-// Description      : 工具函数
+// Description      : 文件、目录相关工具函数
 //
 // Last Modified By : LIZHENG
-// Last Modified On : 2014-06-23
+// Last Modified On : 2014-10-17
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
-#ifndef ZL_UTILS_H
-#define ZL_UTILS_H
+#ifndef ZL_FILEUTIL_H
+#define ZL_FILEUTIL_H
 #include "Define.h"
 #include <sstream>
-
 NAMESPACE_ZL_START
 
 // ------------------------  file utils  ------------------------
@@ -28,5 +27,4 @@ bool  GetFileData(const char *filepath, std::string& buf);
 
 
 NAMESPACE_ZL_END
-
-#endif /* ZL_UTILS_H */
+#endif /* ZL_FILEUTIL_H */
