@@ -75,7 +75,6 @@ public:
     }
 
 private:
-    bool signaled_;
     Mutex&		mutex_;
 #ifdef OS_WINDOWS
     CONDITION_VARIABLE condition_;
