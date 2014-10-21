@@ -1,4 +1,5 @@
 #include "ByteArray.h"
+#include "ByteArray.h"
 
 ByteArray::ByteArray(int allocSize)
 {
@@ -17,54 +18,53 @@ ByteArray::~ByteArray()
 
 void ByteArray::WriteBool(bool val)
 {
-    WriteBytes((Byte *)&val, 1, 0);
+    WriteChars((char *)&val, 1, 0);
 }
 
-void ByteArray::WriteByte(Byte val)
+void ByteArray::WriteByte(char val)
 {
-    WriteBytes(&val, 1);
+    WriteChars(&val, 1);
 }
 
-void ByteArray::WriteChars(char *val)
+void ByteArray::WriteChars(const char *val)
 {
-    WriteBytes((Byte *)val, (int)strlen(val), 0);
+    WriteChars(val, (int)strlen(val), 0);
 }
 
 void ByteArray::WriteString(const std::string& val)
 {
     WriteNumber(val.size());
-    WriteBytes((Byte *)val.c_str(), val.size(), 0);
+    WriteChars(val.c_str(), val.size(), 0);
 }
 
-bool ByteArray::WriteBytes(Byte *val, int size, int offset/* = 0*/)
+void ByteArray::WriteChars(const char *val, size_t size, int offset/* = 0*/)
 {
-    Byte *srcByte = val + offset;
+    const char *srcByte = val + offset;
     if((int)bytesBuf_.size() < (writePos_ + size))
     {
         bytesBuf_.resize(writePos_ + size);  //每次只按需扩展所需大小，避免多分配内存, 也可直接resize 2倍大小，就像stl那样
     }
     ::memcpy(&bytesBuf_[writePos_], srcByte, size);
     writePos_ += size;
-    return true;
 }
 
 bool ByteArray::ReadBool()
 {
     bool val = false;
-    ReadBytes((Byte *)&val, 1, 0);
+    ReadBytes((char *)&val, 1, 0);
     return val;
 }
 
-unsigned char ByteArray::ReadByte()
+char ByteArray::ReadByte()
 {
-    Byte val;
+    char val;
     ReadBytes(&val, 1);
     return val;
 }
 
-bool ByteArray::ReadBytes(Byte *val, int size, int offset/* = 0*/)
+bool ByteArray::ReadBytes(char *val, size_t size, int offset/* = 0*/)
 {
-    Byte *dstByte = val + offset;
+    char *dstByte = val + offset;
     if(readPos_ + size > (int)bytesBuf_.size())
     {
         *dstByte = 0;
@@ -75,9 +75,9 @@ bool ByteArray::ReadBytes(Byte *val, int size, int offset/* = 0*/)
     return true;
 }
 
-void ByteArray::ReadChars(char *val, int size)
+void ByteArray::ReadChars(char *val, size_t size)
 {
-    ReadBytes((Byte *)val, size, 0);
+    ReadBytes((char *)val, size, 0);
 }
 
 std::string ByteArray::ReadString()
@@ -86,7 +86,7 @@ std::string ByteArray::ReadString()
     ReadNumber(&size);
     char *chars = (char *)malloc(size + 1);
     memset(chars, 0, size + 1);
-    ReadBytes((Byte *)chars, size, 0);
+    ReadBytes((char *)chars, size, 0);
     std::string str(chars);
     free(chars);
     return str;
@@ -107,11 +107,11 @@ Endian ByteArray::GetCPUEndian()
         return BIG_ENDIAN;
 }
 
-void ByteArray::ReversalArray(Byte *bytes, int size)
+void ByteArray::ReversalArray(char *bytes, size_t size)
 {
-    for(int i = 0; i < size / 2; i++)
+    for(size_t i = 0; i < size / 2; i++)
     {
-        Byte tb;
+        char tb;
         tb = *(bytes + i);
         *(bytes + i) = *(bytes + size - i - 1);
         *(bytes + size - i - 1) = tb;

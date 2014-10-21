@@ -23,38 +23,39 @@ enum Endian
 class ByteArray
 {
 public:
-    typedef unsigned char Byte;
-public:
     ByteArray(int allocSize);
-    virtual ~ByteArray();
+    ~ByteArray();
 
 public:    //Data Write
     void WriteBool(bool val);
-    void WriteByte(Byte val);
-    void WriteChars(char *val);
+    void WriteByte(char val);
+    void WriteChars(const char *val);
+    void WriteChars(const char *val, size_t size, int offset = 0);
     void WriteString(const std::string& val);
+
     template <typename Number>
     int WriteNumber(Number val)
     {
-        Byte bytes[sizeof(val)];
+        char bytes[sizeof(val)];
         int size = NumberToBytes(val, bytes, writeEndian_);
-        WriteBytes(bytes, size);
+        WriteChars(bytes, size);
         return size;
     }
 
 public:    //Data Read
     bool ReadBool();
-    Byte ReadByte();
-    void ReadChars(char *val, int size);
+    char ReadByte();
+    void ReadChars(char *val, size_t size);
     std::string ReadString();
+    bool ReadBytes(char *val, size_t size, int offset = 0);
+
     template <typename Number>
     int ReadNumber(Number *val)
     {
-        int size = sizeof(*val);
-        Byte *bytes = (Byte *)malloc(size);
+        const int size = sizeof(*val);
+        char bytes[size];
         ReadBytes(bytes, size);
         BytesToNumber(val, bytes, readEndian_);
-        free(bytes);
         return size;
     }
 
@@ -62,21 +63,31 @@ public:    //Data Read
     Number Read()
     {
         Number val;
-        int size = sizeof(val);
-        Byte *bytes = (Byte *)malloc(size);
+        const int size = sizeof(val);
+        char bytes[size];
         ReadBytes(bytes, size);
         BytesToNumber(&val, bytes, readEndian_);
-        free(bytes);
         return val;
     }
+
 public:    //Property Access
-    int Size()
+    const char* Data() const
     {
-        return writePos_;
+        return bytesBuf_.data();
     }
 
-    int Available()
+    size_t Size()
     {
+        return bytesBuf_.size();
+    }
+
+    size_t ReadableBytes() const   //还可以读取多少有效字节
+    { 
+        return writePos_ - readPos_; 
+    }
+
+    size_t WritableBytes() const   //还可以写入有效字节
+    { 
         return bytesBuf_.size() - writePos_;
     }
 
@@ -86,8 +97,9 @@ public:    //Property Access
         readEndian_ = readEndian;
     }
 
+private:
     template <typename T>
-    int NumberToBytes(T val, Byte *bytes, Endian endian)
+    int NumberToBytes(T val, char *bytes, Endian endian)
     {
         int size = sizeof(val);
         *(T *)bytes = val;
@@ -102,7 +114,7 @@ public:    //Property Access
         }
     }
     template <typename T>
-    int BytesToNumber(T val, Byte *bytes, Endian endian)
+    int BytesToNumber(T val, char *bytes, Endian endian)
     {
         int size = sizeof(*val);
         if(endian == GetCPUEndian())
@@ -117,18 +129,18 @@ public:    //Property Access
     }
 
     static Endian GetCPUEndian();
-    static void ReversalArray(Byte *bytes, int size);
+    static void ReversalArray(char *bytes, size_t size);
 
 private:
-    bool WriteBytes(Byte *val, int size, int offset = 0);
-    bool ReadBytes(Byte *val, int size, int offset = 0);
+    ByteArray(const ByteArray&);
+    ByteArray& operator=(const ByteArray&);
 
 private:
     Endian      writeEndian_;
     Endian      readEndian_;
 
-    int         writePos_;
-    int         readPos_;
+    size_t         writePos_;
+    size_t         readPos_;
     std::vector<char> bytesBuf_;
 };
 
