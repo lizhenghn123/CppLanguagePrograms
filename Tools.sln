@@ -37,6 +37,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_intrusive_list", "tool
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_smart_pointers", "tools\test_smart_pointers\test_smart_pointers.vcxproj", "{1B526F1A-1C60-4744-9112-1C64BC8BADFB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimeStampTest", "tools\TimeStampTest\TimeStampTest.vcxproj", "{311D0316-401B-43F8-9C9A-8B76F2C5A7C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -111,6 +113,10 @@ Global
 		{1B526F1A-1C60-4744-9112-1C64BC8BADFB}.Debug|Win32.Build.0 = Debug|Win32
 		{1B526F1A-1C60-4744-9112-1C64BC8BADFB}.Release|Win32.ActiveCfg = Release|Win32
 		{1B526F1A-1C60-4744-9112-1C64BC8BADFB}.Release|Win32.Build.0 = Release|Win32
+		{311D0316-401B-43F8-9C9A-8B76F2C5A7C4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{311D0316-401B-43F8-9C9A-8B76F2C5A7C4}.Debug|Win32.Build.0 = Debug|Win32
+		{311D0316-401B-43F8-9C9A-8B76F2C5A7C4}.Release|Win32.ActiveCfg = Release|Win32
+		{311D0316-401B-43F8-9C9A-8B76F2C5A7C4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,5 +139,6 @@ Global
 		{0B6D0049-120C-428D-8650-335725B96B0D} = {B458DE41-F5AB-44F3-9550-77B2880AED0A}
 		{28E519DB-F020-4354-9C80-E5394A70B9A5} = {B458DE41-F5AB-44F3-9550-77B2880AED0A}
 		{1B526F1A-1C60-4744-9112-1C64BC8BADFB} = {B458DE41-F5AB-44F3-9550-77B2880AED0A}
+		{311D0316-401B-43F8-9C9A-8B76F2C5A7C4} = {B458DE41-F5AB-44F3-9550-77B2880AED0A}
 	EndGlobalSection
 EndGlobal

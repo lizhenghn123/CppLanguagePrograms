@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{8D224623-34AB-4DD9-9466-EDB4F6B41C05}</ProjectGuid>
+    <ProjectGuid>{311D0316-401B-43F8-9C9A-8B76F2C5A7C4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>DateTimeTest</RootNamespace>
+    <RootNamespace>TimeStampTest</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -50,7 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -65,23 +65,21 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\base\Date.cpp" />
-    <ClCompile Include="..\..\include\base\DateTimeUtil.cpp" />
-    <ClCompile Include="DateTimeUtilTest.cpp" />
+    <ClCompile Include="..\..\include\base\Timestamp.cpp" />
+    <ClCompile Include="TimeStampTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\base\Date.h" />
-    <ClInclude Include="..\..\include\base\DateTimeUtil.h" />
+    <ClInclude Include="..\..\include\base\Timestamp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

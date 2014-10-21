@@ -1,13 +1,15 @@
-#include "DatetimeUtil.h"
+#include "base/DatetimeUtil.h"
+#include "Define.h"
 #include <time.h>
 #include <stdlib.h>
 
-#ifdef _WIN32
+namespace zl{
+namespace base {
+
+#ifdef OS_WINDOWS
 #define ZL_LOCALTIME(a, b)  localtime_s(b, a)
-#define ZL_SNPRINTF         _snprintf
 #else
 #define ZL_LOCALTIME(a, b)  localtime_r(a, b)
-#define ZL_SNPRINTF         snprintf
 #endif
 
 bool DateTimeUtil::IsLeapYear(int year)
@@ -228,3 +230,6 @@ std::string DateTimeUtil::TimeToString(struct tm *datetime)
     TimeToString(datetime, buf, sizeof(buf));
     return buf;
 }
+
+} // namespace base
+} // namespace zl

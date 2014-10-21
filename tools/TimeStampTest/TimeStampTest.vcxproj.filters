@@ -15,21 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DateTimeUtilTest.cpp">
+    <ClCompile Include="TimeStampTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\base\Date.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\include\base\DateTimeUtil.cpp">
+    <ClCompile Include="..\..\include\base\Timestamp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\base\Date.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\base\DateTimeUtil.h">
+    <ClInclude Include="..\..\include\base\Timestamp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

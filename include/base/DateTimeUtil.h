@@ -13,6 +13,9 @@
 #define ZL_DATETIMEUTIL_H
 #include <string>
 
+namespace zl{
+namespace base {
+
 class DateTimeUtil
 {
 public:
@@ -122,4 +125,6 @@ public:
     static std::string TimeToString(struct tm *datetime);
 };
 
+} // namespace base
+} // namespace zl
 #endif /* ZL_DATETIMEUTIL_H */

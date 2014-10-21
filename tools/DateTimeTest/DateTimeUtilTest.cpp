@@ -1,7 +1,8 @@
 #include <iostream>
-#include "Date.h"
-#include "DateTimeUtil.h"
+#include "base/Date.h"
+#include "base/DateTimeUtil.h"
 using namespace std;
+using namespace zl::base;
 
 void testDate()
 {
