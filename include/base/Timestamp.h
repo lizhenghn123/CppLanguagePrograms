@@ -50,15 +50,15 @@ private:
     zl_time_t  microSeconds_;
 };
 
-//bool operator<(const Timestamp& lhs, const Timestamp& rhs)
-//{
-//    return lhs.MicoSeconds() < rhs.MicoSeconds();
-//}
+inline bool operator<(const Timestamp& lhs, const Timestamp& rhs)
+{
+    return lhs.MicoSeconds() < rhs.MicoSeconds();
+}
 
-//bool operator==(const Timestamp& lhs, const Timestamp& rhs)
-//{
-//    return lhs.MicoSeconds() == rhs.MicoSeconds();
-//}
+inline bool operator==(const Timestamp& lhs, const Timestamp& rhs)
+{
+    return lhs.MicoSeconds() == rhs.MicoSeconds();
+}
 
 } // namespace base
 } // namespace zl
