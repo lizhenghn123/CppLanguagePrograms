@@ -21,6 +21,7 @@
 #include <functional>
 #include <iterator>
 #include <numeric>
+#include <stdint.h>
 #include "OsDefine.h"
 
 #define NAMESPACE_ZL_START        namespace zl {

@@ -28,7 +28,7 @@ NAMESPACE_ZL_THREAD_START
 class Condition : public zl::NonCopy
 {
 public:
-    explicit Condition(Mutex& mu) : mutex_(mu), signaled_(false)
+    explicit Condition(Mutex& mu) : mutex_(mu)
     {
 #ifdef OS_WINDOWS
         InitializeConditionVariable(&condition_);
