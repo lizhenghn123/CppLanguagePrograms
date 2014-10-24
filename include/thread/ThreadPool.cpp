@@ -1,5 +1,5 @@
-﻿#include "ThreadPool.h"
-#include "Thread.h"
+﻿#include "thread/ThreadPool.h"
+#include "thread/Thread.h"
 #include <assert.h>
 NAMESPACE_ZL_THREAD_START
 

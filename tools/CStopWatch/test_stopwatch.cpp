@@ -20,7 +20,7 @@ void MySleep(long millseconds)
 
 int main()
 {
-    ZL::StopWatch watch;
+    zl::StopWatch watch;
     watch.Reset();
     MySleep(1000);
     std::cout << watch.ElapsedTime() << "\n";

@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Define.h"
-#include "SmartAssert.h"
+#include "base/SmartAssert.h"
 using namespace std;
 
 int main()

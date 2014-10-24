@@ -12,7 +12,7 @@
 #ifndef ZL_THREADGROU_H
 #define ZL_THREADGROU_H
 #include "Define.h"
-#include "NonCopy.h"
+#include "base/NonCopy.h"
 #include "thread/Mutex.h"
 NAMESPACE_ZL_THREAD_START
 class Thread;

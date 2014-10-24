@@ -2,7 +2,7 @@
 // Filename         : Semaphore.h
 // Author           : LIZHENG
 // Created          : 2014-06-08
-// Description      : 同步阻塞队列，可工作于多线程环境下，可用于线程之间数据存取
+// Description      : 信号量
 //
 // Last Modified By : LIZHENG
 // Last Modified On : 2014-08-25

@@ -12,7 +12,7 @@
 #ifndef ZL_CONTDITION_H
 #define ZL_CONTDITION_H
 #include "Define.h"
-#include "NonCopy.h"
+#include "base/NonCopy.h"
 #include "thread/Mutex.h"
 #ifdef OS_LINUX
 #include <unistd.h>

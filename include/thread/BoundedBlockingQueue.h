@@ -11,6 +11,7 @@
 // ***********************************************************************
 #ifndef ZL_BOUNDEDBLOCKINGQUEUE_H
 #define ZL_BOUNDEDBLOCKINGQUEUE_H
+#include "Define.h"
 #include <queue>
 #include <stack>
 #include "thread/Mutex.h"

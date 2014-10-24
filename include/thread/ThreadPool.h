@@ -12,9 +12,9 @@
 #ifndef ZL_THREADPOOL_H
 #define ZL_THREADPOOL_H
 #include "Define.h"
-#include "NonCopy.h"
-#include "Mutex.h"
-#include "Condition.h"
+#include "base/NonCopy.h"
+#include "thread/Mutex.h"
+#include "thread/Condition.h"
 NAMESPACE_ZL_THREAD_START
 
 class Thread;

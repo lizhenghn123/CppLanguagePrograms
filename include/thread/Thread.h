@@ -12,7 +12,7 @@
 #ifndef ZL_THREAD_H
 #define ZL_THREAD_H
 #include "Define.h"
-#include "NonCopy.h"
+#include "base/NonCopy.h"
 #include "thread/Mutex.h"
 NAMESPACE_ZL_THREAD_START
 
@@ -22,7 +22,7 @@ typedef HANDLE native_thread_handle;
 typedef pthread_t native_thread_handle;
 #endif
 
-class Thread : NonCopy
+class Thread : zl::NonCopy
 {
 public:
     typedef std::function<void ()> ThreadFunc;

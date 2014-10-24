@@ -16,9 +16,9 @@
 #ifndef ZL_THREADLOCAL_H
 #define ZL_THREADLOCAL_H
 #include "Define.h"
-#include "NonCopy.h"
-#include "Mutex.h"
-#include "Condition.h"
+#include "base/NonCopy.h"
+#include "thread/Mutex.h"
+#include "thread/Condition.h"
 #include <stdio.h>
 #ifdef OS_WINDOWS
 #include <Windows.h>

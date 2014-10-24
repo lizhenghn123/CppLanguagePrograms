@@ -11,7 +11,7 @@
 // ***********************************************************************
 #ifndef ZL_COUNTDOWNLATCH_H
 #define ZL_COUNTDOWNLATCH_H
-#include "NonCopy.h"
+#include "base/NonCopy.h"
 #include "thread/Mutex.h"
 #include "thread/Condition.h"
 NAMESPACE_ZL_THREAD_START

@@ -24,6 +24,10 @@
 #include <stdint.h>
 #include "OsDefine.h"
 
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus > 199711L || __cplusplus == 201103L
+#define ZL_CXX11_ENABLED 1
+#endif
+
 #define NAMESPACE_ZL_START        namespace zl {
 #define NAMESPACE_ZL_END          }  /* namespace zl */
 
@@ -36,6 +40,7 @@
 #define NAMESPACE_ZL_UTIL_START   NAMESPACE_ZL_START namespace util {
 #define NAMESPACE_ZL_UTIL_END     } }  /* namespace zl::util */
 
+
 #ifdef OS_WINDOWS
 #define ZL_SNPRINTF  _snprintf
 #else
@@ -44,10 +49,6 @@
 
 #define Safe_Delete(p)        do { delete p; p = NULL; } while (0)
 #define Safe_Delete_Array(p)  do { delete[] p; p = NULL; } while (0)
-
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus > 199711L || __cplusplus == 201103L
-#define ZL_CXX11_ENABLED 1
-#endif
 
 #ifdef ZL_CXX11_ENABLED
 #define DISALLOW_COPY_AND_ASSIGN(TypeName)            \
@@ -68,13 +69,14 @@
 #else
 #define ZL_ASSERT(expr)                                    \
 			((void) ((expr) ? 0 :                          \
-		    printf("Assertion `%s' failed. called from func %s(%s:%d)\n", \
-			#expr, __FUNCTION__, __FILE__, __LINE__)))
-
+		    printf("%s:%d: %s:  Assertion `%s' failed.\n", \
+			__FILE__, __LINE__, __FUNCTION__, #expr)))
 #define ZL_ASSERTEX(expr, file, lineno, func)              \
 	        ((void) ((expr) ? 0 :                          \
-            printf("Assertion `%s' failed. called from func %s(%s:%d)\n", \
-            #expr, func, file, lineno)))
+		    printf("%s:%d: %s: Assertion `%s' failed. "    \
+		    "(called from %s:%d:%s)\n",                    \
+		     __FILE__, __LINE__, __FUNCTION__, #expr,      \
+            file, lineno, func)))
 #endif
 
 // Compile-time assertion

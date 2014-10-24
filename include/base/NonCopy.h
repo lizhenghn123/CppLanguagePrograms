@@ -1,16 +1,16 @@
-// ***********************************************************************
+Ôªø// ***********************************************************************
 // Filename         : NonCopy.h
 // Author           : LIZHENG
 // Created          : 2014-05-16
-// Description      : Ω˚÷πøΩ±¥ππ‘Ï°¢∏≥÷µππ‘Ï£¨Ω®“ÈprivateºÃ≥–
+// Description      : Á¶ÅÊ≠¢Êã∑Ë¥ùÊûÑÈÄ†„ÄÅËµãÂÄºÊûÑÈÄ†ÔºåÂª∫ËÆÆprivateÁªßÊâø
 //
 // Last Modified By : LIZHENG
 // Last Modified On : 2014-05-16
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
-#ifndef ZL_NONCOPY_FILE_H
-#define ZL_NONCOPY_FILE_H
+#ifndef ZL_NONCOPY_H
+#define ZL_NONCOPY_H
 
 namespace zl
 {
@@ -24,4 +24,5 @@ namespace zl
         const NonCopy& operator=(const NonCopy&);
     };
 }
-#endif /* ZL_NONCOPY_FILE_H */
+
+#endif /* ZL_NONCOPY_H */

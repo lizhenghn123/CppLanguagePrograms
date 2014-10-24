@@ -1,5 +1,16 @@
-#ifndef OSDEFINE_FILE_H
-#define OSDEFINE_FILE_H
+﻿// ***********************************************************************
+// Filename         : OsDefine.h
+// Author           : LIZHENG
+// Created          : 2014-07-01
+// Description      : 平台定义
+//
+// Last Modified By : LIZHENG
+// Last Modified On : 2014-06-21
+//
+// Copyright (c) lizhenghn@gmail.com. All rights reserved.
+// ***********************************************************************
+#ifndef ZL_OSDEFINE_H
+#define ZL_OSDEFINE_H
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 # define OS_WINDOWS
@@ -19,4 +30,4 @@
 #error	"You Must Be Choose One Platform"
 #endif
 
-#endif /* OSDEFINE_FILE_H */
+#endif /* ZL_OSDEFINE_H */

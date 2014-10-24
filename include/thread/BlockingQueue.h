@@ -11,6 +11,7 @@
 // ***********************************************************************
 #ifndef ZL_BLOCKINGQUEUE_H
 #define ZL_BLOCKINGQUEUE_H
+#include "Define.h"
 #include <queue>
 #include <stack>
 #include "thread/Mutex.h"
@@ -74,7 +75,7 @@ public:
         }
         if(stopFlag_)
         {
-            return false;
+            return JobType();
         }
         JobType job;
         PopOne(job, Order());
@@ -144,7 +145,7 @@ private:
     template <typename T>
     bool PopOne(JobType& job, T tag);
 
-    template <>
+    //template <>
     bool PopOne(JobType& job, tagFIFO tag)
     {
         job = queue_.front();
@@ -152,7 +153,7 @@ private:
         return true;
     }
 
-    template <>
+    //template <>
     bool PopOne(JobType& job, tagFILO tag)
     {
         job = queue_.top();
@@ -160,7 +161,7 @@ private:
         return true;
     }
 
-    template <>
+    //template <>
     bool PopOne(JobType& job, tagPRIO tag)
     {
         job = queue_.top();
