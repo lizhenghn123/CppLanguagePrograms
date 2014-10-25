@@ -9,7 +9,6 @@
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
-
 #ifndef ZL_STOPWTACH_H
 #define ZL_STOPWTACH_H
 #include "Define.h"
@@ -43,7 +42,7 @@ public:
     {
         GetTimeOfDay(&start_time, NULL);
     }
-    timeval  Now()
+    static timeval  Now()
     {
         timeval now;
         GetTimeOfDay(&now, NULL);
@@ -82,7 +81,7 @@ private:
     {
         Reset();
     }
-    void GetTimeOfDay(timeval *tv, void *tz)
+    static void GetTimeOfDay(timeval *tv, void *tz)
     {
 #ifdef OS_LINUX
         gettimeofday(tv, tz);
