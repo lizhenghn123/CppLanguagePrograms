@@ -97,7 +97,7 @@ namespace zl
                 {
                     if(expired() == false)
                         weak_node->shared_node->weak_node = 0;
-                    delete weak_node;
+                    delete weak_node; weak_node = 0;
                 }
             }
         }

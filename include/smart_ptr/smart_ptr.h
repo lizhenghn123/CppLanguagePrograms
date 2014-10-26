@@ -14,6 +14,7 @@
 #include "smart_ptr/unique_ptr.h"
 #include "smart_ptr/shared_ptr.h"
 #include "smart_ptr/weak_ptr.h"
+#include "smart_ptr/enable_shared_from_this.h"
 
 namespace zl
 {
@@ -25,6 +26,9 @@ namespace zl
 
     template<typename T>
     class weak_ptr;
+
+    template<class T> 
+    class enable_shared_from_this;
 }
 
 #endif  /* ZL_SMART_PTR_H */

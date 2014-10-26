@@ -102,12 +102,46 @@ void test_weakptr()
 	}
 	cout << "----------------------------------------\n";
 }
+class A : public zl::enable_shared_from_this<A> 
+{     
+public:
+    A() { cout << "A()\n"; }
+    ~A() { cout << "~A()\n"; }
+    zl::shared_ptr<A> Get()
+    {
+        return shared_from_this();
+    }
+    void Print() { cout << "A::Print()\n"; }
+};
+class B
+{     
+public:
+    B() { cout << "B()\n"; }
+    ~B() { cout << "~B()\n"; }
+    zl::shared_ptr<B> Get()
+    {
+        return zl::shared_ptr<B>(this);
+    }
+    void Print() { cout << "B::Print()\n"; }
+};
 int main()
 {
-	test_scoped_ptr();
-	test_share_ptr();
-	test_weakptr();
+    {
+        zl::shared_ptr<A> spa(new A);
+        
 
-	system("pause");
-	return 0;
+        zl::shared_ptr<A> spa1 = spa->Get();
+        zl::shared_ptr<A> spa2 = spa->Get();
+        spa1->Print();
+        spa2->Print();    
+        
+        zl::shared_ptr<B> spb(new B);
+        zl::shared_ptr<B> spb1 = spb->Get();   // core dump, double delete
+    }
+    test_scoped_ptr();
+    test_share_ptr();
+    test_weakptr();
+
+    system("pause");
+    return 0;
 }

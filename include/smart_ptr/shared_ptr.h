@@ -17,6 +17,8 @@
 namespace zl
 {
     template<typename T> class weak_ptr;
+    template<typename T> class shared_ptr;
+    template<typename T> class enable_shared_from_this;
 
     class bad_weak_ptr: public std::exception {};
 
@@ -54,26 +56,42 @@ namespace zl
     struct shared_ptr_dynamic_cast {};
     struct shared_ptr_const_cast {};
 
+    // enable_shared_from_this support
+    namespace detail
+    {
+        template< class X, class Y> 
+        inline void sp_enable_shared_from_this(zl::shared_ptr<X> const * ppx, Y const * py, zl::enable_shared_from_this<Y> const * pe)
+        {
+            if( pe != 0 )
+            {
+                pe->_internal_accept_owner( ppx, const_cast< Y* >( py ) );
+            }
+        }
+
+        inline void sp_enable_shared_from_this( ... )
+        {
+        }
+    }
     /************************************************
     template<typename T> class shared_ptr
     ************************************************/
     template<typename T>
     class shared_ptr
     {
-		struct default_deleter : public shared_ptr_deleter
-		{
-			void destory(const void *ptr)
-			{
-				T *p = (T *)ptr;
-				delete p;
-				p = NULL;
-			}
+        struct default_deleter : public shared_ptr_deleter
+        {
+            void destory(const void *ptr)
+            {
+                T *p = (T *)ptr;
+                delete p;
+                p = NULL;
+            }
 
-			virtual void *get_deleter(const std::type_info&) const
-			{
-				return 0;
-			}
-		};
+            virtual void *get_deleter(const std::type_info&) const
+            {
+                return 0;
+            }
+        };
 
         template <typename D>
         struct deleter_template : public shared_ptr_deleter
@@ -123,9 +141,17 @@ namespace zl
             }
             catch(...)
             {
-                delete p;
+                delete shared_node;
                 throw;
             }
+            zl::detail::sp_enable_shared_from_this(this, p, p);
+        }
+
+        template<typename Y>
+        explicit shared_ptr(const shared_ptr<Y>& p, T *t) : ptr_(t), shared_node(p.shared_node)
+        {
+            if(shared_node)  
+                shared_node->ref_count += 1;
         }
 
         template<typename Y, typename D>
@@ -238,6 +264,7 @@ namespace zl
                         shared_node->weak_node->shared_node = 0;
 
                     delete shared_node;
+                    shared_node = 0;
                 }
                 else
                 {
