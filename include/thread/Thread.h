@@ -34,10 +34,10 @@ public:
     ~Thread();
 
 public:
-    void start();
-    void join();
-    bool joinable() const;
-    void detach();
+    void Start();
+    void Join();
+    bool Joinable() const;
+    void Detach();
 
     /// Return the thread ID of a thread object.
     //id get_id() const;

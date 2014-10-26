@@ -35,7 +35,7 @@ void ThreadPool::Stop()
 {
     running_ = false;
     cond_.NotifyAll();
-    for_each(threads_.begin(), threads_.end(), std::bind(&Thread::join, std::placeholders::_1));
+    for_each(threads_.begin(), threads_.end(), std::bind(&Thread::Join, std::placeholders::_1));
 }
 
 void ThreadPool::Run(const Task& task)

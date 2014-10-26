@@ -47,7 +47,7 @@ void ThreadGroup::RemoveThread(Thread *thd)
 void ThreadGroup::JoinAll()
 {
     MutexLocker lock(mutex_);
-    for_each(vecThreads_.begin(), vecThreads_.end(), std::bind(&Thread::join, std::placeholders::_1));
+    for_each(vecThreads_.begin(), vecThreads_.end(), std::bind(&Thread::Join, std::placeholders::_1));
 }
 
 size_t ThreadGroup::Size() const

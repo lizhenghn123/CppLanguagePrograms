@@ -111,13 +111,13 @@ void test_thread1()
 
 		// Start a bunch of child threads - only run a single thread at a time
 		Thread t1(ThreadIDs);
-		t1.join();
+		t1.Join();
 		Thread t2(ThreadIDs);
-		t2.join();
+		t2.Join();
 		Thread t3(ThreadIDs);
-		t3.join();
+		t3.Join();
 		Thread t4(ThreadIDs);
-		t4.join();
+		t4.Join();
 	}
 
 	// Test 3: thread local storage
@@ -131,7 +131,7 @@ void test_thread1()
 
 		// Start a child thread that modifies gLocalVar
 		Thread t1(ThreadTLS);
-		t1.join();
+		t1.Join();
 
 		// Check if the TLS variable has changed
 		if (gLocalVar == 1)
@@ -159,7 +159,7 @@ void test_thread1()
 		for (it = threadList.begin(); it != threadList.end(); ++it)
 		{
 			Thread * t = *it;
-			t->join();
+			t->Join();
 			delete t;
 		}
 
@@ -183,14 +183,14 @@ void test_thread1()
 			threadList.push_back(new Thread(ThreadCondition1));
 
 		// Wait for the waiting thread to finish
-		t1.join();
+		t1.Join();
 
 		// Wait for the other threads to finish
 		list<Thread *>::iterator it;
 		for (it = threadList.begin(); it != threadList.end(); ++it)
 		{
 			Thread * t = *it;
-			t->join();
+			t->Join();
 			delete t;
 		}
 	}
@@ -211,7 +211,7 @@ void test_thread1()
 		for (it = threadList.begin(); it != threadList.end(); ++it)
 		{
 			Thread * t = *it;
-			t->join();
+			t->Join();
 			delete t;
 		}
 	}
@@ -275,28 +275,28 @@ void test_thread2()
 	cout << "\n" << "PART IX: Detach" << "\n";
 	{
 		Thread t(std::bind(ThreadDetach, 43), "d");
-		t.detach();
+		t.Detach();
 		this_thread::sleep_for(chrono::milliseconds(100));
 		cout << " Detached from thread." << "\n";
 	}
 	{
 		Thread t1(func, "ff");
 		//thread t1(func);
-		t1.join();
+		t1.Join();
 	}
 	{
 		Thread t1(std::bind(func_one, 43), "f");
-		t1.join();
+		t1.Join();
 	}
 	{
 		Thread t1(std::bind(func_two, 43, 123.45), "f");
-		t1.join();
+		t1.Join();
 	}
 	{
 		TestT test;
 		test.num = 101;
 		Thread t1(std::bind(exec_testt, &test));
-		t1.join();
+		t1.Join();
 	}
 }
 
@@ -351,7 +351,7 @@ void test_threadlocalstroage()
 	g_tls->print();
 
 	Thread t1(testTLS);
-	t1.join();
+	t1.Join();
 
 	g_tls->print();
 }

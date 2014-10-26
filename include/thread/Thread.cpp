@@ -71,13 +71,13 @@ Thread::Thread(const ThreadFunc& func, const std::string& name/* = unknown*/)
 
 Thread::~Thread()
 {
-    if(joinable())
+    if(Joinable())
         std::terminate();
 }
 
-void Thread::join()
+void Thread::Join()
 {
-    if(joinable())
+    if(Joinable())
     {
 #if defined(OS_WINDOWS)
         WaitForSingleObject(threadId_, INFINITE);
@@ -88,13 +88,13 @@ void Thread::join()
     }
 }
 
-bool Thread::joinable() const
+bool Thread::Joinable() const
 {
     MutexLocker lock(threadMutex_);
     return !notAThread;
 }
 
-void Thread::detach()
+void Thread::Detach()
 {
     MutexLocker lock(threadMutex_);
     if(!notAThread)
@@ -110,7 +110,7 @@ void Thread::detach()
 
 Thread::id Thread::get_id() const
 {
-    if(!joinable())
+    if(!Joinable())
         return id();
 #if defined(OS_WINDOWS)
     return id((unsigned long int) win32ThreadID_);
