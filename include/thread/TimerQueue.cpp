@@ -25,8 +25,6 @@ TimerQueue::TimerQueue() : thread_(std::bind(&TimerQueue::processThread, this))
 {
     running_ = false;
     timers_.clear();
-    WSADATA wsaData;
-    int ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
 }
 
 void TimerQueue::start()

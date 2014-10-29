@@ -59,7 +59,7 @@ bool createRecursionDir(const char *dir)
     while(pos != std::string::npos)
     {
         std::string cur = dirs.substr(0, pos - 0);
-        if(cur.length() > 0 && !IsDirectory(cur.c_str()))
+        if(cur.length() > 0 && !isDirectory(cur.c_str()))
         {
             bool ret = false;
 #ifdef OS_WINDOWS
@@ -101,7 +101,7 @@ long getFileSize(const char *filepath)
     FILE *file = fopen(filepath, "rb");
     if(file == NULL)
         return -1;
-    long fileSize = GetFileSize(file);
+    long fileSize = getFileSize(file);
     fclose(file);
     return fileSize;
 }
@@ -112,7 +112,7 @@ bool getFileData(const char *filepath, std::string& buf)
     if(file == NULL)
         return false;
 
-    const static int PER_READ_SIZE = 1024;
+    const static size_t PER_READ_SIZE = 1024;
     char data[PER_READ_SIZE];
     size_t size = PER_READ_SIZE;
     while(!feof(file) && size == PER_READ_SIZE)

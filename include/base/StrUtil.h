@@ -33,7 +33,7 @@ namespace zl
     T strTo(const std::string& str)
     {
         T t;
-        std::ostringstream iss(str);
+        std::istringstream iss(str);
         iss >> t;
         return t;
     }

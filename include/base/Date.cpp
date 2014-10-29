@@ -1,5 +1,6 @@
 ﻿#include "base/Date.h"
 #include "Define.h"
+#include <stdio.h>
 #include <time.h>
 
 namespace zl{

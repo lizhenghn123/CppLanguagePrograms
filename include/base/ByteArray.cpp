@@ -1,5 +1,7 @@
 #include "ByteArray.h"
-#include "ByteArray.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 ByteArray::ByteArray(int allocSize)
 {
@@ -102,9 +104,9 @@ Endian ByteArray::getCPUEndian()
     u.i = 1;
 
     if(u.c == 1)
-        return LIT_ENDIAN;
+        return LITENDIAN;
     else
-        return BIG_ENDIAN;
+        return BIGENDIAN;
 }
 
 void ByteArray::reversalArray(char *bytes, size_t size)

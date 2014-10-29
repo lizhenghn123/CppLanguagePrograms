@@ -52,7 +52,7 @@ public:
 #ifdef OS_WINDOWS
         SleepConditionVariableCS(&condition_, mutex_.GetMutex(), INFINITE);
 #elif defined(OS_LINUX)
-        pthread_cond_wait(&condition_, mutex_.GetMutex());
+        pthread_cond_wait(&condition_, mutex_.getMutex());
 #endif
     }
 

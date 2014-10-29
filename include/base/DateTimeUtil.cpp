@@ -1,7 +1,9 @@
-#include "base/DatetimeUtil.h"
+#include "base/DateTimeUtil.h"
 #include "Define.h"
 #include <time.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>   // for snprintf
 
 namespace zl{
 namespace base {

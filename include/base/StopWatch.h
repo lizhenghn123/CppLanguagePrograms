@@ -84,7 +84,7 @@ private:
     static void getTimeOfDay(timeval *tv, void *tz)
     {
 #ifdef OS_LINUX
-        gettimeofday(tv, tz);
+        gettimeofday(tv, NULL);
 #elif defined(OS_WINDOWS)
         typedef unsigned __int64 uint64;
 #define EPOCHFILETIME (116444736000000000ULL)

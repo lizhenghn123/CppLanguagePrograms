@@ -16,8 +16,8 @@
 
 enum Endian
 {
-    BIG_ENDIAN,
-    LIT_ENDIAN
+    BIGENDIAN = 0,
+    LITENDIAN = 1
 };
 
 class ByteArray
