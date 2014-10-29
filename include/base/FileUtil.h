@@ -16,14 +16,14 @@
 NAMESPACE_ZL_START
 
 // ------------------------  file utils  ------------------------
-bool  IsDirectory(const char *dir);
+bool  isDirectory(const char *dir);
 
-bool  CreateRecursionDir(const char *dir);
+bool  createRecursionDir(const char *dir);
 
-bool  IsFileExist(const char *filepath);
-long  GetFileSize(FILE *file);
-long  GetFileSize(const char *filepath);
-bool  GetFileData(const char *filepath, std::string& buf);
+bool  isFileExist(const char *filepath);
+long  getFileSize(FILE *file);
+long  getFileSize(const char *filepath);
+bool  getFileData(const char *filepath, std::string& buf);
 
 
 NAMESPACE_ZL_END

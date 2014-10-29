@@ -27,71 +27,71 @@ public:
     ~ByteArray();
 
 public:    //Data Write
-    void WriteBool(bool val);
-    void WriteByte(char val);
-    void WriteChars(const char *val);
-    void WriteChars(const char *val, size_t size, int offset = 0);
-    void WriteString(const std::string& val);
+    void writeBool(bool val);
+    void writeByte(char val);
+    void writeChars(const char *val);
+    void writeChars(const char *val, size_t size, int offset = 0);
+    void writeString(const std::string& val);
 
     template <typename Number>
-    int WriteNumber(Number val)
+    int writeNumber(Number val)
     {
         char bytes[sizeof(val)];
-        int size = NumberToBytes(val, bytes, writeEndian_);
-        WriteChars(bytes, size);
+        int size = numberToBytes(val, bytes, writeEndian_);
+        writeChars(bytes, size);
         return size;
     }
 
 public:    //Data Read
-    bool ReadBool();
-    char ReadByte();
-    void ReadChars(char *val, size_t size);
-    std::string ReadString();
-    bool ReadBytes(char *val, size_t size, int offset = 0);
+    bool readBool();
+    char readByte();
+    void readChars(char *val, size_t size);
+    std::string readString();
+    bool readBytes(char *val, size_t size, int offset = 0);
 
     template <typename Number>
-    int ReadNumber(Number *val)
+    int readNumber(Number *val)
     {
         const int size = sizeof(*val);
         char bytes[size];
-        ReadBytes(bytes, size);
-        BytesToNumber(val, bytes, readEndian_);
+        readBytes(bytes, size);
+        bytesToNumber(val, bytes, readEndian_);
         return size;
     }
 
     template <typename Number>
-    Number Read()
+    Number read()
     {
         Number val;
         const int size = sizeof(val);
         char bytes[size];
-        ReadBytes(bytes, size);
-        BytesToNumber(&val, bytes, readEndian_);
+        readBytes(bytes, size);
+        bytesToNumber(&val, bytes, readEndian_);
         return val;
     }
 
 public:    //Property Access
-    const char* Data() const
+    const char* data() const
     {
         return bytesBuf_.data();
     }
 
-    size_t Size()
+    size_t size()
     {
         return bytesBuf_.size();
     }
 
-    size_t ReadableBytes() const   //还可以读取多少有效字节
+    size_t readableBytes() const   //还可以读取多少有效字节
     { 
         return writePos_ - readPos_; 
     }
 
-    size_t WritableBytes() const   //还可以写入有效字节
+    size_t writableBytes() const   //还可以写入有效字节
     { 
         return bytesBuf_.size() - writePos_;
     }
 
-    void SetEndian(Endian writeEndian, Endian readEndian)
+    void setEndian(Endian writeEndian, Endian readEndian)
     {
         writeEndian_ = writeEndian;
         readEndian_ = readEndian;
@@ -99,37 +99,37 @@ public:    //Property Access
 
 private:
     template <typename T>
-    int NumberToBytes(T val, char *bytes, Endian endian)
+    int numberToBytes(T val, char *bytes, Endian endian)
     {
         int size = sizeof(val);
         *(T *)bytes = val;
-        if(endian == GetCPUEndian())
+        if(endian == getCPUEndian())
         {
             return size;
         }
         else
         {
-            ReversalArray(bytes, size);
+            reversalArray(bytes, size);
             return size;
         }
     }
     template <typename T>
-    int BytesToNumber(T val, char *bytes, Endian endian)
+    int bytesToNumber(T val, char *bytes, Endian endian)
     {
         int size = sizeof(*val);
-        if(endian == GetCPUEndian())
+        if(endian == getCPUEndian())
         {
         }
         else
         {
-            ReversalArray(bytes, size);
+            reversalArray(bytes, size);
         }
         *val = *(T)bytes;
         return size;
     }
 
-    static Endian GetCPUEndian();
-    static void ReversalArray(char *bytes, size_t size);
+    static Endian getCPUEndian();
+    static void reversalArray(char *bytes, size_t size);
 
 private:
     ByteArray(const ByteArray&);

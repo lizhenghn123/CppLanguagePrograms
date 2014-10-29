@@ -41,61 +41,61 @@ public:
 
     virtual ~BlockingQueue()
     {
-        Stop();
+        stop();
     }
 
 public:
-    virtual void Push(const JobType& job)
+    virtual void push(const JobType& job)
     {
         LockGuard lock(mutex_);
         queue_.push(job);
-        has_job_.NotifyOne();
+        has_job_.notify_one();
     }
 
-    virtual bool Pop(JobType& job)
+    virtual bool pop(JobType& job)
     {
         LockGuard lock(mutex_);
         while(queue_.empty() && !stopFlag_)
         {
-            has_job_.Wait();
+            has_job_.wait();
         }
         if(stopFlag_)
         {
             return false;
         }
-        return PopOne(job, Order());
+        return popOne(job, Order());
     }
 
-    virtual JobType Pop()
+    virtual JobType pop()
     {
         LockGuard lock(mutex_);
         while(queue_.empty() && !stopFlag_)
         {
-            has_job_.Wait();
+            has_job_.wait();
         }
         if(stopFlag_)
         {
             return JobType();
         }
         JobType job;
-        PopOne(job, Order());
+        popOne(job, Order());
         return job;
     }
 
-    virtual bool TryPop(JobType& job)
+    virtual bool try_pop(JobType& job)
     {
         LockGuard lock(mutex_);
         if(queue_.empty() && !stopFlag_)
             return false;
-        return PopOne(job, Order());
+        return popOne(job, Order());
     }
 
-    virtual bool Pop(std::vector<JobType>& vec, int pop_size = 1)
+    virtual bool pop(std::vector<JobType>& vec, int pop_size = 1)
     {
         LockGuard lock(mutex_);
         while(queue_.empty() && !stopFlag_)
         {
-            has_job_.Wait();
+            has_job_.wait();
         }
         if(stopFlag_)
         {
@@ -105,7 +105,7 @@ public:
         while (num < pop_size)
         {
             JobType job;
-            if(!PopOne(job, Order()))
+            if(!popOne(job, Order()))
                 break;
             else
             {
@@ -116,26 +116,26 @@ public:
         return true;
     }
 
-    virtual void Stop()
+    virtual void stop()
     {
         stopFlag_ = true;
-        has_job_.NotifyAll();
+        has_job_.notify_all();
     }
 
-    size_t Size()
+    size_t size()
     {
         LockGuard lock(mutex_);
         return queue_.size();
     }
 
-    bool Empty()
+    bool empty()
     {
         LockGuard lock(mutex_);
         return queue_.empty();
     }
 
     template < typename Func >
-    void Foreach(const Func& func)
+    void foreach(const Func& func)
     {
         LockGuard lock(mutex_);
         std::for_each(queue_.begin(), queue_.end(), func);
@@ -143,10 +143,10 @@ public:
 
 private:
     template <typename T>
-    bool PopOne(JobType& job, T tag);
+    bool popOne(JobType& job, T tag);
 
     //template <>
-    bool PopOne(JobType& job, tagFIFO tag)
+    bool popOne(JobType& job, tagFIFO tag)
     {
         job = queue_.front();
         queue_.pop();
@@ -154,7 +154,7 @@ private:
     }
 
     //template <>
-    bool PopOne(JobType& job, tagFILO tag)
+    bool popOne(JobType& job, tagFILO tag)
     {
         job = queue_.top();
         queue_.pop();
@@ -162,7 +162,7 @@ private:
     }
 
     //template <>
-    bool PopOne(JobType& job, tagPRIO tag)
+    bool popOne(JobType& job, tagPRIO tag)
     {
         job = queue_.top();
         queue_.pop();

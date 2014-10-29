@@ -7,11 +7,11 @@ using namespace zl::base;
 void testDate()
 {
     Date d(2014, 9, 17);
-    cout << d.ToString() << "\n";
+    cout << d.toString() << "\n";
     Date d2 = d + 3;
-    cout << d2.DaysDiff(d) << "\n";
+    cout << d2.daysDiff(d) << "\n";
     Date d3 = d + 245;
-    cout << Date::DaysDiff(d, d3) << "\n";
+    cout << Date::daysDiff(d, d3) << "\n";
     cout << (d < d3) << "\n";
 }
 
@@ -37,9 +37,9 @@ int main()
         cout << sizeof(sss) << "\t" << sizeof(*sss) << "\n";
     }
     {
-        cout << DateTimeUtil::CurrentDateTime() << "\n";
-        cout << DateTimeUtil::CurrentDate() << "\n";
-        cout << DateTimeUtil::CurrentTime() << "\n";
+        cout << DateTimeUtil::currentDateTime() << "\n";
+        cout << DateTimeUtil::currentDate() << "\n";
+        cout << DateTimeUtil::currentTime() << "\n";
     }
     cout << "\n--------------------------\n";
     testDate();

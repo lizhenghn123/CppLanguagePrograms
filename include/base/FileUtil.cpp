@@ -12,7 +12,7 @@
 
 NAMESPACE_ZL_START
 
-bool IsDirectory(const char *path)
+bool isDirectory(const char *path)
 {
 #ifdef OS_WINDOWS
     return PathIsDirectoryA(path) ? true : false;
@@ -28,7 +28,7 @@ bool IsDirectory(const char *path)
 #endif
 }
 
-void ModifyDirPath(std::string& path) // 修改目录路径为X/Y/Z/
+void modifyDirPath(std::string& path) // 修改目录路径为X/Y/Z/
 {
     if(path.empty())
     {
@@ -47,13 +47,13 @@ void ModifyDirPath(std::string& path) // 修改目录路径为X/Y/Z/
     }
 }
 
-bool CreateRecursionDir(const char *dir)
+bool createRecursionDir(const char *dir)
 {
     std::string dirs(dir);
     if(dirs.empty())
         return true;
 
-    ModifyDirPath(dirs);
+    modifyDirPath(dirs);
 
     std::string::size_type pos = dirs.find('/');
     while(pos != std::string::npos)
@@ -78,7 +78,7 @@ bool CreateRecursionDir(const char *dir)
     return true;
 }
 
-bool IsFileExist(const char *filepath)
+bool isFileExist(const char *filepath)
 {
     FILE *file = fopen(filepath, "rb");
     return file != NULL;
@@ -86,7 +86,7 @@ bool IsFileExist(const char *filepath)
     //return infile.good();
 }
 
-long GetFileSize(FILE *file)
+long getFileSize(FILE *file)
 {
     if(file == NULL)
         return -1;
@@ -96,7 +96,7 @@ long GetFileSize(FILE *file)
     return fileSize;
 }
 
-long GetFileSize(const char *filepath)
+long getFileSize(const char *filepath)
 {
     FILE *file = fopen(filepath, "rb");
     if(file == NULL)
@@ -106,7 +106,7 @@ long GetFileSize(const char *filepath)
     return fileSize;
 }
 
-bool GetFileData(const char *filepath, std::string& buf)
+bool getFileData(const char *filepath, std::string& buf)
 {
     FILE *file = fopen(filepath, "rb");
     if(file == NULL)

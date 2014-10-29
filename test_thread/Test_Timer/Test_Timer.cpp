@@ -13,28 +13,28 @@ void func(Timer * timer, void *data)
 int main()
 {
     {
-        TimerQueue::instance()->Start();
+        TimerQueue::instance()->start();
         int i = 1, j=2, m=3, n=4;
         Timer a(1000,func,(void *)&i,Timer::TIMER_CIRCLE);
         Timer a1(2000,func,(void *)&j,Timer::TIMER_ONCE);
         Timer a2(3000,func,(void *)&m,Timer::TIMER_ONCE);
         Timer a3(1000,func,(void *)&n,Timer::TIMER_CIRCLE);
         Sleep(2000);
-        a.Start();
-        a1.Start();
-        a2.Start();
-        a3.Start();
+        a.start();
+        a1.start();
+        a2.start();
+        a3.start();
         //a.Start();
         //a1.Start();
         //a2.Start();
         //a3.Start();
 
-        a.Reset(2000);
-        a1.Stop();
-        a3.Stop();
+        a.reset(2000);
+        a1.stop();
+        a3.stop();
         //while(1);
         Sleep(20000);
-        a.Stop();
+        a.stop();
         printf("stop timer over\n");
     }
     system("pause");

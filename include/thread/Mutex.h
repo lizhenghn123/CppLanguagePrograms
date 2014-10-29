@@ -30,15 +30,15 @@ class Mutex
 public:
     Mutex()
     {
-        Init_();
+        init_();
     }
     ~Mutex()
     {
-        Close_();
+        close_();
     }
 
 public:
-    void Lock()
+    void lock()
     {
 #ifdef	OS_WINDOWS
         EnterCriticalSection(&mutex_);
@@ -50,7 +50,7 @@ public:
 #endif
     }
 
-    bool TryLock() //const
+    bool try_lock() //const
     {
 #ifdef	OS_WINDOWS
 #if(_WIN32_WINNT >= 0x0400)
@@ -69,7 +69,7 @@ public:
 #endif
     }
 
-    void Unlock()
+    void unlock()
     {
 #ifdef	OS_WINDOWS
         LeaveCriticalSection(&mutex_);
@@ -84,14 +84,14 @@ public:
 #ifdef	OS_WINDOWS
     CRITICAL_SECTION	*GetMutex()
 #elif defined(OS_LINUX)
-    pthread_mutex_t	*GetMutex()
+    pthread_mutex_t	*getMutex()
 #endif
     {
         return &mutex_;
     }
 
 private:
-    void Init_()
+    void init_()
     {
 #ifdef	OS_WINDOWS
 #if (_WIN32_WINNT >= 0x0403)
@@ -103,7 +103,7 @@ private:
 #endif
     }
 
-    void Close_()
+    void close_()
     {
 #ifdef	OS_WINDOWS
         DeleteCriticalSection(&mutex_);
@@ -132,23 +132,23 @@ public:
     }
 
 public:
-    void Lock()
+    void lock()
     {
     }
 
-    bool TryLock()
+    bool try_lock()
     {
         return true;
     }
 
-    void Unlock()
+    void unlock()
     {
     }
 
 #ifdef	OS_WINDOWS
     CRITICAL_SECTION	*GetMutex()
 #elif defined(OS_LINUX)
-    pthread_mutex_t	*GetMutex()
+    pthread_mutex_t	*getMutex()
 #endif
     {
         return NULL;
@@ -161,14 +161,14 @@ class RWMutex
 public:
     RWMutex()
     {
-        Init_();
+        init_();
     }
     ~RWMutex()
     {
-        Close_();
+        close_();
     }
 public:
-    bool ReadLock()
+    bool readLock()
     {
 #ifdef	OS_WINDOWS
         ::AcquireSRWLockShared(&rwlock_);
@@ -177,7 +177,7 @@ public:
         return pthread_rwlock_rdlock(&rwlock_) == 0;
 #endif
     }
-    bool ReadUnLock()
+    bool readUnLock()
     {
 #ifdef	OS_WINDOWS
         ::ReleaseSRWLockShared(&rwlock_);
@@ -186,7 +186,7 @@ public:
         return pthread_rwlock_unlock(&rwlock_) == 0;
 #endif
     }
-    bool WriteLock()
+    bool writeLock()
     {
 #ifdef	OS_WINDOWS
         ::AcquireSRWLockExclusive(&rwlock_);
@@ -195,7 +195,7 @@ public:
         return pthread_rwlock_wrlock(&rwlock_) == 0;
 #endif
     }
-    bool WriteUnLock()
+    bool writeUnLock()
     {
 #ifdef	OS_WINDOWS
         ::ReleaseSRWLockExclusive(&rwlock_);
@@ -204,7 +204,7 @@ public:
         return pthread_rwlock_unlock(&rwlock_) == 0;
 #endif
     }
-    bool TryReadLock()
+    bool tryReadLock()
     {
 #ifdef	OS_WINDOWS
         return ::TryAcquireSRWLockShared(&rwlock_) == TRUE;
@@ -212,7 +212,7 @@ public:
         return pthread_rwlock_tryrdlock(&rwlock_) == 0;
 #endif
     }
-    bool TryWriteLock()
+    bool tryWriteLock()
     {
 #ifdef	OS_WINDOWS
         return ::TryAcquireSRWLockShared(&rwlock_) == TRUE;
@@ -222,7 +222,7 @@ public:
     }
 
 private:
-    void Init_()
+    void init_()
     {
 #ifdef	OS_WINDOWS
         ::InitializeSRWLock(&rwlock_);
@@ -230,7 +230,7 @@ private:
         pthread_rwlock_init(&rwlock_, NULL);
 #endif
     }
-    void Close_()
+    void close_()
     {
 #ifdef	OS_WINDOWS
         //nothing
@@ -254,11 +254,11 @@ class MutexLocker
 public:
     explicit MutexLocker(Mutex& mutex) : mutex_(mutex)
     {
-        mutex_.Lock();
+        mutex_.lock();
     }
     ~MutexLocker()
     {
-        mutex_.Unlock();
+        mutex_.unlock();
     }
 private:
     mutable Mutex& mutex_;
@@ -270,12 +270,12 @@ class MutexTryLocker
 public:
     explicit MutexTryLocker(Mutex& mutex) : mutex_(mutex)
     {
-        isLocked_ = mutex_.TryLock();
+        isLocked_ = mutex_.try_lock();
     }
     ~MutexTryLocker()
     {
         if(isLocked_)
-            mutex_.Unlock();
+            mutex_.unlock();
     }
     bool IsLocked()
     {
@@ -293,11 +293,11 @@ class RWMutexReadLocker
 public:
     explicit RWMutexReadLocker(RWMutex& mutex) : mutex_(mutex)
     {
-        mutex_.ReadLock();
+        mutex_.readLock();
     }
     ~RWMutexReadLocker()
     {
-        mutex_.ReadUnLock();
+        mutex_.readUnLock();
     }
 private:
     mutable RWMutex& mutex_;
@@ -309,12 +309,12 @@ class RWMutexReadTryLocker
 public:
     explicit RWMutexReadTryLocker(RWMutex& mutex) : mutex_(mutex)
     {
-        isLocked_ = mutex_.TryReadLock();
+        isLocked_ = mutex_.tryReadLock();
     }
     ~RWMutexReadTryLocker()
     {
         if(isLocked_)
-            mutex_.ReadUnLock();
+            mutex_.readUnLock();
     }
     bool IsLocked()
     {
@@ -332,11 +332,11 @@ class RWMutexWriteLocker
 public:
     explicit RWMutexWriteLocker(RWMutex& mutex) : mutex_(mutex)
     {
-        mutex_.WriteLock();
+        mutex_.writeLock();
     }
     ~RWMutexWriteLocker()
     {
-        mutex_.WriteUnLock();
+        mutex_.writeUnLock();
     }
 private:
     mutable RWMutex& mutex_;
@@ -348,12 +348,12 @@ class RWMutexWriteTryLocker
 public:
     explicit RWMutexWriteTryLocker(RWMutex& mutex) : mutex_(mutex)
     {
-        isLocked_ = mutex_.TryWriteLock();
+        isLocked_ = mutex_.tryWriteLock();
     }
     ~RWMutexWriteTryLocker()
     {
         if(isLocked_)
-            mutex_.WriteUnLock();
+            mutex_.writeUnLock();
     }
     bool IsLocked()
     {

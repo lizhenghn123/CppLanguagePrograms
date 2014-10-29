@@ -22,34 +22,34 @@ public:
     * @param  str      IP地址字符串
     * @return          如果str为广播地址，则返回true，否则返回false
     */
-    static bool        IsBroadcastAddress(const char *str);
+    static bool        isBroadcastAddress(const char *str);
 
     /**
     * @brief           判断给定的字符串是否为一个IPv4或IPv6地址
     * @param  str      IP地址字符串
     * @return          如果是一个IP地址，则返回true，否则返回false
     */
-    static bool        IsValidIp(const char *str);
+    static bool        isValidIp(const char *str);
 
     /**
     * @brief           判断给定的字符串是否为一个IPv4地址
     * @param  str      IP地址字符串
     * @return          如果是一个IPv4地址，则返回true，否则返回false
     */
-    static bool        IsValidIpv4(const char *str);
+    static bool        isValidIpv4(const char *str);
 
     /**
     * @brief           判断给定的字符串是否为一个IPv6地址
     * @param  str      IP地址字符串
     * @return          如果是一个IPv6地址，则返回true，否则返回false
     */
-    static bool        IsValidIpv6(const char *str);
+    static bool        isValidIpv6(const char *str);
 
     /**
     * @brief           CPU大小端，字节序判断
     * @return          如果是小端字节序，如果是返回true，否则返回false
     */
-    static bool        IsLittleEndian();
+    static bool        isLittleEndian();
 
     /**
     * @brief           反转字节序，以便在网络上传输
@@ -57,7 +57,7 @@ public:
     * @param  result   反转后的字节
     * @param  length   反转的长度
     */
-    static void        ReverseBytes(const void *source, void *result, size_t length);
+    static void        reverseBytes(const void *source, void *result, size_t length);
 
     /**
     * @brief           反转字节序，以便在网络上传输
@@ -65,10 +65,10 @@ public:
     * @return          反转后的字节
     */
     template <typename DataType>
-    static DataType    ReverseBytes(const DataType& source)
+    static DataType    reverseBytes(const DataType& source)
     {
         DataType result = 0;
-        ReverseBytes(&source, &result, sizeof(result));
+        reverseBytes(&source, &result, sizeof(result));
         return result;
     }
 
@@ -78,9 +78,9 @@ public:
     * @param  result   反转后的字节
     */
     template <typename DataType>
-    static void        ReverseBytes(const DataType *source, DataType *result)
+    static void        reverseBytes(const DataType *source, DataType *result)
     {
-        ReverseBytes(source, result, sizeof(DataType));
+        reverseBytes(source, result, sizeof(DataType));
     }
 
     /**
@@ -89,7 +89,7 @@ public:
     * @param  result   存放转换后的网络字节序结果数据
     * @param  length   需要转换的字节长度
     */
-    static void        Host2Net(const void *source, void *result, size_t length);
+    static void        host2Net(const void *source, void *result, size_t length);
 
     /**
     * @brief           将源数据从主机字节序转换成网络字节序
@@ -97,9 +97,9 @@ public:
     * @param  result   存放转换后的网络字节序结果数据
     */
     template <typename DataType>
-    static void        Host2Net(const DataType& source, DataType& result)
+    static void        host2Net(const DataType& source, DataType& result)
     {
-        Host2Net(&source, &result, sizeof(result));
+        host2Net(&source, &result, sizeof(result));
     }
 
     /**
@@ -108,10 +108,10 @@ public:
     * @return          存放转换后的网络字节序结果数据
     */
     template <typename DataType>
-    static DataType    Host2Net(const DataType& source)
+    static DataType    host2Net(const DataType& source)
     {
         DataType result;
-        Host2Net(&source, &result, sizeof(result));
+        host2Net(&source, &result, sizeof(result));
         return result;
     }
 
@@ -121,7 +121,7 @@ public:
     * @param  result   存放转换后的主机字节序结果数据
     * @param  length   需要转换的字节长度
     */
-    static void        Net2Host(const void *source, void *result, size_t length);
+    static void        net2Host(const void *source, void *result, size_t length);
 
     /**
     * @brief           将源数据从网络字节序转换成主机字节序
@@ -129,9 +129,9 @@ public:
     * @param  result   存放转换后的主机字节序结果数据
     */
     template <typename DataType>
-    static void        Net2Host(const DataType& source, DataType& result)
+    static void        net2Host(const DataType& source, DataType& result)
     {
-        Host2Net<DataType>(source, result);
+        host2Net<DataType>(source, result);
     }
 
     /**
@@ -140,9 +140,9 @@ public:
     * @return          转换后的主机字节序结果数据
     */
     template <typename DataType>
-    static DataType Net2Host(const DataType& source)
+    static DataType net2Host(const DataType& source)
     {
-        return Host2Net<DataType>(source);
+        return host2Net<DataType>(source);
     }
 };
 

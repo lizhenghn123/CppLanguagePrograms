@@ -36,26 +36,26 @@ template <typename Queue>
 
         ~JobWorker()
         {
-            Stop();
+            stop();
         }
 
-        void Start()
+        void start()
         {
             if(threads_.size() > 0) return;
             for(int i = 0; i < thread_num_; ++i)
             {
-                threads_.create_thread(boost::bind(&JobWorker::DoWork, this));
+                threads_.create_thread(boost::bind(&JobWorker::doWork, this));
             }
         }
 
         template<typename Func>
-        void Start(FunctionType function)
+        void start(FunctionType function)
         {
             function_ = function;
-            Start();
+            start();
         }
 
-        void Stop()
+        void stop()
         {
             function_ = 0;
             queue_.Stop();
@@ -64,12 +64,12 @@ template <typename Queue>
         }
 
     private:
-        void DoWork() //主体。反复检查工作队列数据，只要有数据就处理，知道处理工作完成
+        void doWork() //主体。反复检查工作队列数据，只要有数据就处理，知道处理工作完成
         {
             for(;;)
             {
                 JobType job;
-                bool bret = queue_.Pop(job);
+                bool bret = queue_.pop(job);
                 if(!function_ || !function_(job))
                 {
                     //break;

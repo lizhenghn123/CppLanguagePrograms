@@ -27,26 +27,26 @@ public:
 
     }
 
-    void Wait()
+    void wait()
     {
         MutexLocker guard(mutex_);
         while(count_ > 0)
         {
-            condition_.Wait();
+            condition_.wait();
         }
     }
 
-    void CountDown()
+    void countDown()
     {
         MutexLocker guard(mutex_);
         --count_;
         if(count_ == 0)
         {
-            condition_.NotifyAll();
+            condition_.notify_all();
         }
     }
 
-    int GetCount() const
+    int getCount() const
     {
         MutexLocker guard(mutex_);
         return count_;

@@ -30,19 +30,19 @@ void test_insert_int()
 
 	HighPrecisionTime watch;
 
-	watch.Reset();
+	watch.reset();
 	for (int i = 0 ; i< MAX_SIZE; i++)
 	{
 		list1.push_back(myArr1[i]);
 	}
-	std::cout<<"insert " << MAX_SIZE << " ints to list,   cost "<<watch.ElapsedTimeInMill()<<" ms\n";
+	std::cout<<"insert " << MAX_SIZE << " ints to list,   cost "<<watch.elapsedTimeInMill()<<" ms\n";
 
-	watch.Reset();
+	watch.reset();
 	for (int i = 0 ; i< MAX_SIZE; i++)
 	{
 		vec1.push_back(myArr1[i]);
 	}
-	std::cout<<"insert " << MAX_SIZE << " ints to vector, cost "<<watch.ElapsedTimeInMill()<<" ms\n";
+	std::cout<<"insert " << MAX_SIZE << " ints to vector, cost "<<watch.elapsedTimeInMill()<<" ms\n";
 }
 
 //当是string等拷贝代价比较大时，明显list插入更快，因为此时vector的拷贝移动代价更大
@@ -58,19 +58,19 @@ void test_insert_string()
 
 	HighPrecisionTime watch;
 
-	watch.Reset();
+	watch.reset();
 	for (int i = 0 ; i< MAX_SIZE; i++)
 	{
 		list2.push_back(myArr2[i]);
 	}
-	std::cout<<"insert " << MAX_SIZE << " strings to list,   cost "<<watch.ElapsedTimeInMill()<<" ms\n";
+	std::cout<<"insert " << MAX_SIZE << " strings to list,   cost "<<watch.elapsedTimeInMill()<<" ms\n";
 
-	watch.Reset();
+	watch.reset();
 	for (int i = 0 ; i< MAX_SIZE; i++)
 	{
 		vec2.push_back(myArr2[i]);
 	}
-	std::cout<<"insert " << MAX_SIZE << " strings to vector, cost "<<watch.ElapsedTimeInMill()<<" ms\n";
+	std::cout<<"insert " << MAX_SIZE << " strings to vector, cost "<<watch.elapsedTimeInMill()<<" ms\n";
 }
 
 /****************************************************************
@@ -97,7 +97,7 @@ void test_insert_int_keep_order()
 
 	HighPrecisionTime watch;
 
-	watch.Reset();
+	watch.reset();
 	for(int i = 0; i < MAX_SIZE; i++)  //将随机数插入到list中，且保持排序状态
 	{
 		int value = myArr[i];
@@ -113,9 +113,9 @@ void test_insert_int_keep_order()
 		if(it == myList.end())
 			myList.push_back(value);
 	}
-	std::cout<<"insert " << MAX_SIZE << " ints to list, and keep order,   cost "<<watch.ElapsedTimeInMill()<<" ms\n";
+	std::cout<<"insert " << MAX_SIZE << " ints to list, and keep order,   cost "<<watch.elapsedTimeInMill()<<" ms\n";
 
-	watch.Reset();
+	watch.reset();
 	for(int i = 0; i < MAX_SIZE; i++)  //将随机数插入到vector中，且保持排序状态
 	{
 		int value = myArr[i];
@@ -131,7 +131,7 @@ void test_insert_int_keep_order()
 		if(it == myVec.end())
 			myVec.push_back(value);
 	}
-	std::cout<<"insert " << MAX_SIZE << " ints to vector, and keep order, cost "<<watch.ElapsedTimeInMill()<<" ms\n";
+	std::cout<<"insert " << MAX_SIZE << " ints to vector, and keep order, cost "<<watch.elapsedTimeInMill()<<" ms\n";
 }
 
 int main()

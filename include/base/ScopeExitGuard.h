@@ -1,5 +1,5 @@
 // ***********************************************************************
-// Filename         : ScopeExitGuard.hpp
+// Filename         : ScopeExitGuard.h
 // Author           : LIZHENG
 // Created          : 2014-10-01
 // Description      : RAII类，用于资源释放、清理
@@ -74,20 +74,20 @@ public:
 
     ScopeExitGuard(const ScopeExitGuard& h)
     {
-        Cleanup();
+        cleanup();
         handle_ = h.handle_;
     }
 
     ~ScopeExitGuard()
     {
-        Cleanup();
+        cleanup();
     }
 
     ScopeExitGuard& operator=(const ScopeExitGuard& rhs)
     {
         if(&rhs != this)
         {
-            Cleanup();
+            cleanup();
             handle_ = rhs.handle_;
         }
         return (*this);
@@ -97,40 +97,40 @@ public:
     {
         if(hande != handle_)
         {
-            Cleanup();
+            cleanup();
             handle_ = hande;
         }
         return handle_;
     }
 
-    value_type& Get()
+    value_type& get()
     {
         return handle_;
     }
 
-    const value_type& Get() const
+    const value_type& get() const
     {
         return handle_;
     }
 
-    bool IsValid() const
+    bool isValid() const
     {
         return handle_ != NULL_VALUE;
     }
 
     operator bool() const
     {
-        return IsValid();
+        return isValid();
     }
 
-    value_type Detach()
+    value_type detach()
     {
         value_type hHandle = handle_;
         handle_ = NULL_VALUE;
         return hHandle;
     }
 
-    void Cleanup()
+    void cleanup()
     {
         if (handle_ != NULL_VALUE)
         {

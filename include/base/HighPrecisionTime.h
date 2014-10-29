@@ -13,29 +13,29 @@ public:
     HighPrecisionTime()
     {
         ::QueryPerformanceFrequency(&m_liPerfFreq);
-        Start();
+        start();
     }
 
-    void Reset()
+    void reset()
     {
         LARGE_INTEGER liPerfNow;
         ::QueryPerformanceCounter(&liPerfNow);
         m_liPerfStart = liPerfNow;
     }
 
-    long long Now()
+    long long now()
     {
         LARGE_INTEGER liPerfNow;
         ::QueryPerformanceCounter(&liPerfNow);
         return liPerfNow.QuadPart;
     }
 
-    long long GetFreq()
+    long long getFreq()
     {
         return m_liPerfFreq.QuadPart;
     }
 
-    double ElapsedTime()
+    double elapsedTime()
     {
         LARGE_INTEGER liPerfNow;
         ::QueryPerformanceCounter(&liPerfNow);
@@ -43,14 +43,14 @@ public:
         return ((liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1.0) / m_liPerfFreq.QuadPart ;
     }
 
-    double ElapsedTimeInMill()
+    double elapsedTimeInMill()
     {
         LARGE_INTEGER liPerfNow;
         ::QueryPerformanceCounter(&liPerfNow);
 
         return ((liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1000.0) / m_liPerfFreq.QuadPart ;
     }
-    double ElapsedTimeInMicro()
+    double elapsedTimeInMicro()
     {
         LARGE_INTEGER liPerfNow;
         ::QueryPerformanceCounter(&liPerfNow);
@@ -58,7 +58,7 @@ public:
         return ((liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1000000.0) / m_liPerfFreq.QuadPart ;
     }
 private:
-    void Start()
+    void start()
     {
         ::QueryPerformanceCounter(&m_liPerfStart);
     }

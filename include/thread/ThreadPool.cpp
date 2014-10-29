@@ -12,11 +12,11 @@ ThreadPool::~ThreadPool()
 {
     if (running_)
     {
-        Stop();
+        stop();
     }
 }
 
-void ThreadPool::Start(int numThreads)
+void ThreadPool::start(int numThreads)
 {
     if (running_)
         return;
@@ -27,18 +27,18 @@ void ThreadPool::Start(int numThreads)
     {
         char id[32];
         ZL_SNPRINTF(id, sizeof id, "%d", i);
-        threads_.push_back(new Thread(std::bind(&ThreadPool::ExecuteThread, this), name_ + id));
+        threads_.push_back(new Thread(std::bind(&ThreadPool::executeThread, this), name_ + id));
     }
 }
 
-void ThreadPool::Stop()
+void ThreadPool::stop()
 {
     running_ = false;
-    cond_.NotifyAll();
-    for_each(threads_.begin(), threads_.end(), std::bind(&Thread::Join, std::placeholders::_1));
+    cond_.notify_all();
+    for_each(threads_.begin(), threads_.end(), std::bind(&Thread::join, std::placeholders::_1));
 }
 
-void ThreadPool::Run(const Task& task)
+void ThreadPool::run(const Task& task)
 {
     if (threads_.empty())
     {
@@ -48,17 +48,17 @@ void ThreadPool::Run(const Task& task)
     {
         MutexLocker guard(mutex_);
         queue_.push_back(task);
-        cond_.NotifyOne();
+        cond_.notify_one();
     }
 }
 
-void ThreadPool::ExecuteThread()
+void ThreadPool::executeThread()
 {
     try
     {
         while (running_)
         {
-            Task task(PopOne());
+            Task task(popOne());
             if (task)
             {
                 /*bool ret = */task();
@@ -72,12 +72,12 @@ void ThreadPool::ExecuteThread()
     }
 }
 
-ThreadPool::Task ThreadPool::PopOne()
+ThreadPool::Task ThreadPool::popOne()
 {
     MutexLocker guard(mutex_);
     while (queue_.empty() && running_)
     {
-        cond_.Wait();
+        cond_.wait();
     }
     if(!running_)
         return Task();

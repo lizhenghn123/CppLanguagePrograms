@@ -32,70 +32,70 @@ public:
 	ProcessTimeCounter();
 
 public:
-	void        Start();
-	void        Stop();
+	void        start();
+	void        stop();
 
 public:
-	// Kernel
+	// kernel
 	/// \brief The elapsed count in the measurement period for kernel mode activity
 	///
 	/// This represents the extent, in machine-specific increments, of the measurement period for kernel mode activity
-	interval_type   KernelPeriodCount() const;
+	interval_type   kernelPeriodCount() const;
 	/// \brief The number of whole seconds in the measurement period for kernel mode activity
 	///
 	/// This represents the extent, in whole seconds, of the measurement period for kernel mode activity
-	interval_type   KernelSeconds() const;
+	interval_type   kernelSeconds() const;
 	/// \brief The number of whole milliseconds in the measurement period for kernel mode activity
 	///
 	/// This represents the extent, in whole milliseconds, of the measurement period for kernel mode activity
-	interval_type   KernelMillSeconds() const;
+	interval_type   kernelMillSeconds() const;
 	/// \brief The number of whole microseconds in the measurement period for kernel mode activity
 	///
 	/// This represents the extent, in whole microseconds, of the measurement period for kernel mode activity
-	interval_type   KernelMicroseconds() const;
+	interval_type   kernelMicroseconds() const;
 
-	// User
+	// user
 	/// \brief The elapsed count in the measurement period for user mode activity
 	///
 	/// This represents the extent, in machine-specific increments, of the measurement period for user mode activity
-	interval_type   UserPeriodCount() const;
+	interval_type   userPeriodCount() const;
 	/// \brief The number of whole seconds in the measurement period for user mode activity
 	///
 	/// This represents the extent, in whole seconds, of the measurement period for user mode activity
-	interval_type   UserSeconds() const;
+	interval_type   userSeconds() const;
 	/// \brief The number of whole milliseconds in the measurement period for user mode activity
 	///
 	/// This represents the extent, in whole milliseconds, of the measurement period for user mode activity
-	interval_type   UserMillSeconds() const;
+	interval_type   userMillSeconds() const;
 	/// \brief The number of whole microseconds in the measurement period for user mode activity
 	///
 	/// This represents the extent, in whole microseconds, of the measurement period for user mode activity
-	interval_type   UserMicroSeconds() const;
+	interval_type   userMicroSeconds() const;
 
 	// Total
 	/// \brief The elapsed count in the measurement period
 	///
 	/// This represents the extent, in machine-specific increments, of the measurement period
-	interval_type   PeriodCount() const;
+	interval_type   periodCount() const;
 	/// \brief The number of whole seconds in the measurement period
 	///
 	/// This represents the extent, in whole seconds, of the measurement period
-	interval_type   Seconds() const;
+	interval_type   seconds() const;
 	/// \brief The number of whole milliseconds in the measurement period
 	///
 	/// This represents the extent, in whole milliseconds, of the measurement period
-	interval_type   MillSeconds() const;
+	interval_type   millSeconds() const;
 	/// \brief The number of whole microseconds in the measurement period
 	///
 	/// This represents the extent, in whole microseconds, of the measurement period
-	interval_type   MicroSeconds() const;
+	interval_type   microSeconds() const;
 
 private:
 #ifdef OS_LINUX
 	typedef struct timeval timeval_t;
 #else
 	typedef __int64        timeval_t;
-	static HANDLE   ProcessHandle();
+	static HANDLE   processHandle();
 #endif
 	timeval_t   m_kernelStart;
 	timeval_t   m_kernelEnd;
@@ -111,7 +111,7 @@ inline ProcessTimeCounter::ProcessTimeCounter()
 }
 
 #if defined(OS_LINUX)
-inline void ProcessTimeCounter::Start()
+inline void ProcessTimeCounter::start()
 {
 	struct rusage   r_usage;
 
@@ -121,7 +121,7 @@ inline void ProcessTimeCounter::Start()
 	m_userStart     =   r_usage.ru_utime;
 }
 
-inline void ProcessTimeCounter::Stop()
+inline void ProcessTimeCounter::stop()
 {
 	struct rusage   r_usage;
 
@@ -131,13 +131,13 @@ inline void ProcessTimeCounter::Stop()
 	m_userEnd       =   r_usage.ru_utime;
 }
 
-// Kernel
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelPeriodCount() const
+// kernel
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::kernelPeriodCount() const
 {
-	return KernelMicroseconds();
+	return kernelmicroseconds();
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::kernelSeconds() const
 {
 	assert("end before start: stop() must be called after start()" && m_kernelStart.tv_sec <= m_kernelEnd.tv_sec);
 
@@ -149,7 +149,7 @@ inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelSeconds() con
 	return secs + usecs / (1000 * 1000);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelMillSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::kernelMillSeconds() const
 {
 	assert("end before start: stop() must be called after start()" && m_kernelStart.tv_sec <= m_kernelEnd.tv_sec);
 
@@ -161,7 +161,7 @@ inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelMillSeconds()
 	return secs * 1000 + usecs / 1000;
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelMicroseconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::kernelMicroseconds() const
 {
 	assert("end before start: stop() must be called after start()" && m_kernelStart.tv_sec <= m_kernelEnd.tv_sec);
 
@@ -173,13 +173,13 @@ inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelMicroseconds(
 	return secs * (1000 * 1000) + usecs;
 }
 
-// User
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserPeriodCount() const
+// user
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::userPeriodCount() const
 {
-	return UserMicroSeconds();
+	return usermicroSeconds();
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::userSeconds() const
 {
 	assert("end before start: stop() must be called after start()" && m_userStart.tv_sec <= m_userEnd.tv_sec);
 
@@ -191,7 +191,7 @@ inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserSeconds() const
 	return secs + usecs / (1000 * 1000);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserMillSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::userMillSeconds() const
 {
 	assert("end before start: stop() must be called after start()" &&  m_userStart.tv_sec <= m_userEnd.tv_sec);
 
@@ -203,7 +203,7 @@ inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserMillSeconds() c
 	return secs * 1000 + usecs / 1000;
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserMicroSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::userMicroSeconds() const
 {
 	assert("end before start: stop() must be called after start()" &&  m_userStart.tv_sec <= m_userEnd.tv_sec);
 
@@ -216,106 +216,106 @@ inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserMicroSeconds() 
 }
 
 // Total
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::PeriodCount() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::periodCount() const
 {
-	return KernelPeriodCount() + UserPeriodCount();
+	return kernelPeriodCount() + userPeriodCount();
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::Seconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::seconds() const
 {
-	return PeriodCount() / interval_type(10000000);
+	return periodCount() / interval_type(10000000);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::MillSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::millSeconds() const
 {
-	return PeriodCount() / interval_type(10000);
+	return periodCount() / interval_type(10000);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::MicroSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::microSeconds() const
 {
 	return PeriodCount() / interval_type(10);
 }
 #elif defined(OS_WINDOWS)
-inline /* static */ HANDLE ProcessTimeCounter::ProcessHandle()
+inline /* static */ HANDLE ProcessTimeCounter::processHandle()
 {
 	static HANDLE   s_hProcess = ::GetCurrentProcess();
 	return s_hProcess;
 }
 
-inline void ProcessTimeCounter::Start()
+inline void ProcessTimeCounter::start()
 {
 	FILETIME    creationTime;
 	FILETIME    exitTime;
 
-	::GetProcessTimes(ProcessHandle(), &creationTime, &exitTime, reinterpret_cast<LPFILETIME>(&m_kernelStart), reinterpret_cast<LPFILETIME>(&m_userStart));
+	::GetProcessTimes(processHandle(), &creationTime, &exitTime, reinterpret_cast<LPFILETIME>(&m_kernelStart), reinterpret_cast<LPFILETIME>(&m_userStart));
 }
 
-inline void ProcessTimeCounter::Stop()
+inline void ProcessTimeCounter::stop()
 {
 	FILETIME    creationTime;
 	FILETIME    exitTime;
 
-	::GetProcessTimes(ProcessHandle(), &creationTime, &exitTime, reinterpret_cast<LPFILETIME>(&m_kernelEnd), reinterpret_cast<LPFILETIME>(&m_userEnd));
+	::GetProcessTimes(processHandle(), &creationTime, &exitTime, reinterpret_cast<LPFILETIME>(&m_kernelEnd), reinterpret_cast<LPFILETIME>(&m_userEnd));
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelPeriodCount() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::kernelPeriodCount() const
 {
 	return static_cast<interval_type>(m_kernelEnd - m_kernelStart);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::kernelSeconds() const
 {
-	return KernelPeriodCount() / interval_type(10000000);
+	return kernelPeriodCount() / interval_type(10000000);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelMillSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::kernelMillSeconds() const
 {
-	return KernelPeriodCount() / interval_type(10000);
+	return kernelPeriodCount() / interval_type(10000);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::KernelMicroseconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::kernelMicroseconds() const
 {
-	return KernelPeriodCount() / interval_type(10);
+	return kernelPeriodCount() / interval_type(10);
 }
 
-// User
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserPeriodCount() const
+// user
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::userPeriodCount() const
 {
 	return static_cast<interval_type>(m_userEnd - m_userStart);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::userSeconds() const
 {
-	return UserPeriodCount() / interval_type(10000000);
+	return userPeriodCount() / interval_type(10000000);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserMillSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::userMillSeconds() const
 {
-	return UserPeriodCount() / interval_type(10000);
+	return userPeriodCount() / interval_type(10000);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::UserMicroSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::userMicroSeconds() const
 {
-	return UserPeriodCount() / interval_type(10);
+	return userPeriodCount() / interval_type(10);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::PeriodCount() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::periodCount() const
 {
-	return KernelPeriodCount() + UserPeriodCount();
+	return kernelPeriodCount() + userPeriodCount();
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::Seconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::seconds() const
 {
-	return PeriodCount() / interval_type(10000000);
+	return periodCount() / interval_type(10000000);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::MillSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::millSeconds() const
 {
-	return PeriodCount() / interval_type(10000);
+	return periodCount() / interval_type(10000);
 }
 
-inline ProcessTimeCounter::interval_type ProcessTimeCounter::MicroSeconds() const
+inline ProcessTimeCounter::interval_type ProcessTimeCounter::microSeconds() const
 {
-	return PeriodCount() / interval_type(10);
+	return periodCount() / interval_type(10);
 }
 #endif

@@ -15,14 +15,14 @@
 
 // len == strlen(src), and strlen(dst) >= len * 4 / 3
 // 返回编码后的字符串长度
-int         Base64Encode(const char *src, int len, char *dst);
-int         Base64Encode(const char *src, int len, std::string& dst);
-int         Base64Encode(const std::string& src, std::string& dst);
+int         base64Encode(const char *src, int len, char *dst);
+int         base64Encode(const char *src, int len, std::string& dst);
+int         base64Encode(const std::string& src, std::string& dst);
 
 // len == strlen(src), and strlen(dst) >= len * 3 / 4
 // 返回解码后的字符串长度
-int         Base64Decode(const char *src, size_t len, char *dst);
-int         Base64Decode(const char *src, int len, std::string& dst);
-int         Base64Decode(const std::string& src, std::string& dst);
+int         base64Decode(const char *src, size_t len, char *dst);
+int         base64Decode(const char *src, int len, std::string& dst);
+int         base64Decode(const std::string& src, std::string& dst);
 
 #endif  /* ZL_BASE64_H */

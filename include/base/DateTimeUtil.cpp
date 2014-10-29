@@ -12,35 +12,35 @@ namespace base {
 #define ZL_LOCALTIME(a, b)  localtime_r(a, b)
 #endif
 
-bool DateTimeUtil::IsLeapYear(int year)
+bool DateTimeUtil::isLeapYear(int year)
 {
     return ((0 == year % 4) && (year % 100 != 0)) || (0 == year % 400);
 }
 
-void DateTimeUtil::CurrentDateTime(struct tm *ptm)
+void DateTimeUtil::currentDateTime(struct tm *ptm)
 {
     time_t now = time(NULL);
     ZL_LOCALTIME(&now, ptm);
 }
 
-void DateTimeUtil::CurrentDateTime(char *buf, size_t size)
+void DateTimeUtil::currentDateTime(char *buf, size_t size)
 {
     struct tm result;
-    CurrentDateTime(&result);
+    currentDateTime(&result);
 
     ZL_SNPRINTF(buf, size, "%04d-%02d-%02d %02d:%02d:%02d"
                 , result.tm_year + 1900, result.tm_mon + 1, result.tm_mday
                 , result.tm_hour, result.tm_min, result.tm_sec);
 }
 
-std::string DateTimeUtil::CurrentDateTime()
+std::string DateTimeUtil::currentDateTime()
 {
     char buf[sizeof("YYYY-MM-DD HH:SS:MM")];
-    CurrentDateTime(buf, sizeof(buf));
+    currentDateTime(buf, sizeof(buf));
     return buf;
 }
 
-void DateTimeUtil::CurrentDate(char *buffer, size_t size)
+void DateTimeUtil::currentDate(char *buffer, size_t size)
 {
     struct tm result;
     time_t now = time(NULL);
@@ -49,14 +49,14 @@ void DateTimeUtil::CurrentDate(char *buffer, size_t size)
     ZL_SNPRINTF(buffer, size, "%04d-%02d-%02d", result.tm_year + 1900, result.tm_mon + 1, result.tm_mday);
 }
 
-std::string DateTimeUtil::CurrentDate()
+std::string DateTimeUtil::currentDate()
 {
     char buffer[sizeof("YYYY-MM-DD")];
-    CurrentDate(buffer, sizeof(buffer));
+    currentDate(buffer, sizeof(buffer));
     return buffer;
 }
 
-void DateTimeUtil::CurrentTime(char *buffer, size_t size)
+void DateTimeUtil::currentTime(char *buffer, size_t size)
 {
     time_t now = time(NULL);
     struct tm result;
@@ -64,14 +64,14 @@ void DateTimeUtil::CurrentTime(char *buffer, size_t size)
     ZL_SNPRINTF(buffer, size, "%02d:%02d:%02d", result.tm_hour, result.tm_min, result.tm_sec);
 }
 
-std::string DateTimeUtil::CurrentTime()
+std::string DateTimeUtil::currentTime()
 {
     char time_buffer[sizeof("HH:SS:MM")];
-    CurrentTime(time_buffer, sizeof(time_buffer));
+    currentTime(time_buffer, sizeof(time_buffer));
     return time_buffer;
 }
 
-bool DateTimeUtil::StringToDataTime(const char *strTime, struct tm *datetime)
+bool DateTimeUtil::stringToDataTime(const char *strTime, struct tm *datetime)
 {
     const char *pos = strTime;
 
@@ -96,7 +96,7 @@ bool DateTimeUtil::StringToDataTime(const char *strTime, struct tm *datetime)
     if(datetime->tm_mday < 1)
         return false;
     // 闰年二月29天
-    if((DateTimeUtil::IsLeapYear(datetime->tm_year)) && (2 == datetime->tm_mon) && (datetime->tm_mday > 29))
+    if((DateTimeUtil::isLeapYear(datetime->tm_year)) && (2 == datetime->tm_mon) && (datetime->tm_mday > 29))
         return false;
     else if(datetime->tm_mday > 28)
         return false;
@@ -137,7 +137,7 @@ bool DateTimeUtil::StringToDataTime(const char *strTime, struct tm *datetime)
             }
             else if(2 == i)
             {
-                if(DateTimeUtil::IsLeapYear(datetime->tm_year))
+                if(DateTimeUtil::isLeapYear(datetime->tm_year))
                     datetime->tm_yday += 29;
                 else
                     datetime->tm_yday += 28;
@@ -155,7 +155,7 @@ bool DateTimeUtil::StringToDataTime(const char *strTime, struct tm *datetime)
 
     int year_base;
     int *month_base;
-    if(DateTimeUtil::IsLeapYear(datetime->tm_year))
+    if(DateTimeUtil::isLeapYear(datetime->tm_year))
     {
         year_base = 2;
         month_base = leap_month_base;
@@ -182,52 +182,52 @@ bool DateTimeUtil::StringToDataTime(const char *strTime, struct tm *datetime)
     return true;
 }
 
-bool DateTimeUtil::StringToDataTime(const char *strTime, time_t *datetime)
+bool DateTimeUtil::stringToDataTime(const char *strTime, time_t *datetime)
 {
     struct tm result;
-    if(!StringToDataTime(strTime, &result))
+    if(!stringToDataTime(strTime, &result))
         return false;
 
     *datetime = mktime(&result);
     return true;
 }
 
-void DateTimeUtil::DateTimeToString(struct tm *datetime, char *buf, size_t size)
+void DateTimeUtil::dateTimeToString(struct tm *datetime, char *buf, size_t size)
 {
     ZL_SNPRINTF(buf, size, "%04d-%02d-%02d %02d:%02d:%02d"
                 , datetime->tm_year + 1900, datetime->tm_mon + 1, datetime->tm_mday
                 , datetime->tm_hour, datetime->tm_min, datetime->tm_sec);
 }
 
-std::string DateTimeUtil::DateTimeToString(struct tm *datetime)
+std::string DateTimeUtil::dateTimeToString(struct tm *datetime)
 {
     char buf[sizeof("YYYY-MM-DD HH:SS:MM")];
-    DateTimeToString(datetime, buf, sizeof(buf));
+    dateTimeToString(datetime, buf, sizeof(buf));
     return buf;
 }
 
-void DateTimeUtil::DateToString(struct tm *datetime, char *buf, size_t size)
+void DateTimeUtil::dateToString(struct tm *datetime, char *buf, size_t size)
 {
     ZL_SNPRINTF(buf, size, "%04d-%02d-%02d"
                 , datetime->tm_year + 1900, datetime->tm_mon + 1, datetime->tm_mday);
 }
 
-std::string DateTimeUtil::DateToString(struct tm *datetime)
+std::string DateTimeUtil::dateToString(struct tm *datetime)
 {
     char buf[sizeof("YYYY-MM-DD")];
-    DateToString(datetime, buf, sizeof(buf));
+    dateToString(datetime, buf, sizeof(buf));
     return buf;
 }
 
-void DateTimeUtil::TimeToString(struct tm *datetime, char *buf, size_t size)
+void DateTimeUtil::timeToString(struct tm *datetime, char *buf, size_t size)
 {
     ZL_SNPRINTF(buf, size, "%02d:%02d:%02d", datetime->tm_hour, datetime->tm_min, datetime->tm_sec);
 }
 
-std::string DateTimeUtil::TimeToString(struct tm *datetime)
+std::string DateTimeUtil::timeToString(struct tm *datetime)
 {
     char buf[sizeof("HH:SS:MM")];
-    TimeToString(datetime, buf, sizeof(buf));
+    timeToString(datetime, buf, sizeof(buf));
     return buf;
 }
 

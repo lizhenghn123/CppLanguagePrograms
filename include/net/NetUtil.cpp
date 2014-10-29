@@ -3,17 +3,17 @@
 #include <string.h>
 NAMESPACE_ZL_NET_START
 
-bool NetUtil::IsBroadcastAddress(const char *str)
+bool NetUtil::isBroadcastAddress(const char *str)
 {
     return (NULL == str) ? false : (0 == strcmp(str, "255.255.255.255"));
 }
 
-bool NetUtil::IsValidIp(const char *str)
+bool NetUtil::isValidIp(const char *str)
 {
-    return IsValidIpv4(str) || IsValidIpv6(str);
+    return isValidIpv4(str) || isValidIpv6(str);
 }
 
-bool NetUtil::IsValidIpv4(const char *str)
+bool NetUtil::isValidIpv4(const char *str)
 {
     if((NULL == str) || (0 == str[0]) || ('0' == str[0])) return false;
     if(0 == strcmp(str, "*")) return true;
@@ -46,14 +46,14 @@ bool NetUtil::IsValidIpv4(const char *str)
     return (3 == dot);  // .的个数必须为3
 }
 
-bool NetUtil::IsValidIpv6(const char *str)
+bool NetUtil::isValidIpv6(const char *str)
 {
     const char *pos = strchr(str, ':');
     if(NULL == pos) return false;
     return strchr(pos, ':') != NULL;
 }
 
-bool NetUtil::IsLittleEndian()
+bool NetUtil::isLittleEndian()
 {
     //Little-endian模式的CPU对操作数的存放方式是从低字节到高字节，而Big-endian模式对操作数的存放方式是从高字节到低字节。
     //[大小端存储问题]: 小端方式中（i占至少两个字节的长度）,i所分配的内存最小地址那个字节中就存着1，其他字节是0.
@@ -75,7 +75,7 @@ bool NetUtil::IsLittleEndian()
     //return *(char *)&i == 0x1;  // this is ok
 }
 
-void NetUtil::ReverseBytes(const void *source, void *result, size_t length)
+void NetUtil::reverseBytes(const void *source, void *result, size_t length)
 {
     char *source_begin = (char *)source;
     char *result_end = ((char *)result) + length;
@@ -84,15 +84,15 @@ void NetUtil::ReverseBytes(const void *source, void *result, size_t length)
         *(--result_end) = source_begin[i];
 }
 
-void NetUtil::Host2Net(const void *source, void *result, size_t length)
+void NetUtil::host2Net(const void *source, void *result, size_t length)
 {
-    if(IsLittleEndian())   //只有小字节序才需要转换，大字节序和网络字节序是一致的
-        ReverseBytes(source, result, length);
+    if(isLittleEndian())   //只有小字节序才需要转换，大字节序和网络字节序是一致的
+        reverseBytes(source, result, length);
 }
 
-void NetUtil::Net2Host(const void *source, void *result, size_t length)
+void NetUtil::net2Host(const void *source, void *result, size_t length)
 {
-    Host2Net(source, result, length);
+    host2Net(source, result, length);
 }
 
 NAMESPACE_ZL_NET_END

@@ -30,20 +30,20 @@ public:
     InetAddress(const char *ip, uint16_t port);
     InetAddress(const ZL_SOCKADDR_IN& addr);
 
-    static bool Resolve(const char *hostname, InetAddress *addr);
+    static bool resolve(const char *hostname, InetAddress *addr);
 
 public:
-    uint16_t Port() const;
-    std::string IP() const;
-    std::string IpPort() const;
+    uint16_t port() const;
+    std::string ip() const;
+    std::string ipPort() const;
 
-    size_t AddressLength() const { return sizeof(addr_); }
+    size_t addressLength() const { return sizeof(addr_); }
 
-    const ZL_SOCKADDR_IN& GetSockAddrInet() const { return addr_; }
-    void SetSockAddrInet(const ZL_SOCKADDR_IN& addr) { addr_ = addr; }
+    const ZL_SOCKADDR_IN& getSockAddrInet() const { return addr_; }
+    void setSockAddrInet(const ZL_SOCKADDR_IN& addr) { addr_ = addr; }
 
-    uint32_t IpNetEndian() const { return addr_.sin_addr.s_addr; }
-    uint16_t PortNetEndian() const { return addr_.sin_port; }
+    uint32_t ipNetEndian() const { return addr_.sin_addr.s_addr; }
+    uint16_t portNetEndian() const { return addr_.sin_port; }
 
 private:
     ZL_SOCKADDR_IN  addr_;

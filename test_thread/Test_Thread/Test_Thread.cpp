@@ -67,7 +67,7 @@ void ThreadCondition1()
 {
 	MutexLocker lock(gMutex);
 	-- gCount;
-	gCond.NotifyAll();
+	gCond.notify_all();
 }
 
 // Thread function: Condition waiter
@@ -78,7 +78,7 @@ void ThreadCondition2()
 	while(gCount > 0)
 	{
 		cout << "." << flush;
-		gCond.Wait();
+		gCond.wait();
 	}
 	cout << "." << endl;
 }
@@ -111,13 +111,13 @@ void test_thread1()
 
 		// Start a bunch of child threads - only run a single thread at a time
 		Thread t1(ThreadIDs);
-		t1.Join();
+		t1.join();
 		Thread t2(ThreadIDs);
-		t2.Join();
+		t2.join();
 		Thread t3(ThreadIDs);
-		t3.Join();
+		t3.join();
 		Thread t4(ThreadIDs);
-		t4.Join();
+		t4.join();
 	}
 
 	// Test 3: thread local storage
@@ -131,7 +131,7 @@ void test_thread1()
 
 		// Start a child thread that modifies gLocalVar
 		Thread t1(ThreadTLS);
-		t1.Join();
+		t1.join();
 
 		// Check if the TLS variable has changed
 		if (gLocalVar == 1)
@@ -159,7 +159,7 @@ void test_thread1()
 		for (it = threadList.begin(); it != threadList.end(); ++it)
 		{
 			Thread * t = *it;
-			t->Join();
+			t->join();
 			delete t;
 		}
 
@@ -183,14 +183,14 @@ void test_thread1()
 			threadList.push_back(new Thread(ThreadCondition1));
 
 		// Wait for the waiting thread to finish
-		t1.Join();
+		t1.join();
 
 		// Wait for the other threads to finish
 		list<Thread *>::iterator it;
 		for (it = threadList.begin(); it != threadList.end(); ++it)
 		{
 			Thread * t = *it;
-			t->Join();
+			t->join();
 			delete t;
 		}
 	}
@@ -211,7 +211,7 @@ void test_thread1()
 		for (it = threadList.begin(); it != threadList.end(); ++it)
 		{
 			Thread * t = *it;
-			t->Join();
+			t->join();
 			delete t;
 		}
 	}
@@ -275,47 +275,47 @@ void test_thread2()
 	cout << "\n" << "PART IX: Detach" << "\n";
 	{
 		Thread t(std::bind(ThreadDetach, 43), "d");
-		t.Detach();
+		t.detach();
 		this_thread::sleep_for(chrono::milliseconds(100));
 		cout << " Detached from thread." << "\n";
 	}
 	{
 		Thread t1(func, "ff");
 		//thread t1(func);
-		t1.Join();
+		t1.join();
 	}
 	{
 		Thread t1(std::bind(func_one, 43), "f");
-		t1.Join();
+		t1.join();
 	}
 	{
 		Thread t1(std::bind(func_two, 43, 123.45), "f");
-		t1.Join();
+		t1.join();
 	}
 	{
 		TestT test;
 		test.num = 101;
 		Thread t1(std::bind(exec_testt, &test));
-		t1.Join();
+		t1.join();
 	}
 }
 
 void test_threadpoll()
 {
 	ThreadPool pool("ThreadPool");
-	pool.Start(10);
+	pool.start(10);
 
-	pool.Run(func);
-	pool.Run(std::bind(func_one, 12345));
+	pool.run(func);
+	pool.run(std::bind(func_one, 12345));
 	for (int i = 0; i < 15; ++i)
 	{
-		pool.Run(std::bind(func_two, i, i * 2.0));
+		pool.run(std::bind(func_two, i, i * 2.0));
 	}
 	this_thread::sleep_for(chrono::milliseconds(1000));
 	//CountDownLatch latch(1);
 	//pool.Run(std::bind(&CountDownLatch::CountDown, &latch));
 	//latch.Wait();
-	pool.Stop();
+	pool.stop();
 }
 
 class TestTLS
@@ -351,7 +351,7 @@ void test_threadlocalstroage()
 	g_tls->print();
 
 	Thread t1(testTLS);
-	t1.Join();
+	t1.join();
 
 	g_tls->print();
 }
@@ -359,11 +359,11 @@ void test_threadlocalstroage()
 void test_threadgroup()
 {
 	ThreadGroup tg;
-	tg.CreateThread(func, 1);
-	tg.CreateThread(std::bind(func_one, 12), 2);
-	tg.CreateThread(std::bind(func_two, 6, 8), 3);
+	tg.create_thread(func, 1);
+	tg.create_thread(std::bind(func_one, 12), 2);
+	tg.create_thread(std::bind(func_two, 6, 8), 3);
 
-	tg.JoinAll();
+	tg.join_all();
 }
 
 int main()

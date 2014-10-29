@@ -332,14 +332,14 @@ void Test_FlatBuffer_Performance()
 	std::string flatbufs;
 	flatbufs.reserve(10000);
 
-	ZL::StopWatch watch;
+	zl::StopWatch watch;
 	for (int idx = 0; idx < LOOP; idx++) 
 	{
 		flatbufs.clear();
 		flatbufs = encode_persons();
 	}
 
-	double time = watch.ElapsedTimeInMill();
+	double time = watch.elapsedTimeInMill();
 	printf("loop = %d, time diff = %lf ms, or %lf s\n", LOOP, time, time/1000);
 }
 

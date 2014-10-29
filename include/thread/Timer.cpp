@@ -16,27 +16,27 @@ Timer::Timer(unsigned int interval,void (*func)(Timer *,void *),void *args,Timer
 Timer::~Timer()
 {
     if(timer_state_==TIMER_ALIVE)
-        Stop();
+        stop();
 }
 
-void Timer::Start()
+void Timer::start()
 {
-    TimerQueue::instance()->AddTimer(this);
+    TimerQueue::instance()->addTimer(this);
 }
 
-void Timer::Stop()
+void Timer::stop()
 {
-    TimerQueue::instance()->DeleteTimer(this);
+    TimerQueue::instance()->deleteTimer(this);
 }
 
-void Timer::Reset(unsigned int interval)
+void Timer::reset(unsigned int interval)
 {
-    TimerQueue::instance()->DeleteTimer(this);
+    TimerQueue::instance()->deleteTimer(this);
     timer_duration_ = timer_interval_= interval;
-    TimerQueue::instance()->AddTimer(this);
+    TimerQueue::instance()->addTimer(this);
 }
 
-bool Timer::Trigger()
+bool Timer::trigger()
 {
     ++trigger_sum_;
     if(callback_)

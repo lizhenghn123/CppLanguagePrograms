@@ -5,7 +5,7 @@ using namespace std;
 void test()
 {
 	ProcessTimeCounter pc;
-	pc.Start();
+	pc.start();
 	long long sum = 1;
 	for (int i = 1; i < 20; ++i)
 	{
@@ -16,24 +16,24 @@ void test()
 
 	for (int i = 1; i < 200; ++i)
 		cout << "hello world ";
-	pc.Stop();
+	pc.stop();
 
 	cout << "---------------------\n";
 
-	std::cout << "KernelPeriodCount : " << pc.KernelPeriodCount() << std::endl;
-	std::cout << "KernelSeconds     : " << pc.KernelSeconds() << std::endl;
-	std::cout << "KernelMillSeconds : " << pc.KernelMillSeconds() << std::endl;
-	std::cout << "KernelMicroseconds: " << pc.KernelMicroseconds() << std::endl;
+	std::cout << "kernelPeriodCount : " << pc.kernelPeriodCount() << std::endl;
+	std::cout << "kernelSeconds     : " << pc.kernelSeconds() << std::endl;
+	std::cout << "kernelMillSeconds : " << pc.kernelMillSeconds() << std::endl;
+	std::cout << "kernelMicroseconds: " << pc.kernelMicroseconds() << std::endl;
 
-	std::cout << "UserPeriodCount   : " << pc.UserPeriodCount() << std::endl;
-	std::cout << "UserSeconds       : " << pc.UserSeconds() << std::endl;
-	std::cout << "UserMillSeconds   : " << pc.UserMillSeconds() << std::endl;
-	std::cout << "UserMicroSeconds  : " << pc.UserMicroSeconds() << std::endl;
+	std::cout << "userPeriodCount   : " << pc.userPeriodCount() << std::endl;
+	std::cout << "userSeconds       : " << pc.userSeconds() << std::endl;
+	std::cout << "userMillSeconds   : " << pc.userMillSeconds() << std::endl;
+	std::cout << "userMicroSeconds  : " << pc.userMicroSeconds() << std::endl;
 
-	std::cout << "PeriodCount       : " << pc.PeriodCount() << std::endl;
-	std::cout << "Seconds           : " << pc.Seconds() << std::endl;
-	std::cout << "MillSeconds       : " << pc.MillSeconds() << std::endl;
-	std::cout << "MicroSeconds      : " << pc.MicroSeconds() << std::endl;
+	std::cout << "PeriodCount       : " << pc.periodCount() << std::endl;
+	std::cout << "Seconds           : " << pc.seconds() << std::endl;
+	std::cout << "MillSeconds       : " << pc.millSeconds() << std::endl;
+	std::cout << "MicroSeconds      : " << pc.microSeconds() << std::endl;
 }
 int main()
 {

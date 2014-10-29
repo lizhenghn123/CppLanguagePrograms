@@ -33,26 +33,26 @@ InetAddress::InetAddress(const ZL_SOCKADDR_IN& addr) : addr_(addr)
 
 }
 
-std::string InetAddress::IP() const
+std::string InetAddress::ip() const
 {
     char ip[256], tmp[256];
     ZL_SNPRINTF(ip, 128, "%s", inet_ntop(AF_INET, (void*)&addr_.sin_addr, tmp, 256));
     return ip;
 }
 
-uint16_t InetAddress::Port() const
+uint16_t InetAddress::port() const
 {
     return ntohs(addr_.sin_port);
 }
 
-std::string InetAddress::IpPort() const
+std::string InetAddress::ipPort() const
 {
     char host[256], ip[256];
     ZL_SNPRINTF(host, 256, "%s:%d", inet_ntop(AF_INET, (void*)&addr_.sin_addr, ip, 256), ntohs(addr_.sin_port));
     return host;
 }
 
-/*static*/ bool InetAddress::Resolve(const char *hostname, InetAddress *addr)
+/*static*/ bool InetAddress::resolve(const char *hostname, InetAddress *addr)
 {
 #ifdef OS_LINUX
     static __thread char g_resolveBuffer[64 * 1024];

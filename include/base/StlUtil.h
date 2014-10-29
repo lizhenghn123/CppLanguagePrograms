@@ -17,7 +17,7 @@ NAMESPACE_ZL_START
 
 /** 使用一对迭代器，删除每个迭代器所指向的指针 */
 template <typename ForwardIterator>
-void StlDeleteContainerPointer(ForwardIterator begin, ForwardIterator end)
+void stlDeleteContainerPointer(ForwardIterator begin, ForwardIterator end)
 {
     while (begin != end)
     {
@@ -29,27 +29,27 @@ void StlDeleteContainerPointer(ForwardIterator begin, ForwardIterator end)
 
 /** 删除某一容器包含的指针 */
 template <class T>
-void StlDeleteElems(T &container)
+void stlDeleteElems(T &container)
 {
     if (container.empty())
         return;
-    StlDeleteContainerPointer(container.begin(), container.end());
+    stlDeleteContainerPointer(container.begin(), container.end());
     container.clear();
 }
 
 /** 删除某一容器包含的指针 */
 template <class T>
-void StlDeleteElems(T *container)
+void stlDeleteElems(T *container)
 {
     if (!container)
         return;
-    StlDeleteContainerPointer(container->begin(), container->end());
+    stlDeleteContainerPointer(container->begin(), container->end());
     container->clear();
 }
 
 /** 删除关联容器中的value值（指针） */
 template <class T>
-void StlDeleteValues(T &v)
+void stlDeleteValues(T &v)
 {
     if (v.empty())
         return;
@@ -62,7 +62,7 @@ void StlDeleteValues(T &v)
 
 /** 删除关联容器中的value值（指针） */
 template <class T>
-void StlDeleteValues(T *v)
+void stlDeleteValues(T *v)
 {
     if (!v)
         return;

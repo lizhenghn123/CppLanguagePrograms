@@ -47,7 +47,7 @@ public:
     }
 
 public:
-    void Wait()
+    void wait()
     {
 #ifdef OS_WINDOWS
         SleepConditionVariableCS(&condition_, mutex_.GetMutex(), INFINITE);
@@ -56,7 +56,7 @@ public:
 #endif
     }
 
-    void NotifyOne()
+    void notify_one()
     {
 #ifdef OS_WINDOWS
         WakeConditionVariable(&condition_);
@@ -65,7 +65,7 @@ public:
 #endif
     }
 
-    void NotifyAll()
+    void notify_all()
     {
 #ifdef OS_WINDOWS
         WakeAllConditionVariable(&condition_);

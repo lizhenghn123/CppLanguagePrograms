@@ -21,7 +21,7 @@ namespace zl
 {
     /** 任意类型转为字符串 */
     template <typename T>
-    inline std::string ToStr(const T& t)
+    inline std::string toStr(const T& t)
     {
         std::ostringstream oss;
         oss << t;
@@ -30,7 +30,7 @@ namespace zl
 
     /** 字符串转为某一类型 */
     template <typename T>
-    T StrTo(const std::string& str)
+    T strTo(const std::string& str)
     {
         T t;
         std::ostringstream iss(str);
@@ -39,7 +39,7 @@ namespace zl
     }
 
     /** 将字符串转为小写并返回 */
-    inline std::string ToLower(const std::string& str)
+    inline std::string toLower(const std::string& str)
     {
         std::string t = str;
         std::transform(t.begin(), t.end(), t.begin(), ::tolower);
@@ -47,7 +47,7 @@ namespace zl
     }
 
     /** 将字符串转为小写并返回 */
-    inline std::string ToUpper(const std::string& str)
+    inline std::string toUpper(const std::string& str)
     {
         std::string t = str;
         std::transform(t.begin(), t.end(), t.begin(), ::toupper);
@@ -55,46 +55,46 @@ namespace zl
     }
 
     /** 去掉字符串中左边的空格 */
-    inline void TrimLeft(std::string& str)
+    inline void trimLeft(std::string& str)
     {
         str.erase(0, str.find_first_not_of(' '));
     }
 
     /** 去掉字符串中右边的空格 */
-    inline void TrimRight(std::string& str)
+    inline void trimRight(std::string& str)
     {
         str.erase(str.find_last_not_of(' ') + 1);
     }
 
     /** 去掉字符串中两端的空格 */
-    inline void Trim(std::string& str)
+    inline void trim(std::string& str)
     {
-        TrimLeft(str);
-        TrimRight(str);
+        trimLeft(str);
+        trimRight(str);
     }
 
     /** 去掉字符串中的所有空格 */
-    inline void TrimAll(std::string& str)
+    inline void trimAll(std::string& str)
     {
         str.erase(std::remove_if(str.begin(), str.end(),
                                  std::bind2nd(std::equal_to<char>(), ' ')), str.end());
     }
 
     /** 去掉字符串中的特定字符 */
-    inline void Erase(std::string& str, const char& charactor)
+    inline void erase(std::string& str, const char& charactor)
     {
         str.erase(std::remove_if(str.begin(), str.end(),
                                  std::bind2nd(std::equal_to<char>(), charactor)), str.end());
     }
 
     /** 判断字符串是否以某一子串为开始 */
-    inline bool	StartWith(const std::string& str, const std::string& substr)
+    inline bool	startWith(const std::string& str, const std::string& substr)
     {
         return str.find(substr) == 0;
     }
 
     /** 判断字符串是否以某一子串为结尾 */
-    inline bool EndWith(const std::string& str, const std::string& substr)
+    inline bool endWith(const std::string& str, const std::string& substr)
     {
         return str.rfind(substr) == (str.length() - substr.length());
     }
@@ -102,11 +102,11 @@ namespace zl
     /** 比较两个字符串是否相等（忽略大小写） */
     inline bool equalsIgnoreCase(const std::string& lhs, const std::string& rhs)
     {
-        return ToLower(lhs) == ToLower(rhs);
+        return toLower(lhs) == toLower(rhs);
     }
 
     /** 字符串替换 */
-    inline void Replace(std::string& strSrc, const std::string& strDeliter, const std::string& strDest)
+    inline void replace(std::string& strSrc, const std::string& strDeliter, const std::string& strDest)
     {
         while(true)
         {
@@ -120,7 +120,7 @@ namespace zl
     }
 
     /** 字符串分隔，如果有连续的delim，是否插入空串 */
-    inline void Split(const std::string& str, std::vector<std::string>& result,
+    inline void split(const std::string& str, std::vector<std::string>& result,
                       const std::string& delim = " ", bool insertEmpty = false)
     {
         if(str.empty() || delim.empty())

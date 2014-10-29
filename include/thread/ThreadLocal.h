@@ -59,10 +59,10 @@ public:
 
 	T* operator-> () 
 	{
-		return Get();
+		return get();
 	}
 private:
-	T* Get()
+	T* get()
 	{
 		LPVOID p = TlsGetValue(tlsKey_);
 		if(p == NULL)
@@ -90,7 +90,7 @@ class ThreadLocal : NonCopy
 public:
 	ThreadLocal()
 	{
-		pthread_key_create(&tlsKey_, &ThreadLocal::CleanHook);
+		pthread_key_create(&tlsKey_, &ThreadLocal::cleanHook);
 	}
 
 	~ThreadLocal()
@@ -110,7 +110,7 @@ public:
 	}
 
 private:
-	T* Get()
+	T* get()
 	{
 		T* obj = static_cast<T*>(pthread_getspecific(tlsKey_));
 		if (obj == NULL) 
@@ -121,7 +121,7 @@ private:
 		}
 		return obj;
 	}
-	static void CleanHook(void *x)
+	static void cleanHook(void *x)
 	{
 		T* obj = static_cast<T*>(x);
 		delete obj;

@@ -65,12 +65,12 @@ public:
             file_ = NULL;
         }
     }
-    bool Init(const char *log_dir, const char *log_name, size_t max_file_size = MAX_LOG_FILE_SIZE,
+    bool init(const char *log_dir, const char *log_name, size_t max_file_size = MAX_LOG_FILE_SIZE,
               size_t max_file_count = MAX_LOG_FILE_COUNT, bool append = true);
 
-    const char *MakeLogFilePath();
+    const char *makeLogFilePath();
 
-    bool DumpLog(const char *log_entry, size_t size);
+    bool dumpLog(const char *log_entry, size_t size);
 
 private:
     char               log_dir_[MAX_FILE_PATH_LEN];
@@ -106,7 +106,7 @@ public:
         log_file_ = NULL;
     }
 
-    bool Init(const char *log_dir, const char *log_name,
+    bool init(const char *log_dir, const char *log_name,
               size_t max_file_size = MAX_LOG_FILE_SIZE, size_t max_file_count = MAX_LOG_FILE_COUNT,
               ZLogOutput mode = ZL_LOG_OUTPUT_DEFAULT,  ZLogHeader header = ZL_LOG_HEADER_DEFAULT,
               ZLogPriority priority = ZL_LOG_PRIO_INFO, ZLogMasking mask = ZL_LOG_MASKING_COMPLETE,
@@ -148,7 +148,7 @@ bool zl_log_instance_create(const char *log_dir, const char *log_name,
 
     g_zlogger = new ZLog;
 
-    return g_zlogger->Init(log_dir, log_name, max_file_size, max_file_count, mode, header, priority, mask, append);
+    return g_zlogger->init(log_dir, log_name, max_file_size, max_file_count, mode, header, priority, mask, append);
 }
 
 bool zl_log_instance_destroy()
@@ -195,7 +195,7 @@ bool zl_log(const char *file, int line, ZLogPriority priority, const char *forma
 }
 
 
-bool ZLog::Init(const char *log_dir, const char *log_name,
+bool ZLog::init(const char *log_dir, const char *log_name,
                 size_t max_file_size/* = MAX_LOG_FILE_SIZE*/, size_t max_file_count/*= MAX_LOG_FILE_COUNT*/,
                 ZLogOutput mode/* = ZL_LOG_OUTPUT_DEFAULT*/,  ZLogHeader header/* = ZL_LOG_HEADER_DEFAULT*/,
                 ZLogPriority priority/* = ZL_LOG_PRIO_INFO*/, ZLogMasking mask/* = ZL_LOG_MASKING_COMPLETE*/,
@@ -206,7 +206,7 @@ bool ZLog::Init(const char *log_dir, const char *log_name,
     priority_ = priority;
     masking_  = mask;
 
-    return log_file_->Init(log_dir, log_name, max_file_size, max_file_count, append);
+    return log_file_->init(log_dir, log_name, max_file_size, max_file_count, append);
 }
 
 bool ZLog::Zlog(const char *file, int line, ZLogPriority priority, const char *format, va_list arg_ptr)
@@ -215,8 +215,8 @@ bool ZLog::Zlog(const char *file, int line, ZLogPriority priority, const char *f
     size_t max_size = MAX_LOG_ENTRY_SIZE - 2;
     size_t offset = 0;
 
-	zl::base::Timestamp time = zl::base::Timestamp::Now();
-	struct tm *result = time.GetTm();
+	zl::base::Timestamp time = zl::base::Timestamp::now();
+	struct tm *result = time.getTm();
 
     if (header_ & ZL_LOG_HEADER_DATE)
     {
@@ -226,7 +226,7 @@ bool ZLog::Zlog(const char *file, int line, ZLogPriority priority, const char *f
     if (header_ & ZL_LOG_HEADER_TIME)
     {
         offset += ZL_SNPRINTF(log_entry + offset, max_size - offset, "%02d:%02d:%02d:%06d ",
-			result->tm_hour, result->tm_min, result->tm_sec, time.MicoSeconds() % ZL_USEC_PER_SEC);
+			result->tm_hour, result->tm_min, result->tm_sec, time.micoSeconds() % ZL_USEC_PER_SEC);
     }
     if (header_ & ZL_LOG_HEADER_MARK)
     {
@@ -252,13 +252,13 @@ bool ZLog::Zlog(const char *file, int line, ZLogPriority priority, const char *f
 
     if ((mode_ & ZL_LOG_OUTPUT_FILE) == ZL_LOG_OUTPUT_FILE && log_file_)
     {
-        log_file_->DumpLog(log_entry, offset);
+        log_file_->dumpLog(log_entry, offset);
     }
     return true;
 }
 
 
-bool ZLogFile::Init(const char *log_dir, const char *file_name, size_t max_file_size/* = MAX_LOG_FILE_SIZE*/,
+bool ZLogFile::init(const char *log_dir, const char *file_name, size_t max_file_size/* = MAX_LOG_FILE_SIZE*/,
                     size_t max_file_count/* = MAX_LOG_FILE_COUNT*/, bool append/* = true*/)
 {
 	::memcpy(log_dir_, log_dir, strlen(log_dir) + 1);
@@ -278,12 +278,12 @@ bool ZLogFile::Init(const char *log_dir, const char *file_name, size_t max_file_
         /* iteratively find the last created file */
         while (cur_file_index_ < max_file_count_)
         {
-            const char *log_file_path = MakeLogFilePath();
+            const char *log_file_path = makeLogFilePath();
 			if (!IsFileExist(log_file_path))
             {
                 if (cur_file_index_ > 0)
                     cur_file_index_--;
-                log_file_path = MakeLogFilePath();
+                log_file_path = makeLogFilePath();
 				cur_size_ = GetFileSize(log_file_path);
                 break;
             }
@@ -295,27 +295,27 @@ bool ZLogFile::Init(const char *log_dir, const char *file_name, size_t max_file_
         {
             cur_file_index_ = 0;
             cur_size_ = 0;
-            const char *log_file_path = MakeLogFilePath();
+            const char *log_file_path = makeLogFilePath();
             file_ = fopen(log_file_path, "wb"); /* truncate the first file to zero length */
             fclose(file_);
         }
     }
 
     /* 打开当前要输出的日志文件 */
-    const char *log_file_path = MakeLogFilePath();
+    const char *log_file_path = makeLogFilePath();
     file_ = fopen(log_file_path, append == true ? "ab" : "wb");
 
     return (file_ == NULL ? false : true);
 }
 
-const char *ZLogFile::MakeLogFilePath()
+const char *ZLogFile::makeLogFilePath()
 {
     ::memset(curr_log_file_, '\0', MAX_FILE_PATH_LEN);
 	ZL_SNPRINTF(curr_log_file_, MAX_FILE_PATH_LEN, "%s/%s-%u.log", log_dir_, log_file_name_, cur_file_index_);
     return curr_log_file_;
 }
 
-bool ZLogFile::DumpLog(const char *log_entry, size_t size)
+bool ZLogFile::dumpLog(const char *log_entry, size_t size)
 {
 	zl::thread::MutexLocker lock(mutex_);
 
@@ -326,7 +326,7 @@ bool ZLogFile::DumpLog(const char *log_entry, size_t size)
         cur_file_index_++;  // 寻找下一日志文件
         cur_file_index_ %= max_file_count_;
 
-        const char *log_file_path = MakeLogFilePath();
+        const char *log_file_path = makeLogFilePath();
         file_ = ::fopen(log_file_path, "wb");
         if (!file_)
         {

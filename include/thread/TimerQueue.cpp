@@ -11,17 +11,17 @@ TimerQueue* TimerQueue::instance()
 {
     if(TimerQueue::m_instance==NULL)
     {
-        m_mutex.Lock();
+        m_mutex.lock();
         if(m_instance==NULL)
         {
             m_instance=new TimerQueue();
         }
-        m_mutex.Unlock();
+        m_mutex.unlock();
     }
     return m_instance;
 }
 
-TimerQueue::TimerQueue() : thread_(std::bind(&TimerQueue::ProcessThread, this))
+TimerQueue::TimerQueue() : thread_(std::bind(&TimerQueue::processThread, this))
 {
     running_ = false;
     timers_.clear();
@@ -29,7 +29,7 @@ TimerQueue::TimerQueue() : thread_(std::bind(&TimerQueue::ProcessThread, this))
     int ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
 }
 
-void TimerQueue::Start()
+void TimerQueue::start()
 {
     if(!running_)
     {
@@ -39,43 +39,43 @@ void TimerQueue::Start()
     }
 }
 
-void TimerQueue::Stop()
+void TimerQueue::stop()
 {
     running_ = false;
 }
 
-void TimerQueue::AddTimer(Timer * timer)
+void TimerQueue::addTimer(Timer * timer)
 {
-    m_mutex.Lock();
-    AddTimer_(timer);
-    m_mutex.Unlock();
+    m_mutex.lock();
+    addTimer_(timer);
+    m_mutex.unlock();
 }
 
-void TimerQueue::DeleteTimer(Timer * timer)
+void TimerQueue::deleteTimer(Timer * timer)
 {
-    m_mutex.Lock();
-    DeleteTimer_(timer);
-    m_mutex.Unlock();
+    m_mutex.lock();
+    deleteTimer_(timer);
+    m_mutex.unlock();
 }
 
-void TimerQueue::AddTimer_(Timer * timer)
+void TimerQueue::addTimer_(Timer * timer)
 {
     timers_.push_back(timer);
 }
 
-void TimerQueue::DeleteTimer_(Timer * timer)
+void TimerQueue::deleteTimer_(Timer * timer)
 {
     timers_.remove(timer);
 }
 
 /*定时器延迟时间线程*/
-void TimerQueue::ProcessThread()
+void TimerQueue::processThread()
 {
     struct timeval start,end;
     unsigned int delay;
 
     struct timeval tm;
-    end = zl::StopWatch::Now(); ////gettimeofday(&end,0);
+    end = zl::StopWatch::now(); ////gettimeofday(&end,0);
 
     const static int DEFULT_INTERVAL = 1;
     while(running_)
@@ -90,18 +90,18 @@ void TimerQueue::ProcessThread()
         //while(select(0,0,0,0,&tm)<0&&errno==EINTR);
         int ret = select(0,0,0,0,&tm);
 
-        end = zl::StopWatch::Now(); //gettimeofday(&end,0);
+        end = zl::StopWatch::now(); //gettimeofday(&end,0);
         delay=(end.tv_sec-start.tv_sec)*1000+(end.tv_usec-start.tv_usec)/1000;
 
         //pthread_mutex_lock(&manage->m_mutex);
-        m_mutex.Lock();
+        m_mutex.lock();
         for(std::list<Timer*>::iterator iter = timers_.begin(); iter!=timers_.end(); )
         {
             Timer *timer = *iter;
             timer->timer_duration_ < delay ? timer->timer_duration_ = 0 : timer->timer_duration_ -= delay;
             if(timer->timer_duration_<=0)
             {
-                timer->Trigger();
+                timer->trigger();
 
                 if(timer->timer_type_==Timer::TIMER_ONCE) /* 一次型的，超时则移除，并重置状态 */
                 {
@@ -120,7 +120,7 @@ void TimerQueue::ProcessThread()
                 ++iter;
             }
         }
-       m_mutex.Unlock();
+       m_mutex.unlock();
     } // while
 
 }

@@ -22,6 +22,7 @@
 #include <iterator>
 #include <numeric>
 #include <stdint.h>
+#include <assert.h>
 #include "OsDefine.h"
 
 #if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus > 199711L || __cplusplus == 201103L

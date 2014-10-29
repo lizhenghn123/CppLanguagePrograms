@@ -28,23 +28,23 @@ public:
     Timestamp();
     explicit Timestamp(zl_time_t ms);
 public:
-    static Timestamp Now();
+    static Timestamp now();
 public:
-    zl_time_t MicoSeconds() const
+    zl_time_t micoSeconds() const
     {
         return microSeconds_;
     }
-    zl_time_t MillSeconds() const
+    zl_time_t millSeconds() const
     {
         return microSeconds_ / ZL_MSEC_PER_SEC;
     }
-    zl_time_t Seconds()     const
+    zl_time_t seconds()     const
     {
         return microSeconds_ / ZL_USEC_PER_SEC;
     }
 
-    struct tm  *GetTm(bool showlocaltime = true);
-    std::string ToString(bool showlocaltime = true);
+    struct tm  *getTm(bool showlocaltime = true);
+    std::string toString(bool showlocaltime = true);
 
 private:
     zl_time_t  microSeconds_;
@@ -52,12 +52,12 @@ private:
 
 inline bool operator<(const Timestamp& lhs, const Timestamp& rhs)
 {
-    return lhs.MicoSeconds() < rhs.MicoSeconds();
+    return lhs.micoSeconds() < rhs.micoSeconds();
 }
 
 inline bool operator==(const Timestamp& lhs, const Timestamp& rhs)
 {
-    return lhs.MicoSeconds() == rhs.MicoSeconds();
+    return lhs.micoSeconds() == rhs.micoSeconds();
 }
 
 } // namespace base

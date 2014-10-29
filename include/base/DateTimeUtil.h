@@ -24,48 +24,48 @@ public:
     * @param year      指定的年份
     * @return          返回日期和时间格式化后的字符串: YYYY-MM-DD HH:MM:SS
     */
-    static bool        IsLeapYear(int year);
+    static bool        isLeapYear(int year);
 
     /**
     * @brief           获取当前日期和时间
     * @param ptm       指向当前日期和时间的结构体指针
     */
-    static void        CurrentDateTime(struct tm *ptm);
+    static void        currentDateTime(struct tm *ptm);
     /**
     * @brief           获取当前日期和时间: YYYY-MM-DD HH:MM:SS
     * @param buf       用来存储当前日期和时间的缓冲区
     * @param size      buf的大小，len > sizeof("YYYY-MM-DD HH:MM:SS")
     */
-    static void        CurrentDateTime(char *buf, size_t size);
+    static void        currentDateTime(char *buf, size_t size);
     /**
     * @brief           获取当前日期和时间: YYYY-MM-DD HH:MM:SS
     * @return          返回日期和时间格式化后的字符串
     */
-    static std::string CurrentDateTime();
+    static std::string currentDateTime();
 
     /**
     * @brief           获取当前日期: YYYY-MM-DD
     * @param buf       用来存储当前日期的缓冲区
     * @param size      buf的大小，len > sizeof("YYYY-MM-DD")
     */
-    static void        CurrentDate(char *buf, size_t size);
+    static void        currentDate(char *buf, size_t size);
     /**
     * @brief           获取当前日期: YYYY-MM-DD
     * @return          返回日期和时间格式化后的字符串
     */
-    static std::string CurrentDate();
+    static std::string currentDate();
 
     /**
     * @brief           获取当前时间: HH:SS:MM
     * @param buf       用来存储当前时间的缓冲区
     * @param size      buf的大小，len > sizeof("HH:SS:MM")
     */
-    static void        CurrentTime(char *buf, size_t size);
+    static void        currentTime(char *buf, size_t size);
     /**
     * @brief           获取当前时间: HH:SS:MM
     * @return          返回时间格式化后的字符串
     */
-    static std::string CurrentTime();
+    static std::string currentTime();
 
     /**
     * @brief           将一个字符串转换成日期时间格式，要求原字符串格式为: YYYY-MM-DD HH:MM:SS
@@ -73,14 +73,14 @@ public:
     * @param datetime  用来存储字符串转换成时间的结构体指针
     * @return          转换成功返回true，否则返回false
     */
-    static bool        StringToDataTime(const char *strTime, struct tm *datetime);
+    static bool        stringToDataTime(const char *strTime, struct tm *datetime);
     /**
     * @brief           将一个字符串转换成日期时间格式，要求原字符串格式为: YYYY-MM-DD HH:MM:SS
     * @param strTime   包含时间格式的字符串
     * @param datetime  用来存储字符串转换成时间的结构体指针
     * @return          转换成功返回true，否则返回false
     */
-    static bool        StringToDataTime(const char *strTime, time_t *datetime);
+    static bool        stringToDataTime(const char *strTime, time_t *datetime);
 
     /**
     * @brief           将一个字符串转换成日期时间格式，要求原字符串格式为: YYYY-MM-DD HH:MM:SS
@@ -88,13 +88,13 @@ public:
     * @param buf       用来存储字符串转换成时间的缓冲区
     * @param size      缓冲区大小
     */
-    static void        DateTimeToString(struct tm *datetime, char *buf, size_t size);
+    static void        dateTimeToString(struct tm *datetime, char *buf, size_t size);
     /**
     * @brief           将一个日期和时间转换为字符串: YYYY-MM-DD HH:MM:SS
     * @param datetime  存储日期和时间的结构体指针
     * @return          返回时间格式化后的字符串
     */
-    static std::string DateTimeToString(struct tm *datetime);
+    static std::string dateTimeToString(struct tm *datetime);
 
     /**
     * @brief           将一个日期转换为字符串: YYYY-MM-DD
@@ -102,13 +102,13 @@ public:
     * @param buf       用来存储字符串转换成时间的缓冲区
     * @param size      缓冲区大小
     */
-    static void        DateToString(struct tm *datetime, char *buf, size_t size);
+    static void        dateToString(struct tm *datetime, char *buf, size_t size);
     /**
     * @brief           将一个日期转换为字符串: YYYY-MM-DD
     * @param datetime  指向日期和时间的结构体指针
     * @return          返回时间格式化后的字符串
     */
-    static std::string DateToString(struct tm *datetime);
+    static std::string dateToString(struct tm *datetime);
 
     /**
     * @brief           将一个时间转换为字符串: HH:MM:SS
@@ -116,13 +116,13 @@ public:
     * @param buf       用来存储字符串转换成时间的缓冲区
     * @param size      缓冲区大小
     */
-    static void        TimeToString(struct tm *datetime, char *buf, size_t size);
+    static void        timeToString(struct tm *datetime, char *buf, size_t size);
     /**
     * @brief           将一个时间转换为字符串: HH:MM:SS
     * @param datetime  指向日期和时间的结构体指针
     * @return          返回时间格式化后的字符串
     */
-    static std::string TimeToString(struct tm *datetime);
+    static std::string timeToString(struct tm *datetime);
 };
 
 } // namespace base

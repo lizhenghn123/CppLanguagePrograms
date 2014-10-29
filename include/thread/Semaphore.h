@@ -51,7 +51,7 @@ public:
 
 public:
     // 以原子操作的方式将信号量减1，如果信号量的值为0，则阻塞，直到该值不为0.
-    bool Wait(DWORD duration = INFINITE)
+    bool wait(DWORD duration = INFINITE)
     {
 #ifdef OS_WINDOWS
         if(::WaitForSingleObject(&sem_, duration) == WAIT_OBJECT_0)
@@ -62,7 +62,7 @@ public:
 #endif
     }
     // Wait的非阻塞版本
-    bool TryWait()
+    bool try_wait()
     {
 #ifdef OS_WINDOWS
         return ::WaitForSingleObject(sem_, 0) == WAIT_OBJECT_0;
@@ -72,7 +72,7 @@ public:
     }
 
     // 以原子操作的方式将信号量的值加rc
-    bool Post(long rc = 1)
+    bool post(long rc = 1)
     {
 #ifdef OS_WINDOWS
         if(::ReleaseSemaphore(sem_, rc, NULL))

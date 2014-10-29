@@ -36,10 +36,10 @@ public:
     Timer(unsigned int interval,void (*func)(Timer *,void *),void *args,TimerType type = TIMER_ONCE);
     ~Timer();
 
-    void Start(); // 开始定时器
-    void Stop();  // 停止定时器
-    void Reset(unsigned int interval); // 重置定时器
-    bool Trigger(); // 触发定时器
+    void start(); // 开始定时器
+    void stop();  // 停止定时器
+    void reset(unsigned int interval); // 重置定时器
+    bool trigger(); // 触发定时器
 
 private:   
     TimerState    timer_state_;        //状态

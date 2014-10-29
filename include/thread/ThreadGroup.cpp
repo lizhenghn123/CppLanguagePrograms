@@ -17,24 +17,24 @@ ThreadGroup::~ThreadGroup()
     vecThreads_.clear();
 }
 
-void ThreadGroup::CreateThread(std::function<void ()> func, int thread_num/* = 1*/)
+void ThreadGroup::create_thread(std::function<void ()> func, int thread_num/* = 1*/)
 {
     MutexLocker lock(mutex_);
     for (int i = 0; i < thread_num; ++i)
     {
         std::string thr_name("threadgroup_thread_");
-        thr_name += ToStr(i);
+        thr_name += toStr(i);
         vecThreads_.push_back(new Thread(func, thr_name));
     }
 }
 
-void ThreadGroup::AddThread(Thread *thd)
+void ThreadGroup::add_thread(Thread *thd)
 {
     MutexLocker lock(mutex_);
     vecThreads_.push_back(thd);
 }
 
-void ThreadGroup::RemoveThread(Thread *thd)
+void ThreadGroup::remove_thread(Thread *thd)
 {
     MutexLocker lock(mutex_);
     std::vector<Thread *>::iterator it = std::find(vecThreads_.begin(), vecThreads_.end(), thd);
@@ -44,13 +44,13 @@ void ThreadGroup::RemoveThread(Thread *thd)
     }
 }
 
-void ThreadGroup::JoinAll()
+void ThreadGroup::join_all()
 {
     MutexLocker lock(mutex_);
-    for_each(vecThreads_.begin(), vecThreads_.end(), std::bind(&Thread::Join, std::placeholders::_1));
+    for_each(vecThreads_.begin(), vecThreads_.end(), std::bind(&Thread::join, std::placeholders::_1));
 }
 
-size_t ThreadGroup::Size() const
+size_t ThreadGroup::size() const
 {
     MutexLocker lock(mutex_);
     return vecThreads_.size();

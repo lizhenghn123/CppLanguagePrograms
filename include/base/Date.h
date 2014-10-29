@@ -24,56 +24,56 @@ public:
     Date(int year, int month, int day);
 
 public:
-    static Date Today();
-    static Date UtcToday();
-    static bool IsLeapYear(int year);
-    static bool IsValid(int year, int month, int day);
-    static int  DaysInMonth(int year, int month);
-    static int  DaysInPreviousMonth(int year, int month);
-    static int  DaysInNextMonth(int year, int month);
-    static int  Compare(const Date &lhs, const Date &rhs);
-    static int  DaysDiff(const Date &from, const Date &to);
+    static Date today();
+    static Date utcToday();
+    static bool isLeapYear(int year);
+    static bool isValid(int year, int month, int day);
+    static int  daysInMonth(int year, int month);
+    static int  daysInPreviousMonth(int year, int month);
+    static int  daysInNextMonth(int year, int month);
+    static int  compare(const Date &lhs, const Date &rhs);
+    static int  daysDiff(const Date &from, const Date &to);
 
 public:
-    bool Set(int year, int month, int day);
-    bool Year(int year);
-    bool Month(int month);
-    bool Day(int day);
+    bool set(int year, int month, int day);
+    bool year(int year);
+    bool month(int month);
+    bool day(int day);
 
-    int  Year()
+    int  year()
     {
         return year_;
     }
-    int  Month()
+    int  month()
     {
         return month_;
     }
-    int  Day()
+    int  day()
     {
         return day_;
     }
-    bool IsLeapYear()
+    bool isLeapYear()
     {
-        return IsLeapYear(year_);
+        return isLeapYear(year_);
     }
 
-    Date &AddYears(int years);
-    Date &AddMonths(int months);
-    Date &AddDays(int days);
+    Date &addYears(int years);
+    Date &addMonths(int months);
+    Date &addDays(int days);
 
-    Date NextDay() const;
-    Date NextMonth() const;
-    Date NextYear() const;
+    Date nextDay() const;
+    Date nextMonth() const;
+    Date nextYear() const;
 
-    bool IsEqual(const Date &rhs) const;
+    bool isEqual(const Date &rhs) const;
 
-    int  DaysDiff(const Date &to) const; // 距离日期to有多少天
-    int  DaysToNextYear() const;         // 距离下一年的今天有多少天
-    int  DaysToNextMonth() const;        // 距离下个月的今天有多少天
-    int  DaysToPreviousYear() const;     // 距离上一年的今天有多少天
-    int  DaysToPreviousMonth() const;    // 距离上个月的今天有多少天
+    int  daysDiff(const Date &to) const; // 距离日期to有多少天
+    int  daysToNextYear() const;         // 距离下一年的今天有多少天
+    int  daysToNextMonth() const;        // 距离下个月的今天有多少天
+    int  daysToPreviousYear() const;     // 距离上一年的今天有多少天
+    int  daysToPreviousMonth() const;    // 距离上个月的今天有多少天
 
-    std::string ToString() const;
+    std::string toString() const;
 
 public:
     Date &operator+=(int days);
@@ -87,36 +87,36 @@ public:
 
     bool operator<(const Date &rhs) const
     {
-        return Date::Compare(*this, rhs) < 0;
+        return Date::compare(*this, rhs) < 0;
     }
 
     bool operator>(const Date &rhs) const
     {
-        return Date::Compare(*this, rhs) > 0;
+        return Date::compare(*this, rhs) > 0;
     }
 
     bool operator==(const Date &rhs) const
     {
-        return Date::Compare(*this, rhs) == 0;
+        return Date::compare(*this, rhs) == 0;
     }
 
     bool operator<=(const Date &rhs) const
     {
-        return Date::Compare(*this, rhs) <= 0;
+        return Date::compare(*this, rhs) <= 0;
     }
 
     bool operator>=(const Date &rhs) const
     {
-        return Date::Compare(*this, rhs) >= 0;
+        return Date::compare(*this, rhs) >= 0;
     }
 
     bool operator!=(const Date &rhs) const
     {
-        return Date::Compare(*this, rhs) != 0;
+        return Date::compare(*this, rhs) != 0;
     }
     //	friend bool operator<(const Date& lhs, const Date& rhs) const;
 private:
-    void AdjustMonth();
+    void adjustMonth();
 
 private:
     int year_;    // [1900..]

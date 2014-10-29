@@ -21,28 +21,28 @@ void MySleep(long millseconds)
 int main()
 {
     zl::StopWatch watch;
-    watch.Reset();
+    watch.reset();
     MySleep(1000);
-    std::cout << watch.ElapsedTime() << "\n";
-    watch.Reset();
+    std::cout << watch.elapsedTime() << "\n";
+    watch.reset();
     MySleep(500);
-    std::cout << watch.ElapsedTimeInMill() << "\n";
-    watch.Reset();
+    std::cout << watch.elapsedTimeInMill() << "\n";
+    watch.reset();
     MySleep(800);
-    std::cout << watch.ElapsedTimeInMicro() << "\n";
+    std::cout << watch.elapsedTimeInMicro() << "\n";
     std::cout << "-------------------------------------------\n";
     {
 #ifdef OS_WINDOWS
         HighPrecisionTime watch;
-        watch.Reset();
+        watch.reset();
         Sleep(1000);
-        std::cout << watch.ElapsedTime() << "\n";
-        watch.Reset();
+        std::cout << watch.elapsedTime() << "\n";
+        watch.reset();
         Sleep(500);
-        std::cout << watch.ElapsedTimeInMill() << "\n";
-        watch.Reset();
+        std::cout << watch.elapsedTimeInMill() << "\n";
+        watch.reset();
         Sleep(800);
-        std::cout << watch.ElapsedTimeInMicro() << "\n";
+        std::cout << watch.elapsedTimeInMicro() << "\n";
 #endif
     }
     system("pause");

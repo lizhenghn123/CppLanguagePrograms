@@ -34,19 +34,19 @@ public:
     ~Thread();
 
 public:
-    void Start();
-    void Join();
-    bool Joinable() const;
-    void Detach();
+    void start();
+    void join();
+    bool joinable() const;
+    void detach();
 
     /// Return the thread ID of a thread object.
     //id get_id() const;
     // pthread_t pthreadId() const { return pthreadId_; }
-    native_thread_handle ThreadHandle() const
+    native_thread_handle threadHandle() const
     {
         return threadId_;
     }
-    const std::string& ThreadName() const
+    const std::string& threadName() const
     {
         return threadName_;
     }

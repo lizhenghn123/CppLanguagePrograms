@@ -35,53 +35,53 @@ class StopWatch
 public:
     StopWatch()
     {
-        Start();
+        start();
     }
 public:
-    void     Reset()
+    void     reset()
     {
-        GetTimeOfDay(&start_time, NULL);
+        getTimeOfDay(&start_time, NULL);
     }
-    static timeval  Now()
+    static timeval  now()
     {
         timeval now;
-        GetTimeOfDay(&now, NULL);
+        getTimeOfDay(&now, NULL);
         return now;
     }
-    float   ElapsedTime()
+    float   elapsedTime()
     {
         timeval now;
-        GetTimeOfDay(&now, NULL);
+        getTimeOfDay(&now, NULL);
         return float(GET_TICK_COUNT(now, start_time) / 1000000.0);
     }
-    float   ElapsedTimeInMill()
+    float   elapsedTimeInMill()
     {
         timeval now;
-        GetTimeOfDay(&now, NULL);
+        getTimeOfDay(&now, NULL);
         return float(GET_TICK_COUNT(now, start_time) / 1000.0);
     }
-    float   ElapsedTimeInMicro()
+    float   elapsedTimeInMicro()
     {
         timeval now;
-        GetTimeOfDay(&now, NULL);
+        getTimeOfDay(&now, NULL);
         return float(GET_TICK_COUNT(now, start_time));
     }
-    float   DiffTime(const timeval& start)
+    float   diffTime(const timeval& start)
     {
         timeval now;
-        GetTimeOfDay(&now, NULL);
+        getTimeOfDay(&now, NULL);
         return float(GET_TICK_COUNT(now, start) / 1000000.0);
     }
-    float   DiffTime(const timeval& start, const timeval& end)
+    float   diffTime(const timeval& start, const timeval& end)
     {
         return float(GET_TICK_COUNT(end, start) / 1000000.0);
     }
 private:
-    void Start()
+    void start()
     {
-        Reset();
+        reset();
     }
-    static void GetTimeOfDay(timeval *tv, void *tz)
+    static void getTimeOfDay(timeval *tv, void *tz)
     {
 #ifdef OS_LINUX
         gettimeofday(tv, tz);

@@ -7,51 +7,51 @@ using namespace std;
 void test_bytebuffer()
 {
     ByteArray byteArray(1);
-    byteArray.WriteNumber(1037);
-    byteArray.WriteBool(true);
-    byteArray.WriteChars("char test");
-    cout << "size : " << byteArray.Size() << " ; ReadableBytes : " << byteArray.ReadableBytes() << " ; WritableBytes : " << byteArray.WritableBytes()  << "\n";
+    byteArray.writeNumber(1037);
+    byteArray.writeBool(true);
+    byteArray.writeChars("char test");
+    cout << "size : " << byteArray.size() << " ; readableBytes : " << byteArray.readableBytes() << " ; WritableBytes : " << byteArray.writableBytes()  << "\n";
     string str("string_test_zxcvbnm");
-    byteArray.WriteString(str);
-    byteArray.WriteNumber((float)2.45);
+    byteArray.writeString(str);
+    byteArray.writeNumber((float)2.45);
 
-    byteArray.WriteNumber((double)1.79);
-    cout << "size : " << byteArray.Size() << " ; ReadableBytes : " << byteArray.ReadableBytes() << " ; WritableBytes : " << byteArray.WritableBytes()  << "\n";
+    byteArray.writeNumber((double)1.79);
+    cout << "size : " << byteArray.size() << " ; readableBytes : " << byteArray.readableBytes() << " ; WritableBytes : " << byteArray.writableBytes()  << "\n";
 
     int intVal = 0;
-    byteArray.ReadNumber(&intVal);
+    byteArray.readNumber(&intVal);
     cout << intVal << "\n";
-    cout << "size : " << byteArray.Size() << " ; ReadableBytes : " << byteArray.ReadableBytes() << " ; WritableBytes : " << byteArray.WritableBytes()  << "\n";
+    cout << "size : " << byteArray.size() << " ; readableBytes : " << byteArray.readableBytes() << " ; WritableBytes : " << byteArray.writableBytes()  << "\n";
     bool bVal = false;
-    bVal = byteArray.ReadBool();
+    bVal = byteArray.readBool();
     cout << bVal << "\n";
 
-    byteArray.WriteNumber(123456);
+    byteArray.writeNumber(123456);
 
     char chars[100] = { 0 };
-    byteArray.ReadChars(chars, 9);
+    byteArray.readChars(chars, 9);
     cout << chars << "\n";
 
-    string strOut = byteArray.ReadString();
+    string strOut = byteArray.readString();
     cout << strOut << "\n";
 	
 	
     float f = 0.0;
-    byteArray.ReadNumber(&f);
+    byteArray.readNumber(&f);
 
     cout << f << "\n";
-    double d = byteArray.Read<double>();
+    double d = byteArray.read<double>();
     cout << d << "\n";
 
-    cout << byteArray.Read<int>() << "\n";
+    cout << byteArray.read<int>() << "\n";
 
-	double d2 = byteArray.Read<double>();
+	double d2 = byteArray.read<double>();
 	cout << d2 << "\n";
 
     {
         ByteArray ba(1);
-        ba.WriteChars(byteArray.Data(), byteArray.Size());
-        cout << byteArray.Read<int>() << "\n";
+        ba.writeChars(byteArray.data(), byteArray.size());
+        cout << byteArray.read<int>() << "\n";
     }
 }
 
@@ -59,12 +59,12 @@ void test_bytebuffer2()
 {
     cout << "---------------------------------\n";
      ByteArray ba1(1);
-     ba1.WriteNumber<int>(12343);
+     ba1.writeNumber<int>(12343);
 
      ByteArray ba2(1);
-     //ba2.WriteChars(ba1.Data());    // error!!1
-     ba2.WriteChars(ba1.Data(), ba1.Size());
-     cout << ba2.Read<int>() << "\n";
+     //ba2.writeChars(ba1.Data());    // error!!1
+     ba2.writeChars(ba1.data(), ba1.size());
+     cout << ba2.read<int>() << "\n";
 }
 int main()
 {

@@ -24,7 +24,7 @@ public:
 
     virtual ~Closure() {}
 
-    virtual void Run() = 0;
+    virtual void run() = 0;
 
 protected:
     bool self_delete_;
@@ -43,7 +43,7 @@ namespace internal
 
         ~FunctionClosure0() {}
 
-        void Run()
+        void run()
         {
             function_();
             if (self_delete_) delete this;
@@ -65,7 +65,7 @@ namespace internal
 
         ~MethodClosure0() {}
 
-        void Run()
+        void run()
         {
             (object_->*method_)();
             if (self_delete_) delete this;
@@ -88,7 +88,7 @@ namespace internal
 
         ~FunctionClosure1() {}
 
-        void Run()
+        void run()
         {
             function_(arg1_);
             if (self_delete_) delete this;
@@ -111,7 +111,7 @@ namespace internal
 
         ~MethodClosure1() {}
 
-        void Run()
+        void run()
         {
             (object_->*method_)(arg1_);
             if (self_delete_) delete this;
@@ -135,7 +135,7 @@ namespace internal
 
         ~FunctionClosure2() {}
 
-        void Run()
+        void run()
         {
             function_(arg1_, arg2_);
             if (self_delete_) delete this;
@@ -159,7 +159,7 @@ namespace internal
 
         ~MethodClosure2() {}
 
-        void Run()
+        void run()
         {
             (object_->*method_)(arg1_, arg2_);
             if (self_delete_) delete this;
@@ -184,7 +184,7 @@ namespace internal
 
         ~FunctionClosure3() {}
 
-        void Run()
+        void run()
         {
             function_(arg1_, arg2_, arg3_);
             if (self_delete_) delete this;
@@ -209,7 +209,7 @@ namespace internal
 
         ~MethodClosure3() {}
 
-        void Run()
+        void run()
         {
             (object_->*method_)(arg1_, arg2_, arg3_);
             if (self_delete_) delete this;

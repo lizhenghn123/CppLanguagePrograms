@@ -31,25 +31,25 @@ public:
 	{
 		for(int i = 0; i<loop; ++i)
 		{
-			queue_.Push(i);
+			queue_.push(i);
 		}
 	}
 	void JoinAll()
 	{
 		running_ = false;
-		latch_.Wait();
+		latch_.wait();
 	}
 private:
 	void ThreadFunction()
 	{
 		while(running_)
 		{
-			int one = queue_.Pop();
+			int one = queue_.pop();
 			char result[256];
 			_snprintf(result, sizeof(result), "thread_%d_get_%d", this_thread::get_id(), one);
 			std::cout << result << "\n";
 		}
-		latch_.CountDown();
+		latch_.countDown();
 	}
 private:
 	//TQueue  queue_;
@@ -64,15 +64,15 @@ void test_blockingqueue()
 {
     {
         zl::thread::BlockingQueue<int, std::queue<int>, zl::thread::tagFIFO> queue;
-        queue.Push(1);
-        queue.Push(3);
-        queue.Push(2);
-        queue.Push(0);
+        queue.push(1);
+        queue.push(3);
+        queue.push(2);
+        queue.push(0);
 
         int p = -1;
         while (true)
         {
-            if (queue.TryPop(p))
+            if (queue.try_pop(p))
                 std::cout << p << "\n";
             else
                 break;
@@ -81,15 +81,15 @@ void test_blockingqueue()
     }
     {
         zl::thread::BlockingQueue<int, std::stack<int>, zl::thread::tagFILO> queue;
-        queue.Push(1);
-        queue.Push(3);
-        queue.Push(2);
-        queue.Push(0);
+        queue.push(1);
+        queue.push(3);
+        queue.push(2);
+        queue.push(0);
 
         int p = -1;
         while (true)
         {
-            if (queue.TryPop(p))
+            if (queue.try_pop(p))
                 std::cout << p << "\n";
             else
                 break;
@@ -99,15 +99,15 @@ void test_blockingqueue()
     {
         zl::thread::BlockingQueue<int, std::priority_queue<int>, zl::thread::tagPRIO> queue;
         //zl::BlockingQueue<int> queue;
-        queue.Push(1);
-        queue.Push(3);
-        queue.Push(2);
-        queue.Push(0);
+        queue.push(1);
+        queue.push(3);
+        queue.push(2);
+        queue.push(0);
 
         int p = -1;
         while (true)
         {
-            if (queue.TryPop(p))
+            if (queue.try_pop(p))
                 std::cout << p << "\n";
             else
                 break;
@@ -118,15 +118,15 @@ void test_blockingqueue()
         zl::thread::BlockingQueue<int> queue;
 
         for (int i = 0; i<100; ++i)
-             queue.Push(i);
-        std::cout << queue.Pop() << "\n";
+             queue.push(i);
+        std::cout << queue.pop() << "\n";
 
         std::vector<int> vec;
-        if(queue.Pop(vec, 10))
+        if(queue.pop(vec, 10))
              std::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " "));
         cout << "\n";
-        std::cout << queue.Pop() << "\n";
-        std::cout << "current size " << queue.Size() << "\n";
+        std::cout << queue.pop() << "\n";
+        std::cout << "current size " << queue.size() << "\n";
         std::cout << "================\n";
     }
 }
@@ -140,10 +140,10 @@ void test_boundleblockingqueue()
 
 	 {
 		 zl::thread::BoundedBlockingQueue<int, std::priority_queue<int>, zl::thread::tagPRIO> queue(3);
-		 queue.Push(1);
-		 queue.Push(3);
-		 queue.Push(2);
-		 queue.Push(0); // block, queue.Size() > 3;
+		 queue.push(1);
+		 queue.push(3);
+		 queue.push(2);
+		 queue.push(0); // block, queue.Size() > 3;
 	 }
 }
 

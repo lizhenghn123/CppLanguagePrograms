@@ -21,7 +21,7 @@ Timestamp::Timestamp(zl_time_t ms) : microSeconds_(ms)
 
 }
 
-/*static*/ Timestamp Timestamp::Now()
+/*static*/ Timestamp Timestamp::now()
 {
 #ifdef OS_WINDOWS
     //Number of micro-seconds between the beginning of the Windows epoch (Jan. 1, 1601) and the Unix epoch (Jan. 1, 1970)
@@ -42,7 +42,7 @@ Timestamp::Timestamp(zl_time_t ms) : microSeconds_(ms)
 #endif
 }
 
-struct tm  *Timestamp::GetTm(bool showlocaltime/* = true*/)
+struct tm  *Timestamp::getTm(bool showlocaltime/* = true*/)
 {
     time_t seconds = static_cast<time_t>(microSeconds_ / ZL_USEC_PER_SEC);
     if(showlocaltime)
@@ -51,7 +51,7 @@ struct tm  *Timestamp::GetTm(bool showlocaltime/* = true*/)
         return gmtime(&seconds);
 }
 
-std::string Timestamp::ToString(bool showlocaltime/* = true*/)
+std::string Timestamp::toString(bool showlocaltime/* = true*/)
 {
     struct tm *tm_time = NULL;
     time_t seconds = static_cast<time_t>(microSeconds_ / ZL_USEC_PER_SEC);

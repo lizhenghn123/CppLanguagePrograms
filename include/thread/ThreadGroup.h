@@ -24,11 +24,11 @@ public:
     ~ThreadGroup();
 
 public:
-    void CreateThread(std::function<void ()> func, int thread_num = 1);
-    void AddThread(Thread *thd);
-    void RemoveThread(Thread *thd);
-    void JoinAll();
-    size_t Size() const;
+    void create_thread(std::function<void ()> func, int thread_num = 1);
+    void add_thread(Thread *thd);
+    void remove_thread(Thread *thd);
+    void join_all();
+    size_t size() const;
 private:
     mutable Mutex         mutex_;
     std::vector<Thread *>  vecThreads_;

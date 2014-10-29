@@ -7,8 +7,8 @@ ByteArray::ByteArray(int allocSize)
     readPos_ = 0;
     bytesBuf_.reserve(allocSize <= 0 ? 1 : allocSize);
     bytesBuf_.clear();
-    Endian cpuEndian = GetCPUEndian();
-    SetEndian(cpuEndian, cpuEndian);
+    Endian cpuEndian = getCPUEndian();
+    setEndian(cpuEndian, cpuEndian);
 }
 
 ByteArray::~ByteArray()
@@ -16,28 +16,28 @@ ByteArray::~ByteArray()
     std::vector<char>().swap(bytesBuf_);
 }
 
-void ByteArray::WriteBool(bool val)
+void ByteArray::writeBool(bool val)
 {
-    WriteChars((char *)&val, 1, 0);
+    writeChars((char *)&val, 1, 0);
 }
 
-void ByteArray::WriteByte(char val)
+void ByteArray::writeByte(char val)
 {
-    WriteChars(&val, 1);
+    writeChars(&val, 1);
 }
 
-void ByteArray::WriteChars(const char *val)
+void ByteArray::writeChars(const char *val)
 {
-    WriteChars(val, (int)strlen(val), 0);
+    writeChars(val, (int)strlen(val), 0);
 }
 
-void ByteArray::WriteString(const std::string& val)
+void ByteArray::writeString(const std::string& val)
 {
-    WriteNumber(val.size());
-    WriteChars(val.c_str(), val.size(), 0);
+    writeNumber(val.size());
+    writeChars(val.c_str(), val.size(), 0);
 }
 
-void ByteArray::WriteChars(const char *val, size_t size, int offset/* = 0*/)
+void ByteArray::writeChars(const char *val, size_t size, int offset/* = 0*/)
 {
     const char *srcByte = val + offset;
     if((int)bytesBuf_.size() < (writePos_ + size))
@@ -48,21 +48,21 @@ void ByteArray::WriteChars(const char *val, size_t size, int offset/* = 0*/)
     writePos_ += size;
 }
 
-bool ByteArray::ReadBool()
+bool ByteArray::readBool()
 {
     bool val = false;
-    ReadBytes((char *)&val, 1, 0);
+    readBytes((char *)&val, 1, 0);
     return val;
 }
 
-char ByteArray::ReadByte()
+char ByteArray::readByte()
 {
     char val;
-    ReadBytes(&val, 1);
+    readBytes(&val, 1);
     return val;
 }
 
-bool ByteArray::ReadBytes(char *val, size_t size, int offset/* = 0*/)
+bool ByteArray::readBytes(char *val, size_t size, int offset/* = 0*/)
 {
     char *dstByte = val + offset;
     if(readPos_ + size > (int)bytesBuf_.size())
@@ -75,24 +75,24 @@ bool ByteArray::ReadBytes(char *val, size_t size, int offset/* = 0*/)
     return true;
 }
 
-void ByteArray::ReadChars(char *val, size_t size)
+void ByteArray::readChars(char *val, size_t size)
 {
-    ReadBytes((char *)val, size, 0);
+    readBytes((char *)val, size, 0);
 }
 
-std::string ByteArray::ReadString()
+std::string ByteArray::readString()
 {
     int size;
-    ReadNumber(&size);
+    readNumber(&size);
     char *chars = (char *)malloc(size + 1);
     memset(chars, 0, size + 1);
-    ReadBytes((char *)chars, size, 0);
+    readBytes((char *)chars, size, 0);
     std::string str(chars);
     free(chars);
     return str;
 }
 
-Endian ByteArray::GetCPUEndian()
+Endian ByteArray::getCPUEndian()
 {
     union w
     {
@@ -107,7 +107,7 @@ Endian ByteArray::GetCPUEndian()
         return BIG_ENDIAN;
 }
 
-void ByteArray::ReversalArray(char *bytes, size_t size)
+void ByteArray::reversalArray(char *bytes, size_t size)
 {
     for(size_t i = 0; i < size / 2; i++)
     {

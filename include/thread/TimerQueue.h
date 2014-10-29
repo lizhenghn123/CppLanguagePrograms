@@ -29,17 +29,17 @@ public:
     {
 
     }
-    void Start();   
-    void Stop();  
-    void AddTimer(Timer * vtimer);   
-    void DeleteTimer(Timer * vtimer); 
+    void start();   
+    void stop();  
+    void addTimer(Timer * vtimer);   
+    void deleteTimer(Timer * vtimer); 
 
 private:    
-    void AddTimer_(Timer * vtimer); 
-    void DeleteTimer_(Timer * vtimer); 
+    void addTimer_(Timer * vtimer); 
+    void deleteTimer_(Timer * vtimer); 
 
 private:
-     void ProcessThread(); //定时器延迟线程
+    void processThread(); //定时器延迟线程
 
     static zl::thread::Mutex m_mutex;
     static TimerQueue * m_instance;

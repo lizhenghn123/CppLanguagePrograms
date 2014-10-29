@@ -28,32 +28,32 @@ template<class T>
 class Singleton
 {
 public:
-    static T *GetInstancePtr()
+    static T *getInstancePtr()
     {
         if(0 == proxy_.instance_)
         {
-            CreateInstance();
+            createInstance();
         }
         return proxy_.instance_;
     }
 
-    static T& GetInstanceRef()
+    static T& getInstanceRef()
     {
         if(0 == proxy_.instance_)
         {
-            CreateInstance();
+            createInstance();
         }
         return *(proxy_.instance_);
     }
 
-    static T *CreateInstance()
+    static T *createInstance()
     {
-        return proxy_.CreateInstance();
+        return proxy_.createInstance();
     }
 
-    static void	DeleteInstance()
+    static void	deleteInstance()
     {
-        proxy_.DeleteInstance();
+        proxy_.deleteInstance();
     }
 
 private:
@@ -71,7 +71,7 @@ private:
             }
         }
 
-        T *CreateInstance()
+        T *createInstance()
         {
             if(0 == instance_)
             {
@@ -84,7 +84,7 @@ private:
             return instance_;
         }
 
-        void DeleteInstance()
+        void deleteInstance()
         {
             if(proxy_.instance_)
             {

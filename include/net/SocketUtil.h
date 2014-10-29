@@ -107,21 +107,21 @@ typedef socklen_t    ZL_SOCKLEN;
 
 NAMESPACE_ZL_NET_START
 
-int SocketInitialise();
+int socketInitialise();
 
-int SocketCleanup();
+int socketCleanup();
 
-ZL_SOCKET SocketCreateAndListen(const char *ip, int port, int backlog = 5);
+ZL_SOCKET socketCreateAndListen(const char *ip, int port, int backlog = 5);
 
-ZL_SOCKET AcceptOne(ZL_SOCKET sockfd, struct sockaddr_in *addr);
+ZL_SOCKET acceptOne(ZL_SOCKET sockfd, struct sockaddr_in *addr);
 
-int SetNonBlocking(ZL_SOCKET fd, bool nonBlocking = true);
+int setNonBlocking(ZL_SOCKET fd, bool nonBlocking = true);
 
-int SetNoDelay(ZL_SOCKET fd, bool noDelay = true);
+int setNoDelay(ZL_SOCKET fd, bool noDelay = true);
 
-int SetSocketReadSize(ZL_SOCKET fd, int readSize);
+int setSocketReadSize(ZL_SOCKET fd, int readSize);
 
-int SetSocketWriteSize(ZL_SOCKET fd, int writeSize);
+int setSocketWriteSize(ZL_SOCKET fd, int writeSize);
 
 namespace
 {
@@ -130,11 +130,11 @@ namespace
     public:
         SocketInitialization()
         {
-            SocketInitialise();
+            socketInitialise();
         }
         ~SocketInitialization()
         {
-            SocketCleanup();
+            socketCleanup();
         }
     };
 

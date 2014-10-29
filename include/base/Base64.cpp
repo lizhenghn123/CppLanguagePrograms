@@ -1,46 +1,46 @@
-#include "Base64.h"
+#include "base64.h"
 #include <string.h>
 #include <assert.h>
 
-static int Base64EncodeImpl(const char *src, int len, std::string& dst);
-static int Base64DecodeImpl(const char *src, int len, std::string& dst);
+static int base64EncodeImpl(const char *src, int len, std::string& dst);
+static int base64DecodeImpl(const char *src, int len, std::string& dst);
 
-static const char BASE_CODE[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const char base_CODE[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-int Base64Encode(const char *src, int len, char *dst)
+int base64Encode(const char *src, int len, char *dst)
 {
     std::string dest;
-    int size = Base64EncodeImpl(src, len, dest);
+    int size = base64EncodeImpl(src, len, dest);
     ::memcpy(dst, dest.c_str(), size);
     return size;
 }
 
-int Base64Encode(const char *src, int len, std::string& dst)
+int base64Encode(const char *src, int len, std::string& dst)
 {
-    return Base64EncodeImpl(src, len, dst);
+    return base64EncodeImpl(src, len, dst);
 }
 
-int Base64Encode(const std::string& src, std::string& dst)
+int base64Encode(const std::string& src, std::string& dst)
 {
-    return Base64EncodeImpl(src.data(), src.size(), dst);
+    return base64EncodeImpl(src.data(), src.size(), dst);
 }
 
-int Base64Decode(const char *src, size_t len, char *dst)
+int base64Decode(const char *src, size_t len, char *dst)
 {
     std::string dest;
-    int size = Base64DecodeImpl(src, len, dest);
+    int size = base64DecodeImpl(src, len, dest);
     ::memcpy(dst, dest.c_str(), size);
     return size;
 }
 
-int Base64Decode(const char *src, int len, std::string& dst)
+int base64Decode(const char *src, int len, std::string& dst)
 {
-    return Base64DecodeImpl(src, len, dst);
+    return base64DecodeImpl(src, len, dst);
 }
 
-int Base64Decode(const std::string& src, std::string& dst)
+int base64Decode(const std::string& src, std::string& dst)
 {
-    return Base64DecodeImpl(src.data(), src.size(), dst);
+    return base64DecodeImpl(src.data(), src.size(), dst);
 }
 
 
@@ -63,32 +63,32 @@ inline char GetCharIndex(char c)
     return 0;
 }
 
-static int Base64EncodeImpl(const char *src, int len, std::string& dst)
+static int base64EncodeImpl(const char *src, int len, std::string& dst)
 {
     dst.resize(len * 2);
     int idx = 0, dstLen = 0;
 
     while(len > 0)
     {
-        dst[idx++] = BASE_CODE[(src[0] >> 2) & 0x3F];	//右移两位，与00111111是防止溢出，自加
+        dst[idx++] = base_CODE[(src[0] >> 2) & 0x3F];	//右移两位，与00111111是防止溢出，自加
         if(len > 2)	//够3个字符
         {
-            dst[idx++] = BASE_CODE[((src[0] & 3) << 4) | (src[1] >> 4)];
-            dst[idx++] = BASE_CODE[((src[1] & 0xF) << 2) | (src[2] >> 6)];
-            dst[idx++] = BASE_CODE[src[2] & 0x3F];
+            dst[idx++] = base_CODE[((src[0] & 3) << 4) | (src[1] >> 4)];
+            dst[idx++] = base_CODE[((src[1] & 0xF) << 2) | (src[2] >> 6)];
+            dst[idx++] = base_CODE[src[2] & 0x3F];
         }
         else
         {
             switch(len)	//追加“=”
             {
                 case 1:
-                    dst[idx++] = BASE_CODE[(src[0] & 3) << 4 ];
+                    dst[idx++] = base_CODE[(src[0] & 3) << 4 ];
                     dst[idx++] = '=';
                     dst[idx++] = '=';
                     break;
                 case 2:
-                    dst[idx++] = BASE_CODE[((src[0] & 3) << 4) | (src[1] >> 4)];
-                    dst[idx++] = BASE_CODE[((src[1] & 0x0F) << 2) | (src[2] >> 6)];
+                    dst[idx++] = base_CODE[((src[0] & 3) << 4) | (src[1] >> 4)];
+                    dst[idx++] = base_CODE[((src[1] & 0x0F) << 2) | (src[2] >> 6)];
                     dst[idx++] = '=';
                     break;
             }
@@ -102,10 +102,10 @@ static int Base64EncodeImpl(const char *src, int len, std::string& dst)
     return dstLen;
 }
 
-static int Base64DecodeImpl(const char *src, int len, std::string& dst)
+static int base64DecodeImpl(const char *src, int len, std::string& dst)
 {
     int vLen = 0;
-    if(len % 4)		//Base64编码长度必定是4的倍数，包括'='
+    if(len % 4)		//base64编码长度必定是4的倍数，包括'='
     {
         dst[0] = '\0';
         return -1;

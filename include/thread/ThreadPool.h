@@ -30,14 +30,14 @@ public:
     ~ThreadPool();
 
 public:
-    void Start(int numThreads);
-    void Stop();
+    void start(int numThreads);
+    void stop();
 
-    void Run(const Task& f);
+    void run(const Task& f);
 
 private:
-    void ExecuteThread();
-    Task PopOne();
+    void executeThread();
+    Task popOne();
 
 private:
     std::string           name_;

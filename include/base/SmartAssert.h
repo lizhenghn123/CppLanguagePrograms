@@ -29,7 +29,7 @@ public:
 	SmartAssert& SMART_ASSERT_B;
 
 	template< typename T>
-	SmartAssert& PrintValiable(const char* expr, T value)
+	SmartAssert& printValiable(const char* expr, T value)
 	{
 		std::cout << "PrintValiable: [" << expr << " = " << value << "]\n";
 		return *this;
@@ -53,7 +53,7 @@ SmartAssert MakeAssert(bool enAbort, const char* expr, const char* function, con
 #ifdef SMART_ASSERT_DEBUG_MODE
 #define SMART_ASSERT_A(x)        SMART_ASSERT_OP(x,B)
 #define SMART_ASSERT_B(x)        SMART_ASSERT_OP(x,A)
-#define SMART_ASSERT_OP(x, next) SMART_ASSERT_A.PrintValiable(#x, (x)).SMART_ASSERT_##next
+#define SMART_ASSERT_OP(x, next) SMART_ASSERT_A.printValiable(#x, (x)).SMART_ASSERT_##next
 
 #define SMART_ASSERT(expr)     \
           if( (expr) ) ;       \

@@ -2,7 +2,7 @@
 #include <string.h>
 NAMESPACE_ZL_NET_START
 
-    int SocketInitialise()
+int socketInitialise()
 {
 #ifdef OS_WINDOWS
     WSADATA wsaData;
@@ -11,7 +11,7 @@ NAMESPACE_ZL_NET_START
     return 0;
 }
 
-int SocketCleanup()
+int socketCleanup()
 {
 #ifdef OS_WINDOWS
     return WSACleanup();
@@ -19,11 +19,11 @@ int SocketCleanup()
     return 0;
 }
 
-ZL_SOCKET SocketCreateAndListen(const char *ip, int port, int backlog)
+ZL_SOCKET socketCreateAndListen(const char *ip, int port, int backlog)
 {
     ZL_SOCKET sockfd = ZL_CREATE_SOCKET(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if(sockfd < 0) return sockfd;
-    SetNonBlocking(sockfd, true);
+    setNonBlocking(sockfd, true);
 
     ZL_SOCKADDR_IN  sockaddr;
     ::memset(&sockaddr, 0, sizeof(sockaddr));
@@ -50,14 +50,14 @@ ZL_SOCKET SocketCreateAndListen(const char *ip, int port, int backlog)
     return sockfd;
 }
 
-ZL_SOCKET AcceptOne(ZL_SOCKET sockfd, ZL_SOCKADDR_IN *addr)
+ZL_SOCKET acceptOne(ZL_SOCKET sockfd, ZL_SOCKADDR_IN *addr)
 {
     int addrlen = sizeof(*addr);
     ZL_SOCKET connfd = ZL_ACCEPT(sockfd, (sockaddr *)addr, (socklen_t *)&addrlen);
     return connfd;
 }
 
-int SetNonBlocking(ZL_SOCKET fd, bool nonBlocking/* = true*/)
+int setNonBlocking(ZL_SOCKET fd, bool nonBlocking/* = true*/)
 {
 #if defined(OS_LINUX)
     int flags = fcntl(fd, F_GETFL);
@@ -73,7 +73,7 @@ int SetNonBlocking(ZL_SOCKET fd, bool nonBlocking/* = true*/)
 #endif
 }
 
-int SetNoDelay(ZL_SOCKET fd, bool noDelay/* = true*/)
+int setNoDelay(ZL_SOCKET fd, bool noDelay/* = true*/)
 {
 #ifdef OS_LINUX
     int optval = noDelay ? 1 : 0;
@@ -83,12 +83,12 @@ int SetNoDelay(ZL_SOCKET fd, bool noDelay/* = true*/)
     return ZL_SETSOCKOPT(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&optval, sizeof(optval));
 }
 
-int SetSocketReadSize(ZL_SOCKET fd, int readSize)
+int setSocketReadSize(ZL_SOCKET fd, int readSize)
 {
     return ZL_SETSOCKOPT(fd, SOL_SOCKET, SO_SNDBUF, &readSize, sizeof(readSize));
 }
 
-int SetSocketWriteSize(ZL_SOCKET fd, int writeSize)
+int setSocketWriteSize(ZL_SOCKET fd, int writeSize)
 {
     return ZL_SETSOCKOPT(fd, SOL_SOCKET, SO_RCVBUF, &writeSize, sizeof(writeSize));
 }

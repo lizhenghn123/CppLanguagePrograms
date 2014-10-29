@@ -56,11 +56,11 @@ public:
     ~Atomic()
     {}
 public:
-    inline atomic_t Inc(int n = 1)
+    inline atomic_t inc(int n = 1)
     {
         return ATOMIC_ADD(&atomic_, n);
     }
-    inline atomic_t IncAndFetch(int n = 1)
+    inline atomic_t incAndFetch(int n = 1)
     {
 #ifdef OS_LINUX
         return ATOMIC_ADD_AND_FETCH(&atomic_, n);
@@ -70,15 +70,15 @@ public:
         return atomic_;
 #endif
     }
-    inline atomic_t FetchAndInc(int n = 1)
+    inline atomic_t fetchAndInc(int n = 1)
     {
         return ATOMIC_FETCH_AND_ADD(&atomic_, n);
     }
-    inline atomic_t Dec(int n = 1)
+    inline atomic_t dec(int n = 1)
     {
         return ATOMIC_SUB(&atomic_, n);
     }
-    inline atomic_t DecAndFetch(int n = 1)
+    inline atomic_t decAndFetch(int n = 1)
     {
 #ifdef OS_LINUX
         return ATOMIC_SUB_AND_FETCH(&atomic_, n);
@@ -88,38 +88,38 @@ public:
         return atomic_;
 #endif
     }
-    inline atomic_t FetchAndDec(int n = 1)
+    inline atomic_t fetchAndDec(int n = 1)
     {
         return ATOMIC_FETCH_AND_SUB(&atomic_, n);
     }
-    inline atomic_t Value()
+    inline atomic_t value()
     {
         return ATOMIC_FETCH(&atomic_);
     }
 public:
     atomic_t operator++()
     {
-        return Inc(1);
+        return inc(1);
     }
     atomic_t operator--()
     {
-        return Dec(1);
+        return dec(1);
     }
     atomic_t operator++(int)
     {
-        return FetchAndInc(1);
+        return fetchAndInc(1);
     }
     atomic_t operator--(int)
     {
-        return FetchAndDec(1);
+        return fetchAndDec(1);
     }
     atomic_t operator+=(int num)
     {
-        return IncAndFetch(num);
+        return incAndFetch(num);
     }
     atomic_t operator-=(int num)
     {
-        return DecAndFetch(num);
+        return decAndFetch(num);
     }
     bool operator==(long value)
     {
