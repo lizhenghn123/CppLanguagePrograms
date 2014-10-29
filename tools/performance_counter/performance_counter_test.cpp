@@ -1,6 +1,8 @@
 #include <iostream>
+#include "Define.h"
 #include "base/ProcessTimeCounter.h"
 using namespace std;
+using namespace zl::base;
 
 void test()
 {

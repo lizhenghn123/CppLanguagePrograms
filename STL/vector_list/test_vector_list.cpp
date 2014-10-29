@@ -28,7 +28,7 @@ void test_insert_int()
 		myArr1[i] = i+1;
 	}
 
-	HighPrecisionTime watch;
+	zl::base::HighPrecisionTime watch;
 
 	watch.reset();
 	for (int i = 0 ; i< MAX_SIZE; i++)
@@ -56,7 +56,7 @@ void test_insert_string()
 		myArr2[i] = ToStr(i+1);
 	}
 
-	HighPrecisionTime watch;
+	zl::base::HighPrecisionTime watch;
 
 	watch.reset();
 	for (int i = 0 ; i< MAX_SIZE; i++)
@@ -95,7 +95,7 @@ void test_insert_int_keep_order()
 
 	std::cout << std::setprecision(10);
 
-	HighPrecisionTime watch;
+	zl::base::HighPrecisionTime watch;
 
 	watch.reset();
 	for(int i = 0; i < MAX_SIZE; i++)  //将随机数插入到list中，且保持排序状态

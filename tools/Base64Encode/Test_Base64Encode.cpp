@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "base/base64.h"
+using namespace zl::base;
 
 void test()
 {

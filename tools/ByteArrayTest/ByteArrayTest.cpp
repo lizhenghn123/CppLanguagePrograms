@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
+using namespace zl::base;
 
 void test_bytebuffer()
 {

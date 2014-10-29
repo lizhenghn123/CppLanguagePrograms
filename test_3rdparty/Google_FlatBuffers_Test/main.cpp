@@ -332,7 +332,7 @@ void Test_FlatBuffer_Performance()
 	std::string flatbufs;
 	flatbufs.reserve(10000);
 
-	zl::StopWatch watch;
+	zl::base::StopWatch watch;
 	for (int idx = 0; idx < LOOP; idx++) 
 	{
 		flatbufs.clear();

@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Define.h"
 #include "base/SmartAssert.h"
 using namespace std;
+using namespace zl::base;
 
 int main()
 {

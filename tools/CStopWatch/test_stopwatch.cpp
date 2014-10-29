@@ -20,7 +20,7 @@ void MySleep(long millseconds)
 
 int main()
 {
-    zl::StopWatch watch;
+    zl::base::StopWatch watch;
     watch.reset();
     MySleep(1000);
     std::cout << watch.elapsedTime() << "\n";
@@ -33,7 +33,7 @@ int main()
     std::cout << "-------------------------------------------\n";
     {
 #ifdef OS_WINDOWS
-        HighPrecisionTime watch;
+        zl::base::HighPrecisionTime watch;
         watch.reset();
         Sleep(1000);
         std::cout << watch.elapsedTime() << "\n";

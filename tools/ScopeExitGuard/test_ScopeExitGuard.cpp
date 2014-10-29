@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "base/ScopeExitGuard.h"
 using namespace std;
-
+using namespace zl::base;
 
 template < typename T >
 struct FClose
