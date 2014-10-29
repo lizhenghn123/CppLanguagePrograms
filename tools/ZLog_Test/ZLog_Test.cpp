@@ -1,4 +1,6 @@
  #include "base/ZLog.h"
+using namespace zl::base;
+
 void test_log()
 {
     LOG_DEBUG("Hello World [%d]", 1000);

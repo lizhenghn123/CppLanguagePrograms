@@ -49,7 +49,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -75,11 +75,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\include\base\FileUtil.cpp" />
     <ClCompile Include="..\..\include\base\Timestamp.cpp" />
     <ClCompile Include="..\..\include\base\ZLog.cpp" />
     <ClCompile Include="ZLog_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\base\FileUtil.h" />
     <ClInclude Include="..\..\include\base\Timestamp.h" />
     <ClInclude Include="..\..\include\base\ZLog.h" />
   </ItemGroup>
