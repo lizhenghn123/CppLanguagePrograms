@@ -77,11 +77,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\base\StopWatch.h" />
+    <ClInclude Include="..\..\include\base\Timestamp.h" />
+    <ClInclude Include="..\..\include\net\SocketUtil.h" />
     <ClInclude Include="..\..\include\thread\Thread.h" />
     <ClInclude Include="..\..\include\thread\Timer.h" />
     <ClInclude Include="..\..\include\thread\TimerQueue.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\include\base\Timestamp.cpp" />
+    <ClCompile Include="..\..\include\net\SocketUtil.cpp" />
     <ClCompile Include="..\..\include\thread\Thread.cpp" />
     <ClCompile Include="..\..\include\thread\Timer.cpp" />
     <ClCompile Include="..\..\include\thread\TimerQueue.cpp" />
