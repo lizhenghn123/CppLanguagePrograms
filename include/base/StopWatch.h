@@ -14,6 +14,7 @@
 #include "Define.h"
 #ifdef OS_WINDOWS
 #include <Windows.h>
+#include <WinSock2.h>
 #include <time.h>
 //struct timeval
 //{
@@ -40,37 +41,37 @@ public:
     {
         getTimeOfDay(&start_time, NULL);
     }
-    static timeval  now()
+    static struct timeval  now()
     {
-        timeval now;
+        struct timeval now;
         getTimeOfDay(&now, NULL);
         return now;
     }
     float   elapsedTime()
     {
-        timeval now;
+        struct timeval now;
         getTimeOfDay(&now, NULL);
         return float(GET_TICK_COUNT(now, start_time) / 1000000.0);
     }
     float   elapsedTimeInMill()
     {
-        timeval now;
+        struct timeval now;
         getTimeOfDay(&now, NULL);
         return float(GET_TICK_COUNT(now, start_time) / 1000.0);
     }
     float   elapsedTimeInMicro()
     {
-        timeval now;
+        struct timeval now;
         getTimeOfDay(&now, NULL);
         return float(GET_TICK_COUNT(now, start_time));
     }
     float   diffTime(const timeval& start)
     {
-        timeval now;
+        struct timeval now;
         getTimeOfDay(&now, NULL);
         return float(GET_TICK_COUNT(now, start) / 1000000.0);
     }
-    float   diffTime(const timeval& start, const timeval& end)
+    float   diffTime(const struct timeval& start, const struct timeval& end)
     {
         return float(GET_TICK_COUNT(end, start) / 1000000.0);
     }
@@ -79,7 +80,7 @@ private:
     {
         reset();
     }
-    static void getTimeOfDay(timeval *tv, void *tz)
+    static void getTimeOfDay(struct timeval *tv, void *tz)
     {
 #ifdef OS_LINUX
         gettimeofday(tv, NULL);
@@ -96,26 +97,10 @@ private:
         tt = (li.QuadPart - EPOCHFILETIME) / 10;
         tv->tv_sec = tt / 1000000;
         tv->tv_usec = tt % 1000000;
-        ////以下计算精度不够
-        //time_t clock;
-        //struct tm tm;
-        //SYSTEMTIME wtm;
-        //
-        //GetLocalTime(&wtm);
-        //tm.tm_year     = wtm.wYear - 1900;
-        //tm.tm_mon     = wtm.wMonth - 1;
-        //tm.tm_mday     = wtm.wDay;
-        //tm.tm_hour     = wtm.wHour;
-        //tm.tm_min     = wtm.wMinute;
-        //tm.tm_sec     = wtm.wSecond;
-        //tm. tm_isdst    = -1;
-        //clock = mktime(&tm);
-        //tv->tv_sec = clock;
-        //tv->tv_usec = wtm.wMilliseconds * 1000;
 #endif
     }
 private:
-    timeval		start_time;
+    struct timeval    start_time;
 };
 
 
