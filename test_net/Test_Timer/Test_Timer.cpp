@@ -4,7 +4,7 @@
 using namespace std;
 using namespace zl;
 using namespace zl::net;
-
+//http://www.tuicool.com/articles/MRRfyuY
 void print()
 {
     Timestamp now = Timestamp::now();
