@@ -6,7 +6,7 @@ using namespace std;
 int main()
 {
 	{
-		zl::thread::Atomic ato;
+		zl::thread::Atomic<int> ato;
 		ato++;
 		++ato;
 		ato.fetchAndInc(10);
@@ -19,7 +19,7 @@ int main()
 	}
 	{
 		std::cout << "========================================\n";
-		zl::thread::Atomic ato;
+		zl::thread::Atomic<int> ato;
 
 		std::cout << ato.fetchAndInc(2) << "\t" ;
 		std::cout << ato.value() << "\n";
@@ -29,11 +29,31 @@ int main()
 	}
 	{
 		std::cout << "========================================\n";
-		zl::thread::Atomic ato;
+		zl::thread::Atomic<int> ato;
 
 		std::cout << ato.incAndFetch(2) << "\t" ;
 		std::cout << ato << "\n";
 	}
+    {
+        std::cout << "========================================\n";
+        zl::thread::Atomic<bool> ato;
+        cout << ato << "\n" ;
+        cout << ato.test_and_set() << "\n";
+        cout << ato << "\n" ;
+
+        ato = true;
+        cout << ato << "\n";
+        ato = false;
+        cout << ato << "\n";
+
+        ato = false;
+        ato = false;
+        cout << ato << "\n";
+
+        ato = true;
+        ato.clear();
+        cout << ato << "\n";
+    }
 	system("pause");
 	return 0;
 }
