@@ -149,6 +149,6 @@ int main(void)
 	Demangle("??0H@@QAE@XZ",buf,4096);		//Windows,VS 2010重整的名字，glog的Demangle也是解析不成功
 	std::cout << buf <<"\n---------------------------------\n";
 
-	//system("pause");
+	system("pause");
 	return 0;
 }
