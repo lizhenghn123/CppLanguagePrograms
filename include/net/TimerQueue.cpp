@@ -65,8 +65,8 @@ void TimerQueue::processThread()
                 Timer *timer = *iter;
                 if(timer->expires_at() < now)
                 {
-                    timer->trigger();
                     iter = timers_.erase(iter);
+                    timer->trigger();
                 }
                 else
                 {

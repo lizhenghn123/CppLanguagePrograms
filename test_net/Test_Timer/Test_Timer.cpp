@@ -6,7 +6,7 @@ using namespace std;
 using namespace zl;
 using namespace zl::base;
 using namespace zl::net;
-//http://www.tuicool.com/articles/MRRfyuY
+
 void print(Timer *self)
 {
     Timestamp now = Timestamp::now();
@@ -19,6 +19,15 @@ void print_num(Timer *self, int num)
     Timestamp now = Timestamp::now();
     printf("async timer trigger : print_num :%s\n", now.toString().c_str());
     printf("hello world[%d]\n", num);
+
+    num ++;
+    if(num > 3)
+        self->cancel();
+    else
+    {
+        self->expires_from_now(1200);
+        self->async_wait(std::bind(print_num, self, num));
+    }
 }
 
 void test_sync_timer()
@@ -43,16 +52,16 @@ void test_async_timer()
     Timestamp now = Timestamp::now();
     printf("async timer start : %s\n", now.toString().c_str());
 
-    t1.async_wait(std::bind(print, &t1));
-    t2.async_wait(std::bind(print_num, &t2, 123));
+    //t1.async_wait(std::bind(print, &t1));
+    t2.async_wait(std::bind(print_num, &t2, 1));
 
-    zl::thread::this_thread::sleep_for(zl::thread::chrono::seconds(4));
+    zl::thread::this_thread::sleep_for(zl::thread::chrono::seconds(40));
     printf("================\n");
 }
 
 int main()
 {
-    test_sync_timer();
+   // test_sync_timer();
     test_async_timer();
 
     TimerQueue tqueue ;

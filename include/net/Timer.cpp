@@ -3,19 +3,20 @@
 #include <assert.h>
 NAMESPACE_ZL_NET_START
 
-Timer::Timer(TimerQueue *tqueue) : timerQueue_(tqueue), callback_(NULL), when_()
+Timer::Timer(TimerQueue *tqueue) 
+    : timerQueue_(tqueue), callback_(NULL), when_()
 {
 
 }
 
 Timer::Timer(TimerQueue *tqueue, const Timestamp& when)
-	: timerQueue_(tqueue), callback_(NULL), when_(when)
+    : timerQueue_(tqueue), callback_(NULL), when_(when)
 {
 
 }
 
 Timer::Timer(TimerQueue *tqueue, size_t millsec)
-	: timerQueue_(tqueue), callback_(NULL), when_(Timestamp::now() + millsec / 1000.0)
+    : timerQueue_(tqueue), callback_(NULL), when_(Timestamp::now() + millsec / 1000.0)
 {
 
 }
@@ -35,17 +36,13 @@ void Timer::wait()
     Timestamp now = Timestamp::now();
 
     int64_t milliseconds = static_cast<int64_t>(Timestamp::timediff(when_, now) * 1000);
-    printf("-----%s\n", now.toString().c_str());
-    printf("-----%s\n", when_.toString().c_str());
-    printf("%ld\n", milliseconds);
-    ::Sleep(milliseconds);
+    zl::thread::this_thread::sleep_for(zl::thread::chrono::milliseconds(milliseconds));
 }
 
 void Timer::async_wait(TimerCallBack callback)
 {
     callback_ = callback;
     timerQueue_->addTimer(this);
-     //todo async
 }
 
 void Timer::trigger()
