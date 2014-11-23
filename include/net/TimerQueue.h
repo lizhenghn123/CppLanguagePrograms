@@ -11,7 +11,6 @@
 // ***********************************************************************
 #ifndef ZL_TIMERQUEUE_H
 #define ZL_TIMERQUEUE_H
-//#include <WinSock2.h>
 #include "Define.h"
 #include "base/NonCopy.h"
 #include "thread/Mutex.h"
@@ -24,18 +23,15 @@ class TimerQueue
 {
 public:    
     TimerQueue();
-    ~TimerQueue()
-    {
+    ~TimerQueue();
 
-    }
-    void start();
     void stop();
-    void addTimer(Timer * vtimer);
-    void deleteTimer(Timer * vtimer);
+    void addTimer(Timer *vtimer);
+    void deleteTimer(Timer *vtimer);
 
-private:    
-    void addTimer_(Timer * vtimer);
-    void deleteTimer_(Timer * vtimer);
+private:
+    void addTimerWithHold(Timer *vtimer);
+    void deleteTimerWithHold(Timer *vtimer);
 
 private:
     void processThread(); //定时器延迟线程

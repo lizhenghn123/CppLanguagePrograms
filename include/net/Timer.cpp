@@ -53,7 +53,6 @@ void Timer::trigger()
      if(callback_)
      {
          callback_();
-         callback_ = NULL;
          //when_ = Timestamp();
      }
 }
@@ -85,8 +84,7 @@ size_t Timer::expires_from_now() const
 
 size_t Timer::cancel()
 {
-    //todo cancel
-    timerQueue_->deleteTimer(this);  //不对，还要在TimerQueue内部进行设置
+    timerQueue_->deleteTimer(this);
     return Timestamp::timediff(when_, Timestamp::now());
 }
 
