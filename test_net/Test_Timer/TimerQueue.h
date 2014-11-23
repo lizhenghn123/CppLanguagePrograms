@@ -39,8 +39,11 @@ private:
     zl::thread::Mutex m_mutex;
 
     bool running_;
+    bool checkTimer_;
     zl::thread::Thread thread_;
     std::set<Timer*> timers_;
+    std::vector<Timer*> addTimes_;
+    std::vector<Timer*> delTimes_;
 };
 
 NAMESPACE_ZL_NET_END

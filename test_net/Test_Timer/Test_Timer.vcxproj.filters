@@ -27,17 +27,14 @@
     <ClInclude Include="..\..\include\base\Timestamp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\net\Timer.h">
+    <ClInclude Include="Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\net\TimerQueue.h">
+    <ClInclude Include="TimerQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Test_Timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\include\thread\Thread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -47,10 +44,13 @@
     <ClCompile Include="..\..\include\base\Timestamp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\net\Timer.cpp">
+    <ClCompile Include="Timer_Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\net\TimerQueue.cpp">
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

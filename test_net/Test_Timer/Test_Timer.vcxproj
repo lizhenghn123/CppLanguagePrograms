@@ -79,17 +79,17 @@
     <ClInclude Include="..\..\include\base\StopWatch.h" />
     <ClInclude Include="..\..\include\base\Timestamp.h" />
     <ClInclude Include="..\..\include\net\SocketUtil.h" />
-    <ClInclude Include="..\..\include\net\Timer.h" />
-    <ClInclude Include="..\..\include\net\TimerQueue.h" />
     <ClInclude Include="..\..\include\thread\Thread.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\base\Timestamp.cpp" />
     <ClCompile Include="..\..\include\net\SocketUtil.cpp" />
-    <ClCompile Include="..\..\include\net\Timer.cpp" />
-    <ClCompile Include="..\..\include\net\TimerQueue.cpp" />
     <ClCompile Include="..\..\include\thread\Thread.cpp" />
-    <ClCompile Include="Test_Timer.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TimerQueue.cpp" />
+    <ClCompile Include="Timer_Test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

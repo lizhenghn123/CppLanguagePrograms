@@ -1,5 +1,5 @@
-#include "net/Timer.h"
-#include "net/TimerQueue.h"
+#include "Timer.h"
+#include "TimerQueue.h"
 #include <assert.h>
 NAMESPACE_ZL_NET_START
 
@@ -84,6 +84,5 @@ size_t Timer::cancel()
     timerQueue_->deleteTimer(this);
     return Timestamp::timediff(when_, Timestamp::now());
 }
-
 
 NAMESPACE_ZL_NET_END

@@ -1,6 +1,6 @@
 #include <iostream>
-#include "net/Timer.h"
-#include "net/TimerQueue.h"
+#include "Timer.h"
+#include "TimerQueue.h"
 #include "base/Timestamp.h"
 using namespace std;
 using namespace zl;
@@ -10,19 +10,21 @@ using namespace zl::net;
 void print(Timer *self)
 {
     Timestamp now = Timestamp::now();
-    printf("async timer trigger : print :%s\n", now.toString().c_str());
+    printf("[%0x]async timer trigger : print :%s\n", self, now.toString().c_str());
     printf("hello world\n");
 }
 
 void print_num(Timer *self, int num)
 { 
     Timestamp now = Timestamp::now();
-    printf("async timer trigger : print_num :%s\n", now.toString().c_str());
+    printf("[%0x]async timer trigger : print_num :%s\n", self, now.toString().c_str());
     printf("hello world[%d]\n", num);
 
     num ++;
     if(num > 3)
+    {
         self->cancel();
+    }
     else
     {
         self->expires_from_now(1200);
@@ -52,10 +54,10 @@ void test_async_timer()
     Timestamp now = Timestamp::now();
     printf("async timer start : %s\n", now.toString().c_str());
 
-    //t1.async_wait(std::bind(print, &t1));
+    t1.async_wait(std::bind(print, &t1));
     t2.async_wait(std::bind(print_num, &t2, 1));
 
-    zl::thread::this_thread::sleep_for(zl::thread::chrono::seconds(40));
+    zl::thread::this_thread::sleep_for(zl::thread::chrono::seconds(15));
     printf("================\n");
 }
 

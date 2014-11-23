@@ -1,10 +1,11 @@
-#include "net/TimerQueue.h"
-#include "net/Timer.h"
+#include "TimerQueue.h"
+#include "Timer.h"
 #include "base/StopWatch.h"
 
 NAMESPACE_ZL_NET_START
 
-TimerQueue::TimerQueue() : thread_(std::bind(&TimerQueue::processThread, this))
+TimerQueue::TimerQueue() 
+    : checkTimer_(false), thread_(std::bind(&TimerQueue::processThread, this))
 {
     running_ = true;
     timers_.clear();
@@ -13,8 +14,11 @@ TimerQueue::TimerQueue() : thread_(std::bind(&TimerQueue::processThread, this))
 TimerQueue::~TimerQueue()
 {
     running_ = false;
-    zl::thread::MutexLocker lock(m_mutex);
-    timers_.clear();
+    {
+        zl::thread::MutexLocker lock(m_mutex);
+        timers_.clear();
+    }
+    thread_.join();
 }
 
 void TimerQueue::stop()
@@ -24,14 +28,24 @@ void TimerQueue::stop()
 
 void TimerQueue::addTimer(Timer * timer)
 {
-    zl::thread::MutexLocker lock(m_mutex);
-    addTimerWithHold(timer);
+    if(checkTimer_)
+        addTimes_.push_back(timer);
+    else
+    {
+        zl::thread::MutexLocker lock(m_mutex);
+        addTimerWithHold(timer);
+    }
 }
 
 void TimerQueue::deleteTimer(Timer * timer)
 {
-    zl::thread::MutexLocker lock(m_mutex);
-    deleteTimerWithHold(timer);
+    if(checkTimer_)
+        delTimes_.push_back(timer);
+    else
+    {
+        zl::thread::MutexLocker lock(m_mutex);
+        deleteTimerWithHold(timer);
+    }
 }
 
 void TimerQueue::addTimerWithHold(Timer * timer)
@@ -60,12 +74,14 @@ void TimerQueue::processThread()
         Timestamp now(Timestamp::now());
         {
             zl::thread::MutexLocker lock(m_mutex);
+            checkTimer_ = true;
             for(std::set<Timer*>::iterator iter = timers_.begin(); iter!=timers_.end(); )
             {
                 Timer *timer = *iter;
                 if(timer->expires_at() < now)
                 {
-                    iter = timers_.erase(iter);
+                    //iter = timers_.erase(iter);
+                    timers_.erase(iter++);
                     timer->trigger();
                 }
                 else
@@ -73,6 +89,13 @@ void TimerQueue::processThread()
                     ++iter;
                 }
             }
+            checkTimer_ = false;
+            for(size_t i = 0; i < addTimes_.size(); ++i)
+                timers_.insert(addTimes_[i]);
+            addTimes_.clear();
+            for(size_t i = 0; i < delTimes_.size(); ++i)
+                timers_.erase(delTimes_[i]);
+            delTimes_.clear();
         }
     }
 }
