@@ -5,7 +5,7 @@
 #include <hash_map>
 #include "thread/Mutex.h"
 
-template<typename Key, typename Value, typename LockType = zl::thread::Mutex>
+template<typename Key, typename Value, class LockType = zl::thread::Mutex>
 class LruCache
 {
 public:
@@ -26,7 +26,7 @@ public:
 
     bool get(const Key& key, Value& value)
     {
-        zl::thread::MutexLocker locker(mutex_);
+        zl::thread::LockGuard<LockType> lock(mutex_);
         typename MAP::iterator iter = keyIndex_.find(key);
         if(iter != keyIndex_.end())
         {
@@ -51,7 +51,7 @@ public:
     //更新cache， 如果存在则更新，否则直接存入
     bool put(const Key& key, const Value& value)
     {
-        zl::thread::MutexLocker locker(mutex_);
+        zl::thread::LockGuard<LockType> lock(mutex_);
         typename MAP::iterator miter = keyIndex_.find(key);
         if(miter != keyIndex_.end()) //存在
         {
@@ -76,19 +76,19 @@ public:
 
     bool remove(const Key& key)
     {
-        zl::thread::MutexLocker locker(mutex_);
+        zl::thread::LockGuard<LockType> lock(mutex_);
         return removeWithHolder(key);
     }
 
     bool hasKey(const Key& key) const
     {
-        zl::thread::MutexLocker locker(mutex_);
+        zl::thread::LockGuard<LockType> lock(mutex_);
         return keyIndex_.find(key) != keyIndex_.end();
     }
 
     size_t size() const
     {
-        zl::thread::MutexLocker locker(mutex_);
+        zl::thread::LockGuard<LockType> lock(mutex_);
         return valueList_.size();
     }
 
@@ -99,20 +99,20 @@ public:
 
     bool isEmpty() const
     {
-        zl::thread::MutexLocker locker(mutex_);
+        zl::thread::LockGuard<LockType> lock(mutex_);
         return valueList_.empty();
     }
 
     bool isFull() const
     {
-        zl::thread::MutexLocker locker(mutex_);
+        zl::thread::LockGuard<LockType> lock(mutex_);
         return keyIndex_.size() == capacity_;
     }
 
 private:
     void clear()
     {
-        zl::thread::MutexLocker locker(mutex_);
+       zl::thread::LockGuard<LockType> lock(mutex_);
         valueList_.clear();
         keyIndex_.clear();
     }

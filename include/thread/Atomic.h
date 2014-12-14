@@ -58,7 +58,7 @@ public:
 #ifdef OS_LINUX
         ATOMIC_SET(&atomic_, 0);
 #else
-        MutexLocker lock(mutex_);
+        LockGuard<Mutex> lock(mutex_);
         atomic_ = 0;
 #endif
     }
@@ -72,7 +72,7 @@ public:
 #ifdef OS_LINUX
         return ATOMIC_ADD_AND_FETCH(&atomic_, n);
 #else
-        MutexLocker lock(mutex_);
+        LockGuard<Mutex> lock(mutex_);
         atomic_ += n;
         return atomic_;
 #endif
@@ -90,7 +90,7 @@ public:
 #ifdef OS_LINUX
         return ATOMIC_SUB_AND_FETCH(&atomic_, n);
 #else
-        MutexLocker lock(mutex_);
+        LockGuard<Mutex> lock(mutex_);
         atomic_ -= n;
         return atomic_;
 #endif
@@ -154,18 +154,28 @@ public:
 #ifdef OS_LINUX
         ATOMIC_SET(&atomic_, 0);
 #else
-        MutexLocker lock(mutex_);
+        LockGuard<Mutex> lock(mutex_);
         atomic_ = 0;
 #endif
     }
 
-    Atomic& operator=(bool flag)
+    Atomic(bool value)
     {
 #ifdef OS_LINUX
-        ATOMIC_SET(&atomic_, flag ? 1 : 0);
+        ATOMIC_SET(&atomic_, value ? 1 : 0);
 #else
-        MutexLocker lock(mutex_);
-        atomic_ = flag;
+        LockGuard<Mutex> lock(mutex_);
+        atomic_ = value;
+#endif
+    }
+
+    Atomic& operator=(bool value)
+    {
+#ifdef OS_LINUX
+        ATOMIC_SET(&atomic_, value ? 1 : 0);
+#else
+        LockGuard<Mutex> lock(mutex_);
+        atomic_ = value;
 #endif
         return *this;
     }
@@ -175,7 +185,7 @@ public:
 #ifdef OS_LINUX
          return ATOMIC_SET(&atomic_, 0);
 #else
-         MutexLocker lock(mutex_);
+         LockGuard<Mutex> lock(mutex_);
          int oldvalue = atomic_;
          atomic_ = 0;
          return oldvalue;
@@ -187,19 +197,19 @@ public:
 #ifdef OS_LINUX
         return ATOMIC_SET(&atomic_, 1);
 #else
-        MutexLocker lock(mutex_);
+        LockGuard<Mutex> lock(mutex_);
         int oldvalue = atomic_;
         atomic_ = 1;
         return oldvalue;
 #endif
     }
 
-    operator bool() 
+    operator bool()
     {
 #ifdef OS_LINUX
         return ATOMIC_FETCH(&atomic_);
 #else
-        MutexLocker lock(mutex_);
+        LockGuard<Mutex> lock(mutex_);
         return atomic_;
 #endif
     }
@@ -207,7 +217,7 @@ public:
 private:
     volatile int  atomic_;
 #ifdef OS_WINDOWS
-    mutable Mutex    mutex_;
+    Mutex    mutex_;
 #endif
 };
 

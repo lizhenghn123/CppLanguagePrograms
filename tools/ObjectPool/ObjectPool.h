@@ -4,7 +4,7 @@
 #include <vector>
 #include "thread/Mutex.h"
 
-template <typename T, class MutexType = zl::thread::Mutex>
+template <typename T, class LockType = zl::thread::Mutex>
 class ObjectPool
 {
 public:
@@ -25,7 +25,7 @@ public:
 public:
     T* alloc()
     {
-        mutex_.lock();
+        zl::thread::LockGuard<LockType> lock(mutex_);
         if(pools_.empty())
         {
             pre_alloc(allocNum_ * 2);
@@ -33,15 +33,13 @@ public:
 
         T *t = pools_.front();
         pools_.pop_front();
-        mutex_.unlock();
         return t;
     }
 
     void free(T *t)
     {
-        mutex_.lock();
+        zl::thread::LockGuard<LockType> lock(mutex_);
         pools_.push_front(t);
-        mutex_.unlock();
     }
 
     void pre_alloc(int allocNum)
@@ -59,7 +57,7 @@ public:
     }
 
 private:
-    MutexType        mutex_;
+    LockType         mutex_;
     int              allocNum_;
     std::list<T*>    pools_;
     std::vector<T*>  chunks_;   // save all memory from "new"

@@ -36,12 +36,13 @@ private:
 private:
     void processThread(); //定时器延迟线程
 
-    zl::thread::Mutex m_mutex;
+    bool                running_;
+    bool                checkTimer_;
 
-    bool running_;
-    bool checkTimer_;
-    zl::thread::Thread thread_;
-    std::set<Timer*> timers_;
+    zl::thread::Thread  thread_;
+    zl::thread::Mutex   mutex_;
+
+    std::set<Timer*>    timers_;
     std::vector<Timer*> addTimes_;
     std::vector<Timer*> delTimes_;
 };
