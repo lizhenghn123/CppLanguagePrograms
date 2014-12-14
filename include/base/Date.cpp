@@ -357,7 +357,7 @@ int Date::daysToPreviousYear() const
 int Date::daysToPreviousMonth() const
 {
     int prev_month_days = daysInPreviousMonth(year_, month_);
-    return std::max(static_cast<int>(day_), prev_month_days);
+    return day_ >= prev_month_days ? day_ : prev_month_days;
 }
 
 std::string Date::toString() const

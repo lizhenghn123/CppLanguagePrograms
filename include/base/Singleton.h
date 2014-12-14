@@ -91,7 +91,7 @@ private:
             }
         }
         T *instance_;
-        Mutex lock_;
+        zl::thread::Mutex lock_;
     };
 protected:
     Singleton()  {	}
