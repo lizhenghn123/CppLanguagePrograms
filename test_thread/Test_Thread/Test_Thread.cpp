@@ -93,8 +93,8 @@ void ThreadYield()
 // Thread function: Detach
 void ThreadDetach(int a)
 {
-	// We don't do anything much, just sleep a little...
-	this_thread::sleep_for(chrono::milliseconds(100));
+	this_thread::sleep_for(chrono::milliseconds(3000));
+    cout << " Detached ....." << "\n";
 }
 
 void test_thread1()
@@ -271,17 +271,15 @@ void func_two(int i, float j)
 
 void test_thread2()
 {
-	// Test 9: detach,  这个在windows下有问题, 因为t释放时，其回调函数并没有结束
 	cout << "\n" << "PART IX: Detach" << "\n";
 	{
 		Thread t(std::bind(ThreadDetach, 43), "d");
 		t.detach();
-		this_thread::sleep_for(chrono::milliseconds(100));
+		//this_thread::sleep_for(chrono::milliseconds(100));
 		cout << " Detached from thread." << "\n";
 	}
 	{
 		Thread t1(func, "ff");
-		//thread t1(func);
 		t1.join();
 	}
 	{
@@ -372,7 +370,7 @@ int main()
 	//test_thread1();
 
 	cout << "------------------------------ test_thread2\n";
-	//test_thread2();
+	test_thread2();
 
 	cout << "------------------------------ test_threadpoll\n";
 	//test_threadpoll();
