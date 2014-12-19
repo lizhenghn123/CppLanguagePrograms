@@ -16,5 +16,6 @@ int main()
     test_log();
     zl_log_instance_destroy();
 
+    system("pause");
     return 0;
 }
