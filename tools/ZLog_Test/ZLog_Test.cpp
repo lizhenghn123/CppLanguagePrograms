@@ -1,5 +1,5 @@
  #include "base/ZLog.h"
-using namespace zl::base;
+//using namespace zl::base;
 
 void test_log()
 {
@@ -12,9 +12,9 @@ void test_log()
 
 int main()
 {
-    zl_log_instance_create("../log", "testlog");
+    //zl::base::zl_log_instance_create("../log", "testlog");
     test_log();
-    zl_log_instance_destroy();
+    //zl::base::zl_log_instance_destroy();
 
     system("pause");
     return 0;
