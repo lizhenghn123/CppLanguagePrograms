@@ -4,7 +4,7 @@
 #else
 #include <unistd.h>
 #endif
-#include <iostream>
+
 NAMESPACE_ZL_THREAD_START
 
 struct ThreadImplDataInfo
