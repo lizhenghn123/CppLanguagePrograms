@@ -26,13 +26,22 @@ class Timestamp
 public:
     Timestamp();
     explicit Timestamp(int64_t ms);
+
 public:
     static Timestamp now();
+    static Timestamp invalid();
+
     static double  timediff(const Timestamp& lhs, const Timestamp& rhs)
     {
          int64_t delta = lhs.microSeconds() - rhs.microSeconds();
          return ZL_TIME_SEC(delta * 1.0);
     }
+    static int64_t  timediffMs(const Timestamp& lhs, const Timestamp& rhs)
+    {
+        int64_t delta = lhs.microSeconds() - rhs.microSeconds();
+        return (delta / 1000);
+    }
+
 public:
     int64_t microSeconds() const
     {
@@ -45,6 +54,11 @@ public:
     int64_t seconds()     const
     {
         return microSeconds_ / ZL_USEC_PER_SEC;
+    }
+
+    bool valid() const
+    {
+        return microSeconds_ > 0;
     }
 
     struct tm  *getTm(bool showlocaltime = true);
@@ -65,14 +79,34 @@ inline bool operator==(const Timestamp& lhs, const Timestamp& rhs)
 }
 
 inline Timestamp operator+(const Timestamp& lhs, double seconds)
-{ 
+{
     long delta = seconds * ZL_USEC_PER_SEC;
     return Timestamp(lhs.microSeconds() + delta);
 }
 
 inline Timestamp operator+(double seconds, const Timestamp& rhs)
-{ 
+{
     return (rhs + seconds);
+}
+
+inline Timestamp operator+=(Timestamp& lhs, double seconds)
+{
+    return lhs = lhs + seconds;
+}
+
+inline int64_t operator-(const Timestamp& lhs, const Timestamp& rhs)
+{ 
+    return Timestamp::timediffMs(lhs, rhs);
+}
+
+inline Timestamp operator-(const Timestamp& lhs, double seconds)
+{ 
+    return (lhs + (-seconds));
+}
+
+inline Timestamp operator-=(Timestamp& lhs, double seconds)
+{ 
+    return (lhs = (lhs + (-seconds)));
 }
 
 } // namespace base
