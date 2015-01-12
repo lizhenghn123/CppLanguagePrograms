@@ -77,9 +77,6 @@
   <ItemGroup>
     <ClCompile Include="test_ScopeExitGuard.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\include\base\ScopeExitGuard.hpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

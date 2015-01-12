@@ -2,37 +2,45 @@
 // Filename         : SmartAssert.h
 // Author           : LIZHENG
 // Created          : 2014-09-18
-// Description      : 增强版的Assert实现，参考自 http://blog.csdn.net/pongba/article/details/19129
-//
+// Description      : 增强版的Assert实现
+// 
 // Last Modified By : LIZHENG
-// Last Modified On : 2014-09-18
+// Last Modified On : 2015-01-11
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_SMARTASSERT_H
 #define ZL_SMARTASSERT_H
+#include <string>
+#include <sstream>
 namespace zl
 {
 namespace base
 {
 
-#define SMART_ASSERT_DEBUG_MODE  //enable ZL_ASSERT macro, can use in Debug/Release env 
+#define ENABLE_SMART_ASSERT_MODE  //enable ZL_ASSERT macro, use in Debug/Release env 
 
-#define ABORT_IF_ASSERT_FAILED
+#define ABORT_IF_ASSERT_FAILED    // if assert failed, abort(), except ZL_ASSERT_LOG
 
 class SmartAssert
 {
 public:
-    SmartAssert(bool abort = false)
-        : abortIfExit_(abort),
-          SMART_ASSERT_A(*this),
-          SMART_ASSERT_B(*this)
+    SmartAssert(const char* expr, const char* function, int line, const char* file, bool abort = false)
+        : SMART_ASSERT_A(*this),
+          SMART_ASSERT_B(*this),
+          abortIfExit_(abort)
     {
-
-    };
+        if (expr && *expr)
+            oss_ << "Expression Failed: " << expr << "\n";
+        if(function && *function) 
+            oss_ << "Failed in [func: " << function << "], [line: " << line << "], [file: " << file << "]\n";
+        
+    }
 
     ~SmartAssert()
     {
+        std::cerr << oss_.str() << "\n";
+
         if(abortIfExit_)
         {
         #if defined(ABORT_IF_ASSERT_FAILED)
@@ -44,34 +52,32 @@ public:
     template< typename T>
     SmartAssert& printValiable(const char* expr, const T& value)
     {
-        std::cerr << "PrintValiable: [" << expr << " = " << value << "]\n";
+        oss_ << "ContextValiable: [" << expr << " = " << value << "]\n";
         return *this;
     }
-
-private:
-    bool  abortIfExit_;
 
 public:
     SmartAssert& SMART_ASSERT_A;
     SmartAssert& SMART_ASSERT_B;
+
+private:
+    bool  abortIfExit_;
+    std::ostringstream oss_;
 };
 
-static SmartAssert MakeAssert(bool abort, const char* expr, const char* function, int line, const char* file)
+static SmartAssert MakeAssert(const char* expr, const char* function, int line, const char* file, bool abort)
 {
-    if (expr && *expr)
-        std::cerr << "Expression Failed: " << expr << "\n";
-    if(function && *function) 
-        std::cerr << "Failed in [func: " << function << "], [line: " << line << "], [file: " << file << "]\n";
-    return SmartAssert(abort);
+    return SmartAssert(expr, function, line, file, abort);
 }
 
-static SmartAssert __dont_use_this__ = MakeAssert(false, NULL, NULL, 0, 0);  //gcc: MakeAssert 定义未使用[-Wunused-function]
+static SmartAssert __dont_use_this__ = MakeAssert(NULL, NULL, 0, 0, false);  //gcc: MakeAssert 定义未使用[-Wunused-function]
 
 // run time assert
-#ifndef SMART_ASSERT_DEBUG_MODE
+#ifndef ENABLE_SMART_ASSERT_MODE
 
-#define SMART_ASSERT(expr)      ((void) 0)
-#define SMART_ASSERT_LOG(expr)  ((void) 0)
+#define ZL_ASSERT(expr)      ((void) 0)
+#define ZL_ASSERTEX(expr, func, lineno , file)   ((void) 0)
+#define ZL_ASSERT_LOG(expr)  ((void) 0)
 
 #else
 
@@ -81,15 +87,15 @@ static SmartAssert __dont_use_this__ = MakeAssert(false, NULL, NULL, 0, 0);  //g
 
 #define ZL_ASSERT(expr)          \
             if( (expr) ) ;       \
-            else zl::base::MakeAssert(true, #expr, __FUNCTION__, __LINE__, __FILE__).SMART_ASSERT_A
+            else zl::base::MakeAssert(#expr, __FUNCTION__, __LINE__, __FILE__, true).SMART_ASSERT_A
 
 #define ZL_ASSERTEX(expr, func, lineno , file) \
             if( (expr) ) ;                     \
-            else zl::base::MakeAssert(true, #expr, func, lineno, file).SMART_ASSERT_A
+            else zl::base::MakeAssert( #expr, func, lineno, file, true).SMART_ASSERT_A
 
 #define ZL_ASSERT_LOG(expr)       \
             if( (expr) ) ;        \
-            else zl::base::MakeAssert(false, #expr, __FUNCTION__, __LINE__, __FILE__).SMART_ASSERT_A
+            else zl::base::MakeAssert(#expr, __FUNCTION__, __LINE__, __FILE__, false).SMART_ASSERT_A
 
 #endif
 
