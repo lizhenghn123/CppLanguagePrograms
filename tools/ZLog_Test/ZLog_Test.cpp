@@ -13,6 +13,7 @@ void test_log()
 int main()
 {
     //zl::base::zl_log_instance_create("../log", "testlog");
+    zl::base::zl_log_set_priority(zl::base::ZL_LOG_PRIO_ALERT);
     test_log();
     //zl::base::zl_log_instance_destroy();
 
