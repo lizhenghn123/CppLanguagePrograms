@@ -29,7 +29,7 @@ These notices must be retained in any copies of any part of this
 documentation and/or software.
 
 */
-#include "base/MD5.h"
+#include "utility/Md5.h"
 #include <stdio.h>
 #include <string.h>
 NAMESPACE_ZL_BASE_START
