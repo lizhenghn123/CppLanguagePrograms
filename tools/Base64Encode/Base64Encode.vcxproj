@@ -75,11 +75,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\include\base\Base64.cpp" />
+    <ClCompile Include="..\..\include\utility\Base64.cpp" />
     <ClCompile Include="Test_Base64Encode.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\base\Base64.h" />
+    <ClInclude Include="..\..\include\utility\Base64.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
