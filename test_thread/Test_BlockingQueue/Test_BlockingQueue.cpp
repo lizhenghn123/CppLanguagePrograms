@@ -149,6 +149,14 @@ void test_boundleblockingqueue()
 
 int main()
 {
+    zl::thread::BlockingQueue<int> queue;
+    queue.push(1);
+    queue.push(3);
+    queue.push(2);
+    queue.push(0);
+    vector<int> vec;
+    queue.pop(vec,2);
+
     test_blockingqueue();
 
 	test_boundleblockingqueue();
