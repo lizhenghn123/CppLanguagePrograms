@@ -319,9 +319,9 @@ void test_threadpool()
 void test_threadgroup()
 {
     ThreadGroup tg;
-    tg.create_thread(func, 1);
-    tg.create_thread(std::bind(func_one, 12), 2);
-    tg.create_thread(std::bind(func_two, 6, 8), 3);
+    tg.create_thread(func);
+    tg.create_thread(std::bind(func_one, 12));
+    tg.create_thread(std::bind(func_two, 6, 8));
 
     tg.join_all();
 }
