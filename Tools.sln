@@ -57,6 +57,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mystl", "mystl", "{68C780E4
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "array_test", "tools\mystl\array_test\array_test.vcxproj", "{937CB789-C729-4A12-A515-C527D117FB36}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "any_test", "tools\mystl\any_test\any_test.vcxproj", "{1CBBAD5B-CA15-4C89-9720-CEC68B8FC4C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -159,6 +161,10 @@ Global
 		{937CB789-C729-4A12-A515-C527D117FB36}.Debug|Win32.Build.0 = Debug|Win32
 		{937CB789-C729-4A12-A515-C527D117FB36}.Release|Win32.ActiveCfg = Release|Win32
 		{937CB789-C729-4A12-A515-C527D117FB36}.Release|Win32.Build.0 = Release|Win32
+		{1CBBAD5B-CA15-4C89-9720-CEC68B8FC4C9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1CBBAD5B-CA15-4C89-9720-CEC68B8FC4C9}.Debug|Win32.Build.0 = Debug|Win32
+		{1CBBAD5B-CA15-4C89-9720-CEC68B8FC4C9}.Release|Win32.ActiveCfg = Release|Win32
+		{1CBBAD5B-CA15-4C89-9720-CEC68B8FC4C9}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -189,5 +195,6 @@ Global
 		{3DE3D570-69EA-472D-9423-3681C19CF17E} = {C236194E-CE89-43C7-AB31-03D2E0C3C82E}
 		{A281E896-8549-40D6-838F-0B4B90803907} = {92FE4A33-A646-4FDD-8F12-8BBB1FB368E2}
 		{937CB789-C729-4A12-A515-C527D117FB36} = {68C780E4-2B64-4D4B-BBC4-598F07175573}
+		{1CBBAD5B-CA15-4C89-9720-CEC68B8FC4C9} = {68C780E4-2B64-4D4B-BBC4-598F07175573}
 	EndGlobalSection
 EndGlobal

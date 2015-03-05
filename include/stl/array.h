@@ -9,8 +9,8 @@
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
-#ifndef ZL_ARRAY_H
-#define ZL_ARRAY_H
+#ifndef ZL_STL_ARRAY_H
+#define ZL_STL_ARRAY_H
 #include <algorithm>
 
 namespace zl
@@ -154,4 +154,4 @@ namespace zl
     }
 }
 
-#endif  /* ZL_ARRAY_H */
+#endif  /* ZL_STL_ARRAY_H */
