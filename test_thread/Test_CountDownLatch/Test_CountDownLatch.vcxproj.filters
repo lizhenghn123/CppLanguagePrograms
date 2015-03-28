@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Test_CountDownLatch.cpp" />
+    <ClCompile Include="..\..\include\thread\Thread.cpp" />
+    <ClCompile Include="..\..\include\base\Timestamp.cpp" />
+    <ClCompile Include="..\..\include\base\ZLog.cpp" />
+    <ClCompile Include="..\..\include\base\FileUtil.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\thread\CountDownLatch.h" />
+    <ClInclude Include="..\..\include\thread\Thread.h" />
+    <ClInclude Include="..\..\include\base\Timestamp.h" />
+    <ClInclude Include="..\..\include\base\ZLog.h" />
+    <ClInclude Include="..\..\include\base\FileUtil.h" />
+  </ItemGroup>
+</Project>
