@@ -32,6 +32,14 @@
 #define  _WINSOCKAPI_
 #include <Windows.h>
 #endif
+using std::string;
+using std::vector;
+using std::list;
+using std::queue;
+using std::map;
+using std::set;
+using std::multimap;
+using std::multiset;
 
 #if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus > 199711L || __cplusplus == 201103L
 #define ZL_CXX11_ENABLED 1
@@ -59,7 +67,7 @@
 #define ZL_SNPRINTF  snprintf
 #endif
 
-#define UNUSED_STATEMENT(statement)    ((void)(statement))          /** just disable some warnings of compliers */
+#define ZL_UNUSED(statement)    ((void)(statement))     /** just disable some warnings of compliers */
 
 #define Safe_Delete(p)        do { delete p; p = NULL; } while (0)
 #define Safe_Delete_Array(p)  do { delete[] p; p = NULL; } while (0)
@@ -74,5 +82,27 @@
             TypeName(const TypeName&);                \
             TypeName& operator=(const TypeName&)      
 #endif
+
+#define USE_TRY_CATCH
+#ifdef  USE_TRY_CATCH
+#define ZL_TRY_BEGIN  try {
+#define ZL_CATCH(x)   } catch (x) {
+#define ZL_CATCH_ALL  } catch (...) {
+#define ZL_CATCH_END  }
+
+#define ZL_RAISE(x)   throw (x)
+#define ZL_RERAISE    throw
+#define ZL_THROWS(x)  throw (x)
+
+#else    // USE_TRY_CATCH
+#define ZL_TRY_BEGIN  {{
+#define ZL_CATCH(x)   } if (0) {
+#define ZL_CATCH_ALL  } if (0) {
+#define ZL_CATCH_END  }}
+
+#define ZL_RAISE(x)   
+#define ZL_RERAISE    
+#define ZL_THROWS(x)  
+#endif    // USE_TRY_CATCH
 
 #endif /* ZL_STDDEFINE_H */

@@ -5,7 +5,7 @@
 #include <functional>
 #include "thread/Thread.h"
 #include "thread/CountDownLatch.h"
-#include "base/StrUtil.h"
+#include "base/StringUtil.h"
 #include "base/ZLog.h"
 using namespace std;
 using namespace zl;

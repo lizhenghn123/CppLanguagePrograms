@@ -19,7 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -76,10 +76,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\base\FileUtil.h" />
+    <ClInclude Include="..\..\include\base\Timestamp.h" />
+    <ClInclude Include="..\..\include\base\ZLog.h" />
     <ClInclude Include="..\..\include\net\InetAddress.h" />
     <ClInclude Include="..\..\include\net\SocketUtil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\include\base\FileUtil.cpp" />
+    <ClCompile Include="..\..\include\base\Timestamp.cpp" />
+    <ClCompile Include="..\..\include\base\ZLog.cpp" />
     <ClCompile Include="..\..\include\net\InetAddress.cpp" />
     <ClCompile Include="..\..\include\net\SocketUtil.cpp" />
     <ClCompile Include="InetAddressTest.cpp" />

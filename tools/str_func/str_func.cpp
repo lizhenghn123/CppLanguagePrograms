@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include "OsDefine.h"
-#include "base/StrUtil.h"
+#include "base/StringUtil.h"
 #ifdef OS_WINDOWS
 #include <stdlib.h>
 #elif defined(OS_LINUX)

@@ -77,7 +77,6 @@ Thread::Thread(const ThreadFunc& func, const std::string& name/* = unknown*/)
 
 Thread::~Thread()
 {
-    printf("this thread over\n");
     if(joinable())
         std::terminate();
 }

@@ -3,10 +3,16 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\net\InetAddress.h" />
     <ClInclude Include="..\..\include\net\SocketUtil.h" />
+    <ClInclude Include="..\..\include\base\Timestamp.h" />
+    <ClInclude Include="..\..\include\base\ZLog.h" />
+    <ClInclude Include="..\..\include\base\FileUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\net\InetAddress.cpp" />
     <ClCompile Include="..\..\include\net\SocketUtil.cpp" />
     <ClCompile Include="InetAddressTest.cpp" />
+    <ClCompile Include="..\..\include\base\Timestamp.cpp" />
+    <ClCompile Include="..\..\include\base\ZLog.cpp" />
+    <ClCompile Include="..\..\include\base\FileUtil.cpp" />
   </ItemGroup>
 </Project>

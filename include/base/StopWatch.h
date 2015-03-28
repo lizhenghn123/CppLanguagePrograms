@@ -13,7 +13,6 @@
 #define ZL_STOPWTACH_H
 #include "Define.h"
 #ifdef OS_WINDOWS
-#include <Windows.h>
 #include <WinSock2.h>
 #include <time.h>
 //struct timeval
@@ -25,6 +24,7 @@
 #else
 #error "You must be include OsDefine.h firstly"
 #endif
+
 NAMESPACE_ZL_BASE_START
 
 #define GET_TICK_COUNT(a, b) ((b.tv_sec - a.tv_sec)*1000000 + (b.tv_usec - a.tv_usec))
@@ -61,11 +61,11 @@ public:
     }
     float   elapsedTimeInMicro()
     {
-        struct timeval now;
+        timeval now;
         getTimeOfDay(&now, NULL);
         return float(GET_TICK_COUNT(now, start_time));
     }
-    float   diffTime(const timeval& start)
+    float   diffTime(const struct timeval& start)
     {
         struct timeval now;
         getTimeOfDay(&now, NULL);
@@ -100,9 +100,8 @@ private:
 #endif
     }
 private:
-    struct timeval    start_time;
+    struct timeval      start_time;
 };
-
 
 NAMESPACE_ZL_BASE_END
 #endif /** ZL_STOPWTACH_H */

@@ -1,16 +1,16 @@
-﻿// ***********************************************************************
-// Filename         : StrUtil.h
+// ***********************************************************************
+// Filename         : StringUtil.h
 // Author           : LIZHENG
 // Created          : 2014-08-16
 // Description      : 字符串辅助函数
 //
 // Last Modified By : LIZHENG
-// Last Modified On : 2014-10-14
+// Last Modified On : 2015-03-12
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
-#ifndef ZL_STRUTIL_H
-#define ZL_STRUTIL_H
+#ifndef ZL_STRING_UTIL_H
+#define ZL_STRING_UTIL_H
 #include <string>
 #include <vector>
 #include <sstream>
@@ -38,6 +38,13 @@ T strTo(const std::string& str)
     iss >> t;
     return t;
 }
+
+/** 格式化字符串 */
+size_t stringFormatAppend(std::string *dst, const char* format, ...);
+
+size_t stringFormat(std::string *dst, const char* format, ...);
+
+std::string stringFormat(const char *format, ...);
 
 /** 将字符串转为小写并返回 */
 inline std::string toLower(const std::string& str)
@@ -126,7 +133,7 @@ inline void replace(std::string& strSrc, const std::string& strDeliter, const st
     }
 }
 
-/** 字符串分隔，如果有连续的delim，是否插入空串 */
+/** 字符串分隔，insertEmpty : 如果有连续的delim，是否插入空串 */
 inline void split(const std::string& str, std::vector<std::string>& result,
     const std::string& delim = " ", bool insertEmpty = false)
 {
@@ -141,13 +148,15 @@ inline void split(const std::string& str, std::vector<std::string>& result,
 
         if(!temp.empty())
         {
-            if(insertEmpty)
-                result.push_back("");
             result.push_back(temp);
         }
+        else if(insertEmpty)
+        {
+            result.push_back("");
+        }
+
         if(subend == str.end())
             break;
-
         substart = subend + delim.size();
     }
 }
@@ -222,4 +231,4 @@ inline typename SequenceSequenceT::value_type
 
 } // namespace base
 } // namespace zl
-#endif  /* ZL_STRUTIL_H */
+#endif  /* ZL_STRING_UTIL_H */
