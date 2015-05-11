@@ -5,11 +5,11 @@
 #include <hash_map>
 #include "thread/Mutex.h"
 
-template<typename Key, typename Value, class LockType = zl::thread::Mutex>
+template<typename Key, typename Value, class LockType = zl::thread::NullMutex>
 class LruCache
 {
 public:
-    explicit LruCache(size_t capacity): capacity_(capacity)
+    explicit LruCache(size_t capacity) : capacity_(capacity), size_(0)
     {
     }
 
@@ -31,7 +31,8 @@ public:
         if(iter != keyIndex_.end())
         {
             valueList_.splice(valueList_.begin(), valueList_, iter->second);
-            iter->second = valueList_.begin();    //更新索引
+            //iter->second = valueList_.begin();    //更新索引, 非必须
+            assert(iter->second == valueList_.begin());
 
             value = iter->second->second;
             return true;
@@ -55,22 +56,35 @@ public:
         typename MAP::iterator miter = keyIndex_.find(key);
         if(miter != keyIndex_.end()) //存在
         {
-            if(miter->second->second == value)  //且相等，直接返回
-                return true;
-            removeWithHolder(key);   //先移除
+            // 更新了该key的访问顺序（是否需要更新应按需求来确定）
+            valueList_.splice(valueList_.begin(), valueList_, miter->second);
+            miter->second->second = value;
         }
-
-        valueList_.push_front(std::make_pair(key, value));    //更新缓存
-
-        typename LIST::iterator liter = valueList_.begin();
-        keyIndex_[key] = liter;            //更新访问索引
-
-        if(keyIndex_.size() > capacity_)   //是否超载
+        else
         {
-            liter = valueList_.end();
-            --liter;
-            removeWithHolder(liter->first);
+            if (size_ < capacity_)     // insert new one
+            {
+                valueList_.push_front(std::make_pair(key, value));
+                keyIndex_[key] = valueList_.begin();
+                size_++;
+            }
+            else      // 删除最少访问的元素
+            {
+                //对双向链表list的修改绝对不可以使原有的迭代器失效，否则hash里存储的内容就失效了。
+                //这里使用的是splice方法来将中间的某个结点移动到首位置。
+                int oldkey = valueList_.back().first;
+                LIST::iterator oldone = valueList_.end();
+                --oldone;
+                valueList_.splice(valueList_.begin(), valueList_, oldone);
+                keyIndex_.erase(oldkey);
+
+                // 再插入新元素到列表头
+                valueList_.begin()->first = key;
+                valueList_.begin()->second = value;
+                keyIndex_[key] = valueList_.begin();
+            }
         }
+
         return true;
     }
 
@@ -112,7 +126,7 @@ public:
 private:
     void clear()
     {
-       zl::thread::LockGuard<LockType> lock(mutex_);
+        zl::thread::LockGuard<LockType> lock(mutex_);
         valueList_.clear();
         keyIndex_.clear();
     }
@@ -134,6 +148,7 @@ private:
     LIST                   valueList_;
     MAP                    keyIndex_;
     size_t                 capacity_;
+    size_t                 size_;
     mutable LockType       mutex_;
 };
 
