@@ -31,15 +31,24 @@ public:
     static Timestamp now();
     static Timestamp invalid();
 
-    static double  timediff(const Timestamp& lhs, const Timestamp& rhs)
+    /// return seconds
+    static double  timeDiff(const Timestamp& end, const Timestamp& start)
     {
-         int64_t delta = lhs.microSeconds() - rhs.microSeconds();
+         int64_t delta = end.microSeconds() - start.microSeconds();
          return ZL_TIME_SEC(delta * 1.0);
     }
-    static int64_t  timediffMs(const Timestamp& lhs, const Timestamp& rhs)
+
+    /// return mill seconds
+    static int64_t  timeDiffMs(const Timestamp& end, const Timestamp& start)
     {
-        int64_t delta = lhs.microSeconds() - rhs.microSeconds();
+        int64_t delta = end.microSeconds() - start.microSeconds();
         return (delta / 1000);
+    }
+
+    /// return micro seconds
+    static int64_t  timeDiffUs(const Timestamp& end, const Timestamp& start)
+    {
+        return end.microSeconds() - start.microSeconds();
     }
 
 public:
@@ -73,6 +82,15 @@ private:
     int64_t  microSeconds_;
 };
 
+
+
+inline std::ostream& operator<<(std::ostream& out, const Timestamp& ts)                                                                                                                        
+{                                                                       
+    out << ts.toString();                                               
+    return out;                                                         
+}  
+
+
 inline bool operator<(const Timestamp& lhs, const Timestamp& rhs)
 {
     return lhs.microSeconds() < rhs.microSeconds();
@@ -81,6 +99,12 @@ inline bool operator<(const Timestamp& lhs, const Timestamp& rhs)
 inline bool operator==(const Timestamp& lhs, const Timestamp& rhs)
 {
     return lhs.microSeconds() == rhs.microSeconds();
+}
+
+/// return micro seconds
+inline int64_t operator-(const Timestamp& end, const Timestamp& start)
+{ 
+    return end.microSeconds() - start.microSeconds();
 }
 
 inline Timestamp operator+(const Timestamp& lhs, double seconds)
@@ -97,11 +121,6 @@ inline Timestamp operator+(double seconds, const Timestamp& rhs)
 inline Timestamp operator+=(Timestamp& lhs, double seconds)
 {
     return lhs = lhs + seconds;
-}
-
-inline int64_t operator-(const Timestamp& lhs, const Timestamp& rhs)
-{ 
-    return Timestamp::timediffMs(lhs, rhs);
 }
 
 inline Timestamp operator-(const Timestamp& lhs, double seconds)

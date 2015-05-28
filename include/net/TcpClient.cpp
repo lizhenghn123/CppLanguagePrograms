@@ -4,12 +4,13 @@
 #include "net/TcpConnection.h"
 #include "net/TcpConnector.h"
 #include "net/SocketUtil.h"
+#include "base/ZLog.h"
 using namespace zl::base;
 NAMESPACE_ZL_NET_START
 
 namespace detail
 {
-    void removeConnection(EventLoop* loop, const TcpConnectionPtr& conn)
+    void removeConnection(EventLoop *loop, const TcpConnectionPtr& conn)
     {
         loop->queueInLoop(std::bind(&TcpConnection::connectDestroyed, conn));
     }
@@ -20,7 +21,7 @@ namespace detail
     }
 }
 
-TcpClient::TcpClient(EventLoop* loop, const InetAddress& serverAddr, const std::string& clientname)
+TcpClient::TcpClient(EventLoop *loop, const InetAddress& serverAddr, const std::string& clientname)
     : loop_(loop),
       connectionCallback_(defaultConnectionCallback),
       messageCallback_(defaultMessageCallback),
@@ -63,6 +64,7 @@ void TcpClient::stop()
 
 void TcpClient::newConnection(int sockfd)
 {
+    LOG_INFO("TcpClient::newConnection [%d]", sockfd);
     loop_->assertInLoopThread();
     InetAddress peerAddr(SocketUtil::getPeerAddr(sockfd));
     InetAddress localAddr(SocketUtil::getLocalAddr(sockfd));

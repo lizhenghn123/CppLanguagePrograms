@@ -2,7 +2,7 @@
 #include <string>
 #include "utility/Base64.h"
 using namespace zl::base;
-
+using namespace zl::util;
 void test()
 {
     {

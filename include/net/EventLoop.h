@@ -23,6 +23,7 @@ class Channel;
 class Poller;
 class Timer;
 class TimerQueue;
+class EventfdHandler;
 
 class EventLoop : zl::NonCopy
 {
@@ -49,7 +50,7 @@ public:
     void queueInLoop(const Functor& func);
 
     TimerId addTimer(const TimerCallback& cb, const Timestamp& when);
-    TimerId addTimer(const TimerCallback& cb, double delaySeconds, bool repeat);
+    TimerId addTimer(const TimerCallback& cb, double delaySeconds, bool repeat = false);
     void    cancelTimer(TimerId id);
 
     bool isRunning() { return running_; }
@@ -59,7 +60,6 @@ public:
 private:
     void wakeupPoller();          //wakeup the waiting poller
     void callPendingFunctors();   //call when loop() return
-    void handleRead();            //read event for wakeupfd_
 
 private:
     typedef std::vector<Channel*> ChannelList;
@@ -72,7 +72,7 @@ private:
     thread::Atomic<bool>     running_;          // status for eventloop running
     thread::Atomic<bool>     eventHandling_;    // status for active channel handling
 
-    int                      wakeupfd_;         // wakeup poller::poll
+    EventfdHandler           *wakeupfd_;        // wakeup poller::poll
     Channel                  *wakeupChannel_;   // channel of wakeupfd_
 
     thread::Atomic<bool>     callingPendingFunctors_;  // status for pending functors calling

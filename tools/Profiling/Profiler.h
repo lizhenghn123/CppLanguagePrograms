@@ -63,7 +63,7 @@ public:
         {
             if(entry_.duration_ == 0)
             {
-                entry_.duration_ = zl::base::Timestamp::timediffMs(zl::base::Timestamp::now(), entry_.start_);
+                entry_.duration_ = zl::base::Timestamp::timeDiffMs(zl::base::Timestamp::now(), entry_.start_);
                 Profiler::getInstance().addEntry(entry_);
             }
         }

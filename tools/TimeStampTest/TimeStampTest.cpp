@@ -49,7 +49,7 @@ int main()
         n3 = 10.01 + n3;
         printf("%s\n", n3.toString().c_str());
 
-        printf("diff : %f\n", Timestamp::timediff(n3, now));
+        printf("diff : %f\n", Timestamp::timeDiff(n3, now));
     }
     system("pause");
 }
