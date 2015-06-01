@@ -50,7 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\include;D:\OPENS\boost_1_49_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;..\include;D:\OPENS\boost_1_49_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -76,11 +76,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GBKtoUTF8.cpp" />
+    <ClCompile Include="..\..\include\base\GBKtoUTF8.cpp" />
     <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="GBKtoUTF8.h" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -91,6 +88,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GBKtoUTF8.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\base\GBKtoUTF8.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
