@@ -3,10 +3,11 @@
 #include "utility/Base64.h"
 using namespace zl::base;
 using namespace zl::util;
-void test()
+
+void test_base64()
 {
     {
-        char *src = "123456"; //"hello world";
+        char *src = "±±¾©»¶Ó­Äú";
         char dst[100] = {0};
         base64Encode(src, strlen(src), dst);
         std::cout << src << "\t" << dst << "\n";
@@ -44,7 +45,7 @@ void test()
 }
 int main()
 {
-    test();
+    test_base64();
     system("pause");
     return 0;
 }
