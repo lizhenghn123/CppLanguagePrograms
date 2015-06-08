@@ -15,7 +15,6 @@
 
 namespace zl
 {
-
     template<typename T>
     class Bitset
     {
