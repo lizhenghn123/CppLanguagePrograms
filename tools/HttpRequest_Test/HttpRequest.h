@@ -13,6 +13,7 @@
 #include <vector>
 #include <string>
 struct curl_slist;
+typedef void CURL;
 
 class HttpRequest
 {
@@ -23,8 +24,14 @@ public:
         std::string body_;
     };
 
+    struct UploadObject
+    {
+        const char *data_;
+        size_t length_;
+    };
+
 public:
-    HttpRequest();
+    explicit HttpRequest(bool requestHeader = true, bool requestBody = true);
     ~HttpRequest();
 
 public:
@@ -66,7 +73,7 @@ public:
     * @param key         输入参数,key
     * @param value       输入参数,value
     */
-    void AddHeader(const char *key, const char *value);
+    bool AddHeader(const char *key, const char *value);
 
     /**
     * @brief HTTP GET请求
@@ -81,7 +88,6 @@ public:
     * @param url         输入参数,请求的url地址
     * @param postData    输入参数，需要post的数据
     * @param dataSize    输入参数,需要post的数据大小
-    * @param strResponse 输出参数,返回的内容
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
     int Post(const char *url, const char *postData, int dataSize, int timeoutMs = 4000);
@@ -90,15 +96,27 @@ public:
     * @brief HTTP POST请求
     * @param url         输入参数,请求的url地址
     * @param postData    输入参数，需要post的数据
-    * @param strResponse 输出参数,返回的内容
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
     int Post(const char *url, const std::string& postData, int timeoutMs = 4000);
 
     /**
+    * @brief HTTP DELETE请求
+    * @param url         输入参数,请求的url地址
+    * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
+    */
+    int Delete(const char *url, int timeoutMs = 4000);
+
+    /**
+    * @brief HTTP PUT请求
+    * @param url         输入参数,请求的url地址
+    * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
+    */
+    int Put(const char *url, const char *putData, size_t dataSize);
+
+    /**
     * @brief HTTPS GET请求,证书版本
     * @param url         输入参数,请求的url地址
-    * @param strResponse 输出参数,返回的内容
     * @param pCaPath     输入参数,为CA证书的路径.如果输入为NULL,则不验证服务器端证书的有效性.
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
@@ -108,18 +126,25 @@ public:
     * @brief HTTPS POST请求,证书版本
     * @param url         输入参数,请求的url地址
     * @param strPost     输入参数,需要post的数据
-    * @param strResponse 输出参数,返回的内容
     * @param pCaPath     输入参数,为CA证书的路径.如果输入为NULL,则不验证服务器端证书的有效性.
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
     int Posts(const char *url, const std::string& postData, const char *pCaPath = NULL, int timeoutMs = 4000);
 
 private:
+    /**
+    * @brief 初始化回调
+    * @param requestHeader 输入参数,是否请求http消息头
+    * @param requestBody   输入参数,是否请求http消息体
+    */
+    void  Init(bool requestHeader = true, bool requestBody = true);
+
+private:
     static bool          debug_;       /**是否开启调试输出*/
 
 private:
     struct curl_slist    *headers_;
-    //CURL                 *curl;
+    CURL                 *curl_;
     Reponse              reponse_;
 };
 

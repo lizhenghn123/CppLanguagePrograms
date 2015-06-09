@@ -1,8 +1,18 @@
 #include "HttpRequest.h"
 #include "curl/curl.h"
+#include <assert.h>
 
 #define JUST_RETUAN_IF_FALSE(expr, ret)  do { if(!expr) return ret;} while(0)
 #define JUST_RETUAN_IF_TRUE(expr, ret)   do { if(expr) return ret;} while(0)
+#define CURL_CHECK(func)                       \
+            do {                                \
+                CURLcode code = func;           \
+                if(code != CURLE_OK)            \
+                {                               \
+                    fprintf(stderr, "CURL ERROR[%d][%s][%d]\n", code, __FILE__, __LINE__);  \
+                    assert(code == CURLE_OK);   \
+                }                               \
+            }while(0)
 
 namespace
 {
@@ -52,6 +62,26 @@ static int DebugCurl(CURL *, curl_infotype itype, char *pData, size_t size, void
     return 0;
 }
 
+static CURL*  CreateCurl()
+{
+    CURL *curl = curl_easy_init();
+    if (HttpRequest::IsDebug())
+    {
+        CURL_CHECK(curl_easy_setopt(curl, CURLOPT_VERBOSE, 1));
+        CURL_CHECK(curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, DebugCurl));
+    }
+    return curl;
+}
+
+static void   SetHttpsUrl(CURL* curl, const char *url)
+{
+    if (strncmp(url, "https", 5) == 0)
+    {
+        CURL_CHECK(curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L));
+        CURL_CHECK(curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L));
+    }
+}
+
 static size_t WriteHeaderCallback(char *buffer, size_t size, size_t memb, void *stream)
 {
     HttpRequest::Reponse *rep = static_cast<HttpRequest::Reponse*>(stream);
@@ -87,158 +117,143 @@ static size_t WriteBodyCallback(char *buffer, size_t size, size_t memb, void *st
     return result;
 }
 
-static CURL*  CreateCurl()
+static size_t ReadDataCallback(char *buffer, size_t size, size_t memb, void *stream)
 {
-    CURL *curl = curl_easy_init();
-    if (HttpRequest::IsDebug())
-    {
-        CURLcode curlCode = curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-        curlCode = curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, DebugCurl);
-        (void)(curlCode);
-    }
-    return curl;
+    HttpRequest::UploadObject *obj = static_cast<HttpRequest::UploadObject*>(stream);
+
+    size_t result = size * memb;
+    size_t copy_size = (obj->length_ < result) ? obj->length_ : result;
+
+    memcpy(buffer, obj->data_, copy_size);
+    obj->length_ -= copy_size;
+    obj->data_ += copy_size;
+
+    return copy_size;
 }
 
 bool HttpRequest::debug_ = false;
 
-HttpRequest::HttpRequest(void)
+HttpRequest::HttpRequest(bool requestHeader/* = true*/, bool requestBody/* = true*/)
 {
     headers_ = NULL;
     headers_ = curl_slist_append(headers_, "Expect:");//也许有Expect: 100-continue，去掉它
     headers_ = curl_slist_append(headers_, "Accept:");//删除存在的消息头Accept
-    //headers_ = curl_slist_append(headers_, HttpClient::GetServerHost().c_str()); //修改存在的消息头Host,"Host: 127.0.0.1:80"
+    //headers_ = curl_slist_append(headers_, "Host: 127.0.0.1:80"); //修改存在的消息头Host
     headers_ = curl_slist_append(headers_, "User-Agent: upload");
     headers_ = curl_slist_append(headers_, "Cache-Control: no-cache");
     headers_ = curl_slist_append(headers_, "Connection: Keep-Alive"); //http长连接
-    //设置这个，格式乱了
-    //headers_ = curl_slist_append(headers_, "Content-Type: multipart/form-data; boundary=-----ABCDEFGHIJKLMNOPQRSTUVWXYZ-----\r\n"); 
-    //curl = curl_easy_init();
+
+    curl_ = CreateCurl();
+    Init(requestHeader, requestBody);
 }
 
 HttpRequest::~HttpRequest(void)
 {
+    curl_easy_cleanup(curl_);
+
     if (headers_ != NULL)
     {
         curl_slist_free_all(headers_);
     }
 }
 
-void HttpRequest::AddHeader(const char *key, const char *value)
+void HttpRequest::Init(bool requestHeader/* = true*/, bool requestBody/* = true*/)
+{
+    //assert(requestHeader || requestBody);
+    if(requestHeader)
+    {
+        // 设置消息头的读取
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERFUNCTION, WriteHeaderCallback));
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERDATA, (void *)&reponse_));
+        
+    }
+    else
+    {
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERFUNCTION, NULL));
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERDATA, NULL));
+    }
+    if(requestBody)
+    {
+        // 设置消息体的读取
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, WriteBodyCallback));
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEDATA, (void *)&reponse_));
+    }
+    else
+    {
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, NULL));
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEDATA, NULL));
+    }
+}
+
+bool HttpRequest::AddHeader(const char *key, const char *value)
 {
     std::string reqLine(key);
     reqLine += ": ";
     reqLine += value;
     headers_ = curl_slist_append(headers_, reqLine.c_str());
+    return headers_ != NULL;
 }
 
 int HttpRequest::Get(const char *url, int timeoutMs/* = 4000*/)
 {
-    CURL *curl = CreateCurl();
-    JUST_RETUAN_IF_FALSE(curl, CURLE_FAILED_INIT);
-
-    CURLcode curlCode = CURLE_OK;
     try
     {
         do
         {
-            if (strncmp(url, "https", 5) == 0)
-            {
-                curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-                curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
-            }
-            curlCode = curl_easy_setopt(curl, CURLOPT_URL, url);
-            curlCode = curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);
+            SetHttpsUrl(curl_, url);
 
-            // 设置消息头的读取
-            curlCode = curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, WriteHeaderCallback);
-            curlCode = curl_easy_setopt(curl, CURLOPT_HEADERDATA, (void *)&reponse_);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set write func failed");
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, NULL));
 
-            // 设置消息体的读取
-            curlCode = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteBodyCallback);
-            curlCode = curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&reponse_);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set write func failed");
+            //Init(requestHeader, requestBody);
 
             // 当多个线程都使用超时处理的时候，同时主线程中有sleep或是wait等操作
             // 如果不设置这个选项，libcurl将会发信号打断这个wait从而导致程序退出
-            curlCode = curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1));
 
-            curlCode = curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, timeoutMs);
-            curlCode = curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeoutMs);
-            if (curlCode != CURLE_OK)
-                break;
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_CONNECTTIMEOUT_MS, timeoutMs));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_TIMEOUT_MS, timeoutMs));
 
-            curlCode = curl_easy_perform(curl);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("execute request failed");
+            CURLcode code = curl_easy_perform(curl_);
+            if (code != CURLE_OK)
+            {
+                return code; //throw std::exception("execute request failed");
+            }
         } while (0);
     }
     catch (...)
     {
-        curl_easy_cleanup(curl);
         return -1;
     }
-
-    curl_easy_cleanup(curl);
-    return curlCode;
+    return 0;
 }
 
 int HttpRequest::Post(const char *url, const char *postData, int dataSize, int timeoutMs/* = 4000*/)
 {
-    CURL *curl = CreateCurl();
-    JUST_RETUAN_IF_FALSE(curl, CURLE_FAILED_INIT);
-
     CURLcode curlCode = CURLE_OK;
-
     try
     {
         do
         {
-            curl_easy_setopt(curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1); //HTTP协议的版本号
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HTTPHEADER, headers_));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
 
-            // 设置头信息
-            curlCode = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers_);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set header failed");
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_POST, 1));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_POSTFIELDS, postData));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_POSTFIELDSIZE, dataSize));
 
-            // 设置URL
-            curlCode = curl_easy_setopt(curl, CURLOPT_URL, url);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set url failed");
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_CONNECTTIMEOUT_MS, timeoutMs));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_TIMEOUT_MS, timeoutMs));
 
-            curlCode = curl_easy_setopt(curl, CURLOPT_POST, 1);
-            curlCode = curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData);
-            curlCode = curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, dataSize);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set formdata failed");
-
-            // 设置消息头的读取
-            curlCode = curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, WriteHeaderCallback);
-            curlCode = curl_easy_setopt(curl, CURLOPT_HEADERDATA, (void *)&reponse_);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set write func failed");
-
-            // 设置消息体的读取
-            curlCode = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteBodyCallback);
-            curlCode = curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&reponse_);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set write func failed");
-
-            // 设置超时时间
-            curlCode = curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
-            curlCode = curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, timeoutMs);
-            curlCode = curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeoutMs);
-
-            // 执行
-            curlCode = curl_easy_perform(curl);
+            curlCode = curl_easy_perform(curl_);
             if (curlCode != CURLE_OK)
                 break; //throw std::exception("curl_easy_perform failed");
 
             // 检查返回值
             long retCode = 200;
-            curlCode = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &retCode);
+            curlCode = curl_easy_getinfo(curl_, CURLINFO_RESPONSE_CODE, &retCode);
             if (curlCode != CURLE_OK || retCode != 200)
             {
                 fprintf(stderr, "curl_easy_getinfo = [%d][%ld]\n", curlCode, retCode);
@@ -248,11 +263,8 @@ int HttpRequest::Post(const char *url, const char *postData, int dataSize, int t
     }
     catch (...)
     {
-        curl_easy_cleanup(curl);
         return -1;
     }
-
-    curl_easy_cleanup(curl);
     return curlCode;
 }
 
@@ -261,126 +273,150 @@ int HttpRequest::Post(const char *url, const std::string& postData, int timeoutM
     return Post(url, postData.c_str(), postData.size(), timeoutMs);
 }
 
-int HttpRequest::Gets(const char *url, const char *pCaPath, int timeoutMs/* = 4000*/)
+int HttpRequest::Delete(const char *url, int timeoutMs/* = 4000*/)
 {
-    CURL *curl = CreateCurl();
-    JUST_RETUAN_IF_FALSE(curl, CURLE_FAILED_INIT);
-
+    const static char *http_delete = "DELETE";
     CURLcode curlCode = CURLE_OK;
-
     try
     {
         do
         {
-            curlCode = curl_easy_setopt(curl, CURLOPT_URL, url);
-            curlCode = curl_easy_setopt(curl, CURLOPT_READFUNCTION, NULL);
+            SetHttpsUrl(curl_, url);
 
-            // 设置消息头的读取
-            curlCode = curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, WriteHeaderCallback);
-            curlCode = curl_easy_setopt(curl, CURLOPT_HEADERDATA, (void *)&reponse_);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set write func failed");
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, NULL));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_CUSTOMREQUEST, http_delete));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1));
 
-            // 设置消息体的读取
-            curlCode = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteBodyCallback);
-            curlCode = curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&reponse_);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set write func failed");
-            if (curlCode != CURLE_OK)
-                break;
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_CONNECTTIMEOUT_MS, timeoutMs));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_TIMEOUT_MS, timeoutMs));
 
-            curlCode = curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+            curlCode = curl_easy_perform(curl_);
+            if (curlCode != CURLE_OK)
+                break; //throw std::exception("execute request failed");
+        } while (0);
+    }
+    catch (...)
+    {
+        return -1;
+    }
+    return curlCode;
+}
+
+int HttpRequest::Put(const char *url, const char *putData, size_t dataSize)
+{
+    CURLcode curlCode = CURLE_OK;
+    HttpRequest::UploadObject obj = { putData, dataSize };
+    try
+    {
+        do
+        {
+            SetHttpsUrl(curl_, url);
+
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1));
+
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_PUT, 1L));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_UPLOAD, 1L));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, ReadDataCallback));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READDATA, &obj));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_INFILESIZE, static_cast<long>(obj.length_)));
+
+            curlCode = curl_easy_perform(curl_);
+            if (curlCode != CURLE_OK)
+                break; //throw std::exception("execute request failed");
+        } while (0);
+    }
+    catch (...)
+    {
+        return -1;
+    }
+
+    return curlCode;
+}
+
+int HttpRequest::Gets(const char *url, const char *pCaPath, int timeoutMs/* = 4000*/)
+{
+    CURLcode curlCode = CURLE_OK;
+    try
+    {
+        do
+        {
+            SetHttpsUrl(curl_, url);
+
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, NULL));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1));
+
             if (NULL == pCaPath)
             {
-                curlCode = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
-                curlCode = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false);
+                CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYPEER, false));
+                CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYHOST, false));
             }
             else
             {
-                curlCode = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, true);
-                curlCode = curl_easy_setopt(curl, CURLOPT_CAINFO, pCaPath);
+                CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYPEER, true));
+                CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_CAINFO, pCaPath));
             }
-            if (curlCode != CURLE_OK)
-                break;
 
-            curlCode = curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, timeoutMs);
-            curlCode = curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeoutMs);
-            curlCode = curl_easy_perform(curl);
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_CONNECTTIMEOUT_MS, timeoutMs));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_TIMEOUT_MS, timeoutMs));
+
+            curlCode = curl_easy_perform(curl_);
             if (curlCode != CURLE_OK)
                 break;
         } while (0);
     }
     catch (...)
     {
-        curl_easy_cleanup(curl);
         return -1;
     }
 
-    curl_easy_cleanup(curl);
     return curlCode;
 }
 
 int HttpRequest::Posts(const char *url, const std::string& strPost, const char *pCaPath, int timeoutMs/* = 4000*/)
 {
-    CURL *curl = CreateCurl();
-    JUST_RETUAN_IF_FALSE(curl, CURLE_FAILED_INIT);
-
     CURLcode curlCode = CURLE_OK;
     try
     {
         do
         {
-            curlCode = curl_easy_setopt(curl, CURLOPT_URL, url);
-            curlCode = curl_easy_setopt(curl, CURLOPT_POST, 1);
-            curlCode = curl_easy_setopt(curl, CURLOPT_POSTFIELDS, strPost.c_str());
-            curlCode = curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strPost.size());
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set formdata failed");
+            SetHttpsUrl(curl_, url);
 
-            // 设置消息头的读取
-            curlCode = curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, WriteHeaderCallback);
-            curlCode = curl_easy_setopt(curl, CURLOPT_HEADERDATA, (void *)&reponse_);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set write func failed");
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_POST, 1));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_POSTFIELDS, strPost.c_str()));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_POSTFIELDSIZE, strPost.size()));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1));
 
-            // 设置消息体的读取
-            curlCode = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteBodyCallback);
-            curlCode = curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&reponse_);
-            if (curlCode != CURLE_OK)
-                break; //throw std::exception("set write func failed");
-            if (curlCode != CURLE_OK)
-                break;
-
-            curlCode = curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
             if (NULL == pCaPath)
             {
-                curlCode = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
-                curlCode = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false);
+                CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYPEER, false));
+                CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYHOST, false));
             }
             else
             {
                 //缺省情况就是PEM，所以无需设置，另外支持DER
-                //curl_easy_setopt(curl,CURLOPT_SSLCERTTYPE,"PEM");
-                curlCode = curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, true);
-                curlCode = curl_easy_setopt(curl, CURLOPT_CAINFO, pCaPath);
+                //curl_easy_setopt(curl_,CURLOPT_SSLCERTTYPE,"PEM");
+                CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYPEER, true));
+                CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_CAINFO, pCaPath));
             }
             if (curlCode != CURLE_OK)
                 break;
 
-            curlCode = curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, timeoutMs);
-            curlCode = curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeoutMs);
-            curlCode = curl_easy_perform(curl);
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_CONNECTTIMEOUT_MS, timeoutMs));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_TIMEOUT_MS, timeoutMs));
+
+            curlCode = curl_easy_perform(curl_);
             if (curlCode != CURLE_OK)
                 break;
         } while (0);
     }
     catch (...)
     {
-        curl_easy_cleanup(curl);
         return -1;
     }
-
-    curl_easy_cleanup(curl);
     return curlCode;
 }
 
