@@ -37,7 +37,7 @@ namespace
     CurlGlobalSettings CurlGlobalSettings::curl_global;
 }
 
-static int DebugCurl(CURL *, curl_infotype itype, char *pData, size_t size, void *)
+static int DebugCurlCallback(CURL *, curl_infotype itype, char *pData, size_t size, void *)
 {
     if (itype == CURLINFO_TEXT)
     {
@@ -68,7 +68,7 @@ static CURL*  CreateCurl()
     if (HttpRequest::IsDebug())
     {
         CURL_CHECK(curl_easy_setopt(curl, CURLOPT_VERBOSE, 1));
-        CURL_CHECK(curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, DebugCurl));
+        CURL_CHECK(curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, DebugCurlCallback));
     }
     return curl;
 }

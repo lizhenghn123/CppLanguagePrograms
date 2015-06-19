@@ -3,8 +3,10 @@
   <ItemGroup>
     <ClCompile Include="HttpRequest.cpp" />
     <ClCompile Include="HttpRequest_Test.cpp" />
+    <ClCompile Include="..\..\include\base\GBKtoUTF8.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpRequest.h" />
+    <ClInclude Include="..\..\include\base\GBKtoUTF8.h" />
   </ItemGroup>
 </Project>
