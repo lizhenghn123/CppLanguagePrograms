@@ -340,15 +340,15 @@ public:
     }
     void set(int n)  { num = n; }
     void plus(int n) { num +=n; }
-    void print() { cout << "plus : [" << this << "] " << num << "\n"; }
+    void print() { cout << "print : [" << this << "] " << num << "\n"; }
 private:
     int num;
 };
 ThreadLocal<TestTLS> g_tls;
 
-void testTLS()
+void testTLS(int i)
 {
-    g_tls->plus(100);
+    g_tls->plus(i);
     g_tls->print();
 }
 void test_threadlocalstroage()
@@ -356,12 +356,14 @@ void test_threadlocalstroage()
     g_tls->set(10);
     g_tls->print();
 
-    Thread t1(testTLS);
+    Thread t1(std::bind(testTLS, 23));
     t1.join();
+
+    Thread t2(std::bind(testTLS, 100));
+    t2.join();
 
     g_tls->print();
 }
-
 int main()
 {
     cout << "------------------------------ test_thread1\n";
@@ -371,13 +373,13 @@ int main()
     //test_thread2();
 
     cout << "------------------------------ test_threadpool\n";
-    test_threadpool();
+    //test_threadpool();
 
     cout << "------------------------------ test_threadgroup\n";
-    test_threadgroup();
+    //test_threadgroup();
 
     cout << "------------------------------ test_threadlocalstroage\n";
-    //test_threadlocalstroage();
+    test_threadlocalstroage();
 
     system("pause");
     return 0;
