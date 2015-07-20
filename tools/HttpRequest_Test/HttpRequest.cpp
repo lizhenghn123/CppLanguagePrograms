@@ -37,7 +37,7 @@ namespace
     CurlGlobalSettings CurlGlobalSettings::curl_global;
 }
 
-static int DebugCurlCallback(CURL *, curl_infotype itype, char *pData, size_t size, void *)
+static int debugCurlCallback(CURL *, curl_infotype itype, char *pData, size_t size, void *)
 {
     if (itype == CURLINFO_TEXT)
     {
@@ -62,18 +62,18 @@ static int DebugCurlCallback(CURL *, curl_infotype itype, char *pData, size_t si
     return 0;
 }
 
-static CURL*  CreateCurl()
+static CURL*  createCurl()
 {
     CURL *curl = curl_easy_init();
-    if (HttpRequest::IsDebug())
+    if (HttpRequest::isDebug())
     {
         CURL_CHECK(curl_easy_setopt(curl, CURLOPT_VERBOSE, 1));
-        CURL_CHECK(curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, DebugCurlCallback));
+        CURL_CHECK(curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, debugCurlCallback));
     }
     return curl;
 }
 
-static void   SetHttpsUrl(CURL* curl, const char *url)
+static void   setHttpsUrl(CURL* curl, const char *url)
 {
     if (strncmp(url, "https", 5) == 0)
     {
@@ -82,7 +82,7 @@ static void   SetHttpsUrl(CURL* curl, const char *url)
     }
 }
 
-static size_t WriteHeaderCallback(char *buffer, size_t size, size_t memb, void *stream)
+static size_t writeHeaderCallback(char *buffer, size_t size, size_t memb, void *stream)
 {
     HttpRequest::Reponse *rep = static_cast<HttpRequest::Reponse*>(stream);
     if (rep == NULL || buffer == NULL)
@@ -103,7 +103,7 @@ static size_t WriteHeaderCallback(char *buffer, size_t size, size_t memb, void *
     return result;
 }
 
-static size_t WriteBodyCallback(char *buffer, size_t size, size_t memb, void *stream)
+static size_t writeBodyCallback(char *buffer, size_t size, size_t memb, void *stream)
 {
     HttpRequest::Reponse *rep = static_cast<HttpRequest::Reponse*>(stream);
     if (rep == NULL || buffer == NULL)
@@ -117,7 +117,7 @@ static size_t WriteBodyCallback(char *buffer, size_t size, size_t memb, void *st
     return result;
 }
 
-static size_t ReadDataCallback(char *buffer, size_t size, size_t memb, void *stream)
+static size_t readDataCallback(char *buffer, size_t size, size_t memb, void *stream)
 {
     HttpRequest::UploadObject *obj = static_cast<HttpRequest::UploadObject*>(stream);
 
@@ -143,8 +143,8 @@ HttpRequest::HttpRequest(bool requestHeader/* = true*/, bool requestBody/* = tru
     headers_ = curl_slist_append(headers_, "Cache-Control: no-cache");
     headers_ = curl_slist_append(headers_, "Connection: Keep-Alive"); //http长连接
 
-    curl_ = CreateCurl();
-    Init(requestHeader, requestBody);
+    curl_ = createCurl();
+    init(requestHeader, requestBody);
 }
 
 HttpRequest::~HttpRequest(void)
@@ -157,13 +157,13 @@ HttpRequest::~HttpRequest(void)
     }
 }
 
-void HttpRequest::Init(bool requestHeader/* = true*/, bool requestBody/* = true*/)
+void HttpRequest::init(bool requestHeader/* = true*/, bool requestBody/* = true*/)
 {
     //assert(requestHeader || requestBody);
     if(requestHeader)
     {
         // 设置消息头的读取
-        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERFUNCTION, WriteHeaderCallback));
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERFUNCTION, writeHeaderCallback));
         CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERDATA, (void *)&reponse_));
         
     }
@@ -175,7 +175,7 @@ void HttpRequest::Init(bool requestHeader/* = true*/, bool requestBody/* = true*
     if(requestBody)
     {
         // 设置消息体的读取
-        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, WriteBodyCallback));
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, writeBodyCallback));
         CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEDATA, (void *)&reponse_));
     }
     else
@@ -185,7 +185,7 @@ void HttpRequest::Init(bool requestHeader/* = true*/, bool requestBody/* = true*
     }
 }
 
-bool HttpRequest::AddHeader(const char *key, const char *value)
+bool HttpRequest::addHeader(const char *key, const char *value)
 {
     std::string reqLine(key);
     reqLine += ": ";
@@ -194,13 +194,13 @@ bool HttpRequest::AddHeader(const char *key, const char *value)
     return headers_ != NULL;
 }
 
-int HttpRequest::Get(const char *url, int timeoutMs/* = 4000*/)
+int HttpRequest::httpGet(const char *url, int timeoutMs/* = 4000*/)
 {
     try
     {
         do
         {
-            SetHttpsUrl(curl_, url);
+            setHttpsUrl(curl_, url);
 
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, NULL));
@@ -228,7 +228,7 @@ int HttpRequest::Get(const char *url, int timeoutMs/* = 4000*/)
     return 0;
 }
 
-int HttpRequest::Post(const char *url, const char *postData, int dataSize, int timeoutMs/* = 4000*/)
+int HttpRequest::httpPost(const char *url, const char *postData, int dataSize, int timeoutMs/* = 4000*/)
 {
     CURLcode curlCode = CURLE_OK;
     try
@@ -268,12 +268,12 @@ int HttpRequest::Post(const char *url, const char *postData, int dataSize, int t
     return curlCode;
 }
 
-int HttpRequest::Post(const char *url, const std::string& postData, int timeoutMs/* = 4000*/)
+int HttpRequest::httpPost(const char *url, const std::string& postData, int timeoutMs/* = 4000*/)
 {
-    return Post(url, postData.c_str(), postData.size(), timeoutMs);
+    return httpPost(url, postData.c_str(), postData.size(), timeoutMs);
 }
 
-int HttpRequest::Delete(const char *url, int timeoutMs/* = 4000*/)
+int HttpRequest::httpDelete(const char *url, int timeoutMs/* = 4000*/)
 {
     const static char *http_delete = "DELETE";
     CURLcode curlCode = CURLE_OK;
@@ -281,7 +281,7 @@ int HttpRequest::Delete(const char *url, int timeoutMs/* = 4000*/)
     {
         do
         {
-            SetHttpsUrl(curl_, url);
+            setHttpsUrl(curl_, url);
 
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, NULL));
@@ -303,7 +303,7 @@ int HttpRequest::Delete(const char *url, int timeoutMs/* = 4000*/)
     return curlCode;
 }
 
-int HttpRequest::Put(const char *url, const char *putData, size_t dataSize)
+int HttpRequest::httpPut(const char *url, const char *putData, size_t dataSize)
 {
     CURLcode curlCode = CURLE_OK;
     HttpRequest::UploadObject obj = { putData, dataSize };
@@ -311,14 +311,14 @@ int HttpRequest::Put(const char *url, const char *putData, size_t dataSize)
     {
         do
         {
-            SetHttpsUrl(curl_, url);
+            setHttpsUrl(curl_, url);
 
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1));
 
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_PUT, 1L));
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_UPLOAD, 1L));
-            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, ReadDataCallback));
+            CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, readDataCallback));
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READDATA, &obj));
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_INFILESIZE, static_cast<long>(obj.length_)));
 
@@ -335,14 +335,14 @@ int HttpRequest::Put(const char *url, const char *putData, size_t dataSize)
     return curlCode;
 }
 
-int HttpRequest::Gets(const char *url, const char *pCaPath, int timeoutMs/* = 4000*/)
+int HttpRequest::httpGets(const char *url, const char *pCaPath, int timeoutMs/* = 4000*/)
 {
     CURLcode curlCode = CURLE_OK;
     try
     {
         do
         {
-            SetHttpsUrl(curl_, url);
+            setHttpsUrl(curl_, url);
 
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, NULL));
@@ -375,14 +375,14 @@ int HttpRequest::Gets(const char *url, const char *pCaPath, int timeoutMs/* = 40
     return curlCode;
 }
 
-int HttpRequest::Posts(const char *url, const std::string& strPost, const char *pCaPath, int timeoutMs/* = 4000*/)
+int HttpRequest::httpPosts(const char *url, const std::string& strPost, const char *pCaPath, int timeoutMs/* = 4000*/)
 {
     CURLcode curlCode = CURLE_OK;
     try
     {
         do
         {
-            SetHttpsUrl(curl_, url);
+            setHttpsUrl(curl_, url);
 
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_POST, 1));
@@ -420,7 +420,7 @@ int HttpRequest::Posts(const char *url, const std::string& strPost, const char *
     return curlCode;
 }
 
-const char* HttpRequest::GetErrorMessage(int errcode)
+const char* HttpRequest::getErrorMessage(int errcode)
 {
     //参考curl.h中的CURLcode定义
     static const int max_size_curl_error = 89;

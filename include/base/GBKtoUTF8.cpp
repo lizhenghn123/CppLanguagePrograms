@@ -5,8 +5,6 @@
 #include <string.h>
 #include <memory.h>
 #include <assert.h>
-
-
 #ifdef OS_WINDOWS
 #include <Windows.h>
 #elif defined(OS_LINUX)
@@ -19,7 +17,7 @@ NAMESPACE_ZL_BASE_START
 
 #ifdef OS_WINDOWS
 
-std::string ConvertGBKToUtf8(const std::string& strGBK )
+std::string convertGBKToUtf8(const std::string& strGBK )
 {
     int len = MultiByteToWideChar( CP_ACP, 0, (LPCTSTR)strGBK.c_str(), -1, NULL, 0 );
     unsigned short *wszUtf8 = new unsigned short[len + 1];
@@ -35,13 +33,13 @@ std::string ConvertGBKToUtf8(const std::string& strGBK )
     return strUtf8;
 }
 
-std::string ConvertGBKToUtf8(const char *strGBK, int len)
+std::string convertGBKToUtf8(const char *strGBK, int len)
 {
     std::string gbk(strGBK, len);
-    return ConvertGBKToUtf8(gbk);
+    return convertGBKToUtf8(gbk);
 }
 
-std::string ConvertUtf8ToGBK(const std::string& strUtf8)
+std::string convertUtf8ToGBK(const std::string& strUtf8)
 {
     int len = MultiByteToWideChar(CP_UTF8, 0, (LPCTSTR)strUtf8.c_str(), -1, NULL, 0);
     unsigned short *wszGBK = new unsigned short[len + 1];
@@ -57,17 +55,17 @@ std::string ConvertUtf8ToGBK(const std::string& strUtf8)
     return strGBK;
 }
 
-std::string ConvertUtf8ToGBK(const char *strUtf8, int len)
+std::string convertUtf8ToGBK(const char *strUtf8, int len)
 {
     std::string utf8(strUtf8, len);
-    return ConvertUtf8ToGBK(utf8);
+    return convertUtf8ToGBK(utf8);
 }
 
 #elif defined(OS_LINUX)
 
 bool code_convert(const char *from_charset, const char *to_charset, char *inbuf, size_t inlen , char *outbuf, size_t outlen);
 
-std::string ConvertGBKToUtf8(const char *strGBK, int len)
+std::string convertGBKToUtf8(const char *strGBK, int len)
 {
     char *cname = new char[len + 1];
     memset(cname, '\0', len + 1);
@@ -85,12 +83,12 @@ std::string ConvertGBKToUtf8(const char *strGBK, int len)
     return strUtf8;
 }
 
-std::string ConvertGBKToUtf8(const std::string& strGBK)
+std::string convertGBKToUtf8(const std::string& strGBK)
 {
-    return ConvertGBKToUtf8(strGBK.c_str(), strGBK.size());
+    return convertGBKToUtf8(strGBK.c_str(), strGBK.size());
 }
 
-std::string ConvertUtf8ToGBK(const char *strUtf8, int len)
+std::string convertUtf8ToGBK(const char *strUtf8, int len)
 {
     char *cname = new char[len + 1];
     memset(cname, '\0', len + 1);
@@ -108,9 +106,9 @@ std::string ConvertUtf8ToGBK(const char *strUtf8, int len)
     return strGBK;
 }
 
-std::string ConvertUtf8ToGBK(const std::string& strUtf8)
+std::string convertUtf8ToGBK(const std::string& strUtf8)
 {
-    return ConvertUtf8ToGBK(strUtf8.c_str(), strUtf8.size());
+    return convertUtf8ToGBK(strUtf8.c_str(), strUtf8.size());
 }
 
 bool code_convert(const char *from_charset, const char *to_charset, char *inbuf, size_t inlen, char *outbuf, size_t outlen)
@@ -136,7 +134,7 @@ bool code_convert(const char *from_charset, const char *to_charset, char *inbuf,
 #endif
 
 /*下面两个IsTextUTF8都无法检测出gb2312编码的汉字“谢谢”*/
-bool IsTextUTF8(const char *str, int length)
+bool isTextUTF8(const char *str, int length)
 {
 #ifndef OS_WINDOWS
     typedef unsigned long DWORD;
@@ -205,7 +203,7 @@ int is_utf8_special_byte(unsigned char c)
     }
 }
 
-bool IsTextUTF8(const std::string& str)
+bool isTextUTF8(const std::string& str)
 {
     unsigned one_byte   = 0X00;    //binary 00000000
     unsigned two_byte   = 0X06;    //binary 00000110
