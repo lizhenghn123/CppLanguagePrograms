@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="HttpRequest.cpp" />
+    <ClCompile Include="HttpRestClient.cpp" />
     <ClCompile Include="HttpRequest_Test.cpp" />
     <ClCompile Include="..\..\include\base\GBKtoUTF8.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HttpRequest.h" />
+    <ClInclude Include="HttpRestClient.h" />
     <ClInclude Include="..\..\include\base\GBKtoUTF8.h" />
   </ItemGroup>
 </Project>

@@ -1,18 +1,18 @@
-// Filename         : HttpRequest.h
+// Filename         : HttpRestClient.h
 // Author           : LIZHENG
 // Created          : 2013-05-12
 // Description      : 对libcurl的包装，对外提供GET、POST接口
 //
 // Copyright (c) lizheng@thinkit.cn. All rights reserved.
 // ***********************************************************************
-#ifndef ZL_HTTPREQUEST_H
-#define ZL_HTTPREQUEST_H
+#ifndef ZL_HTTPRESTCLIENT_H
+#define ZL_HTTPRESTCLIENT_H
 #include <vector>
 #include <string>
 struct curl_slist;
 typedef void CURL;
 
-class HttpRequest
+class HttpRestClient
 {
 public:
     struct Reponse
@@ -28,8 +28,8 @@ public:
     };
 
 public:
-    explicit HttpRequest(bool requestHeader = true, bool requestBody = true);
-    ~HttpRequest();
+    explicit HttpRestClient(bool requestHeader = true, bool requestBody = true);
+    ~HttpRestClient();
 
 public:
     /**
@@ -160,4 +160,4 @@ private:
     Reponse              reponse_;
 };
 
-#endif  /* ZL_HTTPREQUEST_H */
+#endif  /* ZL_HTTPRESTCLIENT_H */

@@ -63,7 +63,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SHA1_Test", "tools\SHA1_Tes
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bitset", "tools\Bitset\Bitset.vcxproj", "{A8A9AE6F-51FC-4EF8-99AA-1A40EB8E592D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HttpRequest_Test", "tools\HttpRequest_Test\HttpRequest_Test.vcxproj", "{357D525F-23AE-45CA-A902-DEA45E0FF382}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HttpRestClient_Test", "tools\HttpRestClient_Test\HttpRestClient_Test.vcxproj", "{357D525F-23AE-45CA-A902-DEA45E0FF382}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

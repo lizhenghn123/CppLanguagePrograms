@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{357D525F-23AE-45CA-A902-DEA45E0FF382}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>HttpRequest_Test</RootNamespace>
+    <RootNamespace>HttpRestClient_Test</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -78,12 +78,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\base\GBKtoUTF8.cpp" />
-    <ClCompile Include="HttpRequest.cpp" />
-    <ClCompile Include="HttpRequest_Test.cpp" />
+    <ClCompile Include="HttpRestClient.cpp" />
+    <ClCompile Include="HttpRestClient_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\base\GBKtoUTF8.h" />
-    <ClInclude Include="HttpRequest.h" />
+    <ClInclude Include="HttpRestClient.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

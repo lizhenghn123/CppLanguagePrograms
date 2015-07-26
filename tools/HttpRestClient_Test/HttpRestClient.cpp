@@ -1,5 +1,5 @@
-#include "HttpRequest.h"
-#include "curl/curl.h"
+#include "HttpRestClient.h"
+#include <curl/curl.h>
 #include <assert.h>
 
 #define JUST_RETUAN_IF_FALSE(expr, ret)  do { if(!expr) return ret;} while(0)
@@ -64,7 +64,7 @@ namespace detail
     static CURL*  createCurl()
     {
         CURL *curl = curl_easy_init();
-        if (HttpRequest::isDebug())
+        if (HttpRestClient::isDebug())
         {
             CURL_CHECK(curl_easy_setopt(curl, CURLOPT_VERBOSE, 1));
             CURL_CHECK(curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, debugCurlCallback));
@@ -109,7 +109,7 @@ namespace detail
 
     static size_t writeHeaderCallback(char* buffer, size_t size, size_t memb, void* stream)
     {
-        HttpRequest::Reponse *rep = static_cast<HttpRequest::Reponse*>(stream);
+        HttpRestClient::Reponse *rep = static_cast<HttpRestClient::Reponse*>(stream);
 
         size_t bodyLen = 0;
         int res = sscanf(buffer, "Content-Length:%lu", &bodyLen);
@@ -126,7 +126,7 @@ namespace detail
 
     static size_t writeBodyCallback(char* buffer, size_t size, size_t memb, void* stream)
     {
-        HttpRequest::Reponse *rep = static_cast<HttpRequest::Reponse*>(stream);
+        HttpRestClient::Reponse *rep = static_cast<HttpRestClient::Reponse*>(stream);
 
         size_t result = size * memb;
         rep->body_.append(buffer, buffer + result);
@@ -142,7 +142,7 @@ namespace detail
 
     static size_t readDataCallback(char* buffer, size_t size, size_t memb, void* stream)
     {
-        HttpRequest::UploadObject *obj = static_cast<HttpRequest::UploadObject*>(stream);
+        HttpRestClient::UploadObject *obj = static_cast<HttpRestClient::UploadObject*>(stream);
 
         size_t result = size * memb;
         size_t copy_size = (obj->length_ < result) ? obj->length_ : result;
@@ -156,9 +156,9 @@ namespace detail
 }
 using namespace detail;
 
-bool HttpRequest::debug_ = false;
+bool HttpRestClient::debug_ = false;
 
-HttpRequest::HttpRequest(bool requestHeader/* = true*/, bool requestBody/* = true*/)
+HttpRestClient::HttpRestClient(bool requestHeader/* = true*/, bool requestBody/* = true*/)
 {
     headers_ = NULL;
     headers_ = curl_slist_append(headers_, "Expect:");//也许有Expect: 100-continue，去掉它
@@ -177,7 +177,7 @@ HttpRequest::HttpRequest(bool requestHeader/* = true*/, bool requestBody/* = tru
     init(requestHeader, requestBody);
 }
 
-HttpRequest::~HttpRequest(void)
+HttpRestClient::~HttpRestClient(void)
 {
     if (headers_ != NULL)
     {
@@ -186,7 +186,7 @@ HttpRequest::~HttpRequest(void)
     curl_easy_cleanup(curl_);
 }
 
-void HttpRequest::init(bool requestHeader/* = true*/, bool requestBody/* = true*/)
+void HttpRestClient::init(bool requestHeader/* = true*/, bool requestBody/* = true*/)
 {
     //assert(requestHeader || requestBody);
     if(requestHeader)
@@ -214,7 +214,7 @@ void HttpRequest::init(bool requestHeader/* = true*/, bool requestBody/* = true*
     }
 }
 
-bool HttpRequest::addHeader(const char* key, const char* value)
+bool HttpRestClient::addHeader(const char* key, const char* value)
 {
     std::string reqLine(key);
     reqLine += ": ";
@@ -223,14 +223,14 @@ bool HttpRequest::addHeader(const char* key, const char* value)
     return headers_ != NULL;
 }
 
-bool HttpRequest::setUserAgent(const char* userAgent)
+bool HttpRestClient::setUserAgent(const char* userAgent)
 {
     assert(userAgent);
     int ret = curl_easy_setopt(curl_, CURLOPT_USERAGENT, userAgent);
     return ret == 0;
 }
 
-int HttpRequest::get(const char* url, int timeoutMs/* = 4000*/)
+int HttpRestClient::get(const char* url, int timeoutMs/* = 4000*/)
 {
     int ret = CURLE_OK;
     try
@@ -252,7 +252,7 @@ int HttpRequest::get(const char* url, int timeoutMs/* = 4000*/)
     return ret;
 }
 
-int HttpRequest::get(const char* url, const char* filepath, int timeoutMs/* = 4000*/)
+int HttpRestClient::get(const char* url, const char* filepath, int timeoutMs/* = 4000*/)
 {
     assert(url && filepath);
     FILE *file = fopen(filepath, "wb");
@@ -288,7 +288,7 @@ int HttpRequest::get(const char* url, const char* filepath, int timeoutMs/* = 40
     return ret;
 }
 
-int HttpRequest::post(const char* url, const char* postData, int dataSize, int timeoutMs/* = 4000*/)
+int HttpRestClient::post(const char* url, const char* postData, int dataSize, int timeoutMs/* = 4000*/)
 {
     int ret = CURLE_OK;
     try
@@ -312,12 +312,12 @@ int HttpRequest::post(const char* url, const char* postData, int dataSize, int t
     return ret;
 }
 
-int HttpRequest::post(const char* url, const std::string& postData, int timeoutMs/* = 4000*/)
+int HttpRestClient::post(const char* url, const std::string& postData, int timeoutMs/* = 4000*/)
 {
     return post(url, postData.c_str(), postData.size(), timeoutMs);
 }
 
-int HttpRequest::del(const char* url, int timeoutMs/* = 4000*/)
+int HttpRestClient::del(const char* url, int timeoutMs/* = 4000*/)
 {
     const static char *http_delete = "DELETE";
     int ret = CURLE_OK;
@@ -342,10 +342,10 @@ int HttpRequest::del(const char* url, int timeoutMs/* = 4000*/)
     return ret;
 }
 
-int HttpRequest::put(const char* url, const char* putData, size_t dataSize)
+int HttpRestClient::put(const char* url, const char* putData, size_t dataSize)
 {
     int ret = CURLE_OK;
-    HttpRequest::UploadObject obj = { putData, dataSize };
+    HttpRestClient::UploadObject obj = { putData, dataSize };
     try
     {
         setHttpsUrl(curl_, url);
@@ -368,7 +368,7 @@ int HttpRequest::put(const char* url, const char* putData, size_t dataSize)
     return ret;
 }
 
-int HttpRequest::gets(const char* url, const char* pCaPath, int timeoutMs/* = 4000*/)
+int HttpRestClient::gets(const char* url, const char* pCaPath, int timeoutMs/* = 4000*/)
 {
     int ret = CURLE_OK;
     try
@@ -402,7 +402,7 @@ int HttpRequest::gets(const char* url, const char* pCaPath, int timeoutMs/* = 40
     return ret;
 }
 
-int HttpRequest::posts(const char* url, const std::string& strPost, const char* pCaPath, int timeoutMs/* = 4000*/)
+int HttpRestClient::posts(const char* url, const std::string& strPost, const char* pCaPath, int timeoutMs/* = 4000*/)
 {
     int ret = CURLE_OK;
     try
@@ -440,7 +440,7 @@ int HttpRequest::posts(const char* url, const std::string& strPost, const char* 
     return ret;
 }
 
-const char* HttpRequest::getErrorMessage(int errcode)
+const char* HttpRestClient::getErrorMessage(int errcode)
 {
     //参考curl.h中的CURLcode定义
     static const int max_size_curl_error = 89;
