@@ -1,11 +1,8 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : StopWatch.h
 // Author           : LIZHENG
 // Created          : 2014-04-28
 // Description      : 高精度计时器
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-05-14
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
@@ -13,11 +10,12 @@
 #define ZL_STOPWTACH_H
 #include "Define.h"
 #ifdef OS_WINDOWS
-#include <WinSock2.h>
 #include <time.h>
+#include <WinSock2.h>
+//#include <Windows.h>
 //struct timeval
 //{
-//	long tv_sec, tv_usec;
+//    long tv_sec, tv_usec;
 //};
 #elif defined(OS_LINUX)
 #include <sys/time.h>
@@ -27,7 +25,7 @@
 
 NAMESPACE_ZL_BASE_START
 
-#define GET_TICK_COUNT(a, b) ((b.tv_sec - a.tv_sec)*1000000 + (b.tv_usec - a.tv_usec))
+#define GET_TICK_COUNT(a, b) ((a.tv_sec - b.tv_sec)*1000000 + (a.tv_usec - b.tv_usec))
 
 class StopWatch
 {
@@ -59,11 +57,11 @@ public:
         getTimeOfDay(&now, NULL);
         return float(GET_TICK_COUNT(now, start_time) / 1000.0);
     }
-    float   elapsedTimeInMicro()
+    int64_t   elapsedTimeInMicro()
     {
         timeval now;
         getTimeOfDay(&now, NULL);
-        return float(GET_TICK_COUNT(now, start_time));
+        return GET_TICK_COUNT(now, start_time);
     }
     float   diffTime(const struct timeval& start)
     {
@@ -82,11 +80,11 @@ private:
     }
     static void getTimeOfDay(struct timeval *tv, void *tz)
     {
-#ifdef OS_LINUX
+    #ifdef OS_LINUX
         gettimeofday(tv, NULL);
-#elif defined(OS_WINDOWS)
+    #elif defined(OS_WINDOWS)
         typedef unsigned __int64 uint64;
-#define EPOCHFILETIME (116444736000000000ULL)
+    #define EPOCHFILETIME (116444736000000000ULL)
         FILETIME ft;
         LARGE_INTEGER li;
         uint64 tt;
@@ -97,7 +95,7 @@ private:
         tt = (li.QuadPart - EPOCHFILETIME) / 10;
         tv->tv_sec = tt / 1000000;
         tv->tv_usec = tt % 1000000;
-#endif
+    #endif
     }
 private:
     struct timeval      start_time;

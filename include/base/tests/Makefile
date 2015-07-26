@@ -36,10 +36,12 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = x86_64-unknown-linux-gnu
 host_triplet = x86_64-unknown-linux-gnu
-bin_PROGRAMS = ZLog_test$(EXEEXT) SmartAssert_test$(EXEEXT) \
+bin_PROGRAMS = Logger_test$(EXEEXT) SmartAssert_test$(EXEEXT) \
 	StringUtil_test$(EXEEXT) Daemon_test$(EXEEXT) \
-	Exception_Demangle_test$(EXEEXT) ProcessUtil_test$(EXEEXT) \
-	Timestamp_test$(EXEEXT) ScopeExitGuard_test$(EXEEXT)
+	Demangle_test$(EXEEXT) ProcessUtil_test$(EXEEXT) \
+	Timestamp_test$(EXEEXT) ScopeExitGuard_test$(EXEEXT) \
+	StlUtil_test$(EXEEXT) AsyncLogger_test$(EXEEXT) \
+	Exception_test$(EXEEXT) MasterWorkerProcess_test$(EXEEXT)
 subdir = zlreactor/base/tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -52,21 +54,29 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_Daemon_test_OBJECTS = Daemon_test-Daemon_test.$(OBJEXT)
+am_AsyncLogger_test_OBJECTS = AsyncLogger_test.$(OBJEXT)
+AsyncLogger_test_OBJECTS = $(am_AsyncLogger_test_OBJECTS)
+AsyncLogger_test_LDADD = $(LDADD)
+am_Daemon_test_OBJECTS = Daemon_test.$(OBJEXT)
 Daemon_test_OBJECTS = $(am_Daemon_test_OBJECTS)
 Daemon_test_LDADD = $(LDADD)
-Daemon_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+am_Demangle_test_OBJECTS = Demangle_test.$(OBJEXT)
+Demangle_test_OBJECTS = $(am_Demangle_test_OBJECTS)
+Demangle_test_LDADD = $(LDADD)
+am_Exception_test_OBJECTS = Exception_test.$(OBJEXT)
+Exception_test_OBJECTS = $(am_Exception_test_OBJECTS)
+Exception_test_LDADD = $(LDADD)
+Exception_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(Daemon_test_LDFLAGS) $(LDFLAGS) -o $@
-am_Exception_Demangle_test_OBJECTS =  \
-	Exception_Demangle_test-Exception_Demangle_test.$(OBJEXT)
-Exception_Demangle_test_OBJECTS =  \
-	$(am_Exception_Demangle_test_OBJECTS)
-Exception_Demangle_test_LDADD = $(LDADD)
-Exception_Demangle_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(Exception_Demangle_test_LDFLAGS) $(LDFLAGS) -o \
-	$@
+	$(CXXFLAGS) $(Exception_test_LDFLAGS) $(LDFLAGS) -o $@
+am_Logger_test_OBJECTS = Logger_test.$(OBJEXT)
+Logger_test_OBJECTS = $(am_Logger_test_OBJECTS)
+Logger_test_LDADD = $(LDADD)
+am_MasterWorkerProcess_test_OBJECTS =  \
+	MasterWorkerProcess_test.$(OBJEXT)
+MasterWorkerProcess_test_OBJECTS =  \
+	$(am_MasterWorkerProcess_test_OBJECTS)
+MasterWorkerProcess_test_LDADD = $(LDADD)
 am_ProcessUtil_test_OBJECTS =  \
 	ProcessUtil_test-ProcessUtil_test.$(OBJEXT)
 ProcessUtil_test_OBJECTS = $(am_ProcessUtil_test_OBJECTS)
@@ -80,32 +90,21 @@ ScopeExitGuard_test_LDADD = $(LDADD)
 ScopeExitGuard_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(ScopeExitGuard_test_LDFLAGS) $(LDFLAGS) -o $@
-am_SmartAssert_test_OBJECTS =  \
-	SmartAssert_test-SmartAssert_test.$(OBJEXT)
+am_SmartAssert_test_OBJECTS = SmartAssert_test.$(OBJEXT)
 SmartAssert_test_OBJECTS = $(am_SmartAssert_test_OBJECTS)
 SmartAssert_test_LDADD = $(LDADD)
-SmartAssert_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(SmartAssert_test_LDFLAGS) $(LDFLAGS) -o $@
-am_StringUtil_test_OBJECTS =  \
-	StringUtil_test-StringUtil_test.$(OBJEXT)
+am_StlUtil_test_OBJECTS = StlUtil_test.$(OBJEXT)
+StlUtil_test_OBJECTS = $(am_StlUtil_test_OBJECTS)
+StlUtil_test_LDADD = $(LDADD)
+am_StringUtil_test_OBJECTS = StringUtil_test.$(OBJEXT)
 StringUtil_test_OBJECTS = $(am_StringUtil_test_OBJECTS)
 StringUtil_test_LDADD = $(LDADD)
-StringUtil_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(StringUtil_test_LDFLAGS) $(LDFLAGS) -o $@
 am_Timestamp_test_OBJECTS = Timestamp_test.$(OBJEXT)
 Timestamp_test_OBJECTS = $(am_Timestamp_test_OBJECTS)
 Timestamp_test_LDADD = $(LDADD)
 Timestamp_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(Timestamp_test_LDFLAGS) $(LDFLAGS) -o $@
-am_ZLog_test_OBJECTS = ZLog_test-ZLog_test.$(OBJEXT)
-ZLog_test_OBJECTS = $(am_ZLog_test_OBJECTS)
-ZLog_test_LDADD = $(LDADD)
-ZLog_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(ZLog_test_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -119,30 +118,33 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(Daemon_test_SOURCES) $(Exception_Demangle_test_SOURCES) \
+SOURCES = $(AsyncLogger_test_SOURCES) $(Daemon_test_SOURCES) \
+	$(Demangle_test_SOURCES) $(Exception_test_SOURCES) \
+	$(Logger_test_SOURCES) $(MasterWorkerProcess_test_SOURCES) \
 	$(ProcessUtil_test_SOURCES) $(ScopeExitGuard_test_SOURCES) \
-	$(SmartAssert_test_SOURCES) $(StringUtil_test_SOURCES) \
-	$(Timestamp_test_SOURCES) $(ZLog_test_SOURCES)
-DIST_SOURCES = $(Daemon_test_SOURCES) \
-	$(Exception_Demangle_test_SOURCES) $(ProcessUtil_test_SOURCES) \
-	$(ScopeExitGuard_test_SOURCES) $(SmartAssert_test_SOURCES) \
-	$(StringUtil_test_SOURCES) $(Timestamp_test_SOURCES) \
-	$(ZLog_test_SOURCES)
+	$(SmartAssert_test_SOURCES) $(StlUtil_test_SOURCES) \
+	$(StringUtil_test_SOURCES) $(Timestamp_test_SOURCES)
+DIST_SOURCES = $(AsyncLogger_test_SOURCES) $(Daemon_test_SOURCES) \
+	$(Demangle_test_SOURCES) $(Exception_test_SOURCES) \
+	$(Logger_test_SOURCES) $(MasterWorkerProcess_test_SOURCES) \
+	$(ProcessUtil_test_SOURCES) $(ScopeExitGuard_test_SOURCES) \
+	$(SmartAssert_test_SOURCES) $(StlUtil_test_SOURCES) \
+	$(StringUtil_test_SOURCES) $(Timestamp_test_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run aclocal-1.11
-AMTAR = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run tar
+ACLOCAL = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run aclocal-1.11
+AMTAR = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run autoconf
-AUTOHEADER = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run autoheader
-AUTOMAKE = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run automake-1.11
+AUTOCONF = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run autoconf
+AUTOHEADER = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run autoheader
+AUTOMAKE = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run automake-1.11
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -m64
 CPP = gcc -E
-CPPFLAGS = -std=c++0x
+CPPFLAGS = -std=c++0x -O2
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -165,14 +167,14 @@ INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LD = /usr/bin/ld -m elf_x86_64
-LDFLAGS = -L../../../lib -lzlreactor
+LDFLAGS = -O2 -L../../../lib -lzlreactor -lrt
 LIBOBJS = 
 LIBS = -lpthread 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = 
 LN_S = cp -p
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run makeinfo
+MAKEINFO = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 NM = /usr/bin/nm -B
 NMEDIT = 
@@ -193,10 +195,10 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = strip
 VERSION = 1.0
-abs_builddir = /media/sf_DDRIVE/os_share/zlreactor/zlreactor/base/tests
-abs_srcdir = /media/sf_DDRIVE/os_share/zlreactor/zlreactor/base/tests
-abs_top_builddir = /media/sf_DDRIVE/os_share/zlreactor
-abs_top_srcdir = /media/sf_DDRIVE/os_share/zlreactor
+abs_builddir = /media/sf_DDRIVE/os_share/zl_reactor/zlreactor/base/tests
+abs_srcdir = /media/sf_DDRIVE/os_share/zl_reactor/zlreactor/base/tests
+abs_top_builddir = /media/sf_DDRIVE/os_share/zl_reactor
+abs_top_srcdir = /media/sf_DDRIVE/os_share/zl_reactor
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 ac_ct_DUMPBIN = 
@@ -225,7 +227,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/install-sh
+install_sh = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -235,7 +237,7 @@ mandir = ${datarootdir}/man
 mkdir_p = /bin/mkdir -p
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /media/sf_DDRIVE/os_share/zlreactor
+prefix = /media/sf_DDRIVE/os_share/zl_reactor
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
@@ -247,28 +249,23 @@ top_build_prefix = ../../../
 top_builddir = ../../..
 top_srcdir = ../../..
 INCLUDES = -I../../../zlreactor
-ZLog_test_CPPFLAGS = $(CPPFLAGS)
-ZLog_test_LDFLAGS = $(CPPFLAGS)
-ZLog_test_SOURCES = ZLog_test.cpp
-SmartAssert_test_CPPFLAGS = $(CPPFLAGS)
-SmartAssert_test_LDFLAGS = $(CPPFLAGS)
+Logger_test_SOURCES = Logger_test.cpp
+AsyncLogger_test_SOURCES = AsyncLogger_test.cpp
 SmartAssert_test_SOURCES = SmartAssert_test.cpp
-StringUtil_test_CPPFLAGS = $(CPPFLAGS)
-StringUtil_test_LDFLAGS = $(CPPFLAGS)
 StringUtil_test_SOURCES = StringUtil_test.cpp
-Daemon_test_CPPFLAGS = $(CPPFLAGS)
-Daemon_test_LDFLAGS = $(CPPFLAGS)
 Daemon_test_SOURCES = Daemon_test.cpp
-Exception_Demangle_test_CPPFLAGS = $(CPPFLAGS)
-Exception_Demangle_test_LDFLAGS = $(CPPFLAGS)
-Exception_Demangle_test_SOURCES = Exception_Demangle_test.cpp
+Demangle_test_SOURCES = Demangle_test.cpp
+Exception_test_LDFLAGS = -rdynamic
+Exception_test_SOURCES = Exception_test.cpp
 ProcessUtil_test_CPPFLAGS = $(CPPFLAGS)
 ProcessUtil_test_LDFLAGS = $(CPPFLAGS)
 ProcessUtil_test_SOURCES = ProcessUtil_test.cpp
+MasterWorkerProcess_test_SOURCES = MasterWorkerProcess_test.cpp
 Timestamp_test_LDFLAGS = $(CPPFLAGS) -lrt
 Timestamp_test_SOURCES = Timestamp_test.cpp
 ScopeExitGuard_test_LDFLAGS = $(CPPFLAGS) -std=c++1y
 ScopeExitGuard_test_SOURCES = ScopeExitGuard_test.cpp
+StlUtil_test_SOURCES = StlUtil_test.cpp
 all: all-am
 
 .SUFFIXES:
@@ -346,12 +343,24 @@ clean-binPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+AsyncLogger_test$(EXEEXT): $(AsyncLogger_test_OBJECTS) $(AsyncLogger_test_DEPENDENCIES) 
+	@rm -f AsyncLogger_test$(EXEEXT)
+	$(CXXLINK) $(AsyncLogger_test_OBJECTS) $(AsyncLogger_test_LDADD) $(LIBS)
 Daemon_test$(EXEEXT): $(Daemon_test_OBJECTS) $(Daemon_test_DEPENDENCIES) 
 	@rm -f Daemon_test$(EXEEXT)
-	$(Daemon_test_LINK) $(Daemon_test_OBJECTS) $(Daemon_test_LDADD) $(LIBS)
-Exception_Demangle_test$(EXEEXT): $(Exception_Demangle_test_OBJECTS) $(Exception_Demangle_test_DEPENDENCIES) 
-	@rm -f Exception_Demangle_test$(EXEEXT)
-	$(Exception_Demangle_test_LINK) $(Exception_Demangle_test_OBJECTS) $(Exception_Demangle_test_LDADD) $(LIBS)
+	$(CXXLINK) $(Daemon_test_OBJECTS) $(Daemon_test_LDADD) $(LIBS)
+Demangle_test$(EXEEXT): $(Demangle_test_OBJECTS) $(Demangle_test_DEPENDENCIES) 
+	@rm -f Demangle_test$(EXEEXT)
+	$(CXXLINK) $(Demangle_test_OBJECTS) $(Demangle_test_LDADD) $(LIBS)
+Exception_test$(EXEEXT): $(Exception_test_OBJECTS) $(Exception_test_DEPENDENCIES) 
+	@rm -f Exception_test$(EXEEXT)
+	$(Exception_test_LINK) $(Exception_test_OBJECTS) $(Exception_test_LDADD) $(LIBS)
+Logger_test$(EXEEXT): $(Logger_test_OBJECTS) $(Logger_test_DEPENDENCIES) 
+	@rm -f Logger_test$(EXEEXT)
+	$(CXXLINK) $(Logger_test_OBJECTS) $(Logger_test_LDADD) $(LIBS)
+MasterWorkerProcess_test$(EXEEXT): $(MasterWorkerProcess_test_OBJECTS) $(MasterWorkerProcess_test_DEPENDENCIES) 
+	@rm -f MasterWorkerProcess_test$(EXEEXT)
+	$(CXXLINK) $(MasterWorkerProcess_test_OBJECTS) $(MasterWorkerProcess_test_LDADD) $(LIBS)
 ProcessUtil_test$(EXEEXT): $(ProcessUtil_test_OBJECTS) $(ProcessUtil_test_DEPENDENCIES) 
 	@rm -f ProcessUtil_test$(EXEEXT)
 	$(ProcessUtil_test_LINK) $(ProcessUtil_test_OBJECTS) $(ProcessUtil_test_LDADD) $(LIBS)
@@ -360,16 +369,16 @@ ScopeExitGuard_test$(EXEEXT): $(ScopeExitGuard_test_OBJECTS) $(ScopeExitGuard_te
 	$(ScopeExitGuard_test_LINK) $(ScopeExitGuard_test_OBJECTS) $(ScopeExitGuard_test_LDADD) $(LIBS)
 SmartAssert_test$(EXEEXT): $(SmartAssert_test_OBJECTS) $(SmartAssert_test_DEPENDENCIES) 
 	@rm -f SmartAssert_test$(EXEEXT)
-	$(SmartAssert_test_LINK) $(SmartAssert_test_OBJECTS) $(SmartAssert_test_LDADD) $(LIBS)
+	$(CXXLINK) $(SmartAssert_test_OBJECTS) $(SmartAssert_test_LDADD) $(LIBS)
+StlUtil_test$(EXEEXT): $(StlUtil_test_OBJECTS) $(StlUtil_test_DEPENDENCIES) 
+	@rm -f StlUtil_test$(EXEEXT)
+	$(CXXLINK) $(StlUtil_test_OBJECTS) $(StlUtil_test_LDADD) $(LIBS)
 StringUtil_test$(EXEEXT): $(StringUtil_test_OBJECTS) $(StringUtil_test_DEPENDENCIES) 
 	@rm -f StringUtil_test$(EXEEXT)
-	$(StringUtil_test_LINK) $(StringUtil_test_OBJECTS) $(StringUtil_test_LDADD) $(LIBS)
+	$(CXXLINK) $(StringUtil_test_OBJECTS) $(StringUtil_test_LDADD) $(LIBS)
 Timestamp_test$(EXEEXT): $(Timestamp_test_OBJECTS) $(Timestamp_test_DEPENDENCIES) 
 	@rm -f Timestamp_test$(EXEEXT)
 	$(Timestamp_test_LINK) $(Timestamp_test_OBJECTS) $(Timestamp_test_LDADD) $(LIBS)
-ZLog_test$(EXEEXT): $(ZLog_test_OBJECTS) $(ZLog_test_DEPENDENCIES) 
-	@rm -f ZLog_test$(EXEEXT)
-	$(ZLog_test_LINK) $(ZLog_test_OBJECTS) $(ZLog_test_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -377,14 +386,18 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/Daemon_test-Daemon_test.Po
-include ./$(DEPDIR)/Exception_Demangle_test-Exception_Demangle_test.Po
+include ./$(DEPDIR)/AsyncLogger_test.Po
+include ./$(DEPDIR)/Daemon_test.Po
+include ./$(DEPDIR)/Demangle_test.Po
+include ./$(DEPDIR)/Exception_test.Po
+include ./$(DEPDIR)/Logger_test.Po
+include ./$(DEPDIR)/MasterWorkerProcess_test.Po
 include ./$(DEPDIR)/ProcessUtil_test-ProcessUtil_test.Po
 include ./$(DEPDIR)/ScopeExitGuard_test.Po
-include ./$(DEPDIR)/SmartAssert_test-SmartAssert_test.Po
-include ./$(DEPDIR)/StringUtil_test-StringUtil_test.Po
+include ./$(DEPDIR)/SmartAssert_test.Po
+include ./$(DEPDIR)/StlUtil_test.Po
+include ./$(DEPDIR)/StringUtil_test.Po
 include ./$(DEPDIR)/Timestamp_test.Po
-include ./$(DEPDIR)/ZLog_test-ZLog_test.Po
 
 .cpp.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -407,34 +420,6 @@ include ./$(DEPDIR)/ZLog_test-ZLog_test.Po
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(LTCXXCOMPILE) -c -o $@ $<
 
-Daemon_test-Daemon_test.o: Daemon_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Daemon_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Daemon_test-Daemon_test.o -MD -MP -MF $(DEPDIR)/Daemon_test-Daemon_test.Tpo -c -o Daemon_test-Daemon_test.o `test -f 'Daemon_test.cpp' || echo '$(srcdir)/'`Daemon_test.cpp
-	$(am__mv) $(DEPDIR)/Daemon_test-Daemon_test.Tpo $(DEPDIR)/Daemon_test-Daemon_test.Po
-#	source='Daemon_test.cpp' object='Daemon_test-Daemon_test.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Daemon_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Daemon_test-Daemon_test.o `test -f 'Daemon_test.cpp' || echo '$(srcdir)/'`Daemon_test.cpp
-
-Daemon_test-Daemon_test.obj: Daemon_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Daemon_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Daemon_test-Daemon_test.obj -MD -MP -MF $(DEPDIR)/Daemon_test-Daemon_test.Tpo -c -o Daemon_test-Daemon_test.obj `if test -f 'Daemon_test.cpp'; then $(CYGPATH_W) 'Daemon_test.cpp'; else $(CYGPATH_W) '$(srcdir)/Daemon_test.cpp'; fi`
-	$(am__mv) $(DEPDIR)/Daemon_test-Daemon_test.Tpo $(DEPDIR)/Daemon_test-Daemon_test.Po
-#	source='Daemon_test.cpp' object='Daemon_test-Daemon_test.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Daemon_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Daemon_test-Daemon_test.obj `if test -f 'Daemon_test.cpp'; then $(CYGPATH_W) 'Daemon_test.cpp'; else $(CYGPATH_W) '$(srcdir)/Daemon_test.cpp'; fi`
-
-Exception_Demangle_test-Exception_Demangle_test.o: Exception_Demangle_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Exception_Demangle_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Exception_Demangle_test-Exception_Demangle_test.o -MD -MP -MF $(DEPDIR)/Exception_Demangle_test-Exception_Demangle_test.Tpo -c -o Exception_Demangle_test-Exception_Demangle_test.o `test -f 'Exception_Demangle_test.cpp' || echo '$(srcdir)/'`Exception_Demangle_test.cpp
-	$(am__mv) $(DEPDIR)/Exception_Demangle_test-Exception_Demangle_test.Tpo $(DEPDIR)/Exception_Demangle_test-Exception_Demangle_test.Po
-#	source='Exception_Demangle_test.cpp' object='Exception_Demangle_test-Exception_Demangle_test.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Exception_Demangle_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Exception_Demangle_test-Exception_Demangle_test.o `test -f 'Exception_Demangle_test.cpp' || echo '$(srcdir)/'`Exception_Demangle_test.cpp
-
-Exception_Demangle_test-Exception_Demangle_test.obj: Exception_Demangle_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Exception_Demangle_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Exception_Demangle_test-Exception_Demangle_test.obj -MD -MP -MF $(DEPDIR)/Exception_Demangle_test-Exception_Demangle_test.Tpo -c -o Exception_Demangle_test-Exception_Demangle_test.obj `if test -f 'Exception_Demangle_test.cpp'; then $(CYGPATH_W) 'Exception_Demangle_test.cpp'; else $(CYGPATH_W) '$(srcdir)/Exception_Demangle_test.cpp'; fi`
-	$(am__mv) $(DEPDIR)/Exception_Demangle_test-Exception_Demangle_test.Tpo $(DEPDIR)/Exception_Demangle_test-Exception_Demangle_test.Po
-#	source='Exception_Demangle_test.cpp' object='Exception_Demangle_test-Exception_Demangle_test.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Exception_Demangle_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Exception_Demangle_test-Exception_Demangle_test.obj `if test -f 'Exception_Demangle_test.cpp'; then $(CYGPATH_W) 'Exception_Demangle_test.cpp'; else $(CYGPATH_W) '$(srcdir)/Exception_Demangle_test.cpp'; fi`
-
 ProcessUtil_test-ProcessUtil_test.o: ProcessUtil_test.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ProcessUtil_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ProcessUtil_test-ProcessUtil_test.o -MD -MP -MF $(DEPDIR)/ProcessUtil_test-ProcessUtil_test.Tpo -c -o ProcessUtil_test-ProcessUtil_test.o `test -f 'ProcessUtil_test.cpp' || echo '$(srcdir)/'`ProcessUtil_test.cpp
 	$(am__mv) $(DEPDIR)/ProcessUtil_test-ProcessUtil_test.Tpo $(DEPDIR)/ProcessUtil_test-ProcessUtil_test.Po
@@ -448,48 +433,6 @@ ProcessUtil_test-ProcessUtil_test.obj: ProcessUtil_test.cpp
 #	source='ProcessUtil_test.cpp' object='ProcessUtil_test-ProcessUtil_test.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ProcessUtil_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ProcessUtil_test-ProcessUtil_test.obj `if test -f 'ProcessUtil_test.cpp'; then $(CYGPATH_W) 'ProcessUtil_test.cpp'; else $(CYGPATH_W) '$(srcdir)/ProcessUtil_test.cpp'; fi`
-
-SmartAssert_test-SmartAssert_test.o: SmartAssert_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(SmartAssert_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SmartAssert_test-SmartAssert_test.o -MD -MP -MF $(DEPDIR)/SmartAssert_test-SmartAssert_test.Tpo -c -o SmartAssert_test-SmartAssert_test.o `test -f 'SmartAssert_test.cpp' || echo '$(srcdir)/'`SmartAssert_test.cpp
-	$(am__mv) $(DEPDIR)/SmartAssert_test-SmartAssert_test.Tpo $(DEPDIR)/SmartAssert_test-SmartAssert_test.Po
-#	source='SmartAssert_test.cpp' object='SmartAssert_test-SmartAssert_test.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(SmartAssert_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SmartAssert_test-SmartAssert_test.o `test -f 'SmartAssert_test.cpp' || echo '$(srcdir)/'`SmartAssert_test.cpp
-
-SmartAssert_test-SmartAssert_test.obj: SmartAssert_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(SmartAssert_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT SmartAssert_test-SmartAssert_test.obj -MD -MP -MF $(DEPDIR)/SmartAssert_test-SmartAssert_test.Tpo -c -o SmartAssert_test-SmartAssert_test.obj `if test -f 'SmartAssert_test.cpp'; then $(CYGPATH_W) 'SmartAssert_test.cpp'; else $(CYGPATH_W) '$(srcdir)/SmartAssert_test.cpp'; fi`
-	$(am__mv) $(DEPDIR)/SmartAssert_test-SmartAssert_test.Tpo $(DEPDIR)/SmartAssert_test-SmartAssert_test.Po
-#	source='SmartAssert_test.cpp' object='SmartAssert_test-SmartAssert_test.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(SmartAssert_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SmartAssert_test-SmartAssert_test.obj `if test -f 'SmartAssert_test.cpp'; then $(CYGPATH_W) 'SmartAssert_test.cpp'; else $(CYGPATH_W) '$(srcdir)/SmartAssert_test.cpp'; fi`
-
-StringUtil_test-StringUtil_test.o: StringUtil_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(StringUtil_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StringUtil_test-StringUtil_test.o -MD -MP -MF $(DEPDIR)/StringUtil_test-StringUtil_test.Tpo -c -o StringUtil_test-StringUtil_test.o `test -f 'StringUtil_test.cpp' || echo '$(srcdir)/'`StringUtil_test.cpp
-	$(am__mv) $(DEPDIR)/StringUtil_test-StringUtil_test.Tpo $(DEPDIR)/StringUtil_test-StringUtil_test.Po
-#	source='StringUtil_test.cpp' object='StringUtil_test-StringUtil_test.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(StringUtil_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StringUtil_test-StringUtil_test.o `test -f 'StringUtil_test.cpp' || echo '$(srcdir)/'`StringUtil_test.cpp
-
-StringUtil_test-StringUtil_test.obj: StringUtil_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(StringUtil_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT StringUtil_test-StringUtil_test.obj -MD -MP -MF $(DEPDIR)/StringUtil_test-StringUtil_test.Tpo -c -o StringUtil_test-StringUtil_test.obj `if test -f 'StringUtil_test.cpp'; then $(CYGPATH_W) 'StringUtil_test.cpp'; else $(CYGPATH_W) '$(srcdir)/StringUtil_test.cpp'; fi`
-	$(am__mv) $(DEPDIR)/StringUtil_test-StringUtil_test.Tpo $(DEPDIR)/StringUtil_test-StringUtil_test.Po
-#	source='StringUtil_test.cpp' object='StringUtil_test-StringUtil_test.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(StringUtil_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o StringUtil_test-StringUtil_test.obj `if test -f 'StringUtil_test.cpp'; then $(CYGPATH_W) 'StringUtil_test.cpp'; else $(CYGPATH_W) '$(srcdir)/StringUtil_test.cpp'; fi`
-
-ZLog_test-ZLog_test.o: ZLog_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ZLog_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ZLog_test-ZLog_test.o -MD -MP -MF $(DEPDIR)/ZLog_test-ZLog_test.Tpo -c -o ZLog_test-ZLog_test.o `test -f 'ZLog_test.cpp' || echo '$(srcdir)/'`ZLog_test.cpp
-	$(am__mv) $(DEPDIR)/ZLog_test-ZLog_test.Tpo $(DEPDIR)/ZLog_test-ZLog_test.Po
-#	source='ZLog_test.cpp' object='ZLog_test-ZLog_test.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ZLog_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ZLog_test-ZLog_test.o `test -f 'ZLog_test.cpp' || echo '$(srcdir)/'`ZLog_test.cpp
-
-ZLog_test-ZLog_test.obj: ZLog_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ZLog_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ZLog_test-ZLog_test.obj -MD -MP -MF $(DEPDIR)/ZLog_test-ZLog_test.Tpo -c -o ZLog_test-ZLog_test.obj `if test -f 'ZLog_test.cpp'; then $(CYGPATH_W) 'ZLog_test.cpp'; else $(CYGPATH_W) '$(srcdir)/ZLog_test.cpp'; fi`
-	$(am__mv) $(DEPDIR)/ZLog_test-ZLog_test.Tpo $(DEPDIR)/ZLog_test-ZLog_test.Po
-#	source='ZLog_test.cpp' object='ZLog_test-ZLog_test.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(ZLog_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ZLog_test-ZLog_test.obj `if test -f 'ZLog_test.cpp'; then $(CYGPATH_W) 'ZLog_test.cpp'; else $(CYGPATH_W) '$(srcdir)/ZLog_test.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

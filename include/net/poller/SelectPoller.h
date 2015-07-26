@@ -1,11 +1,8 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : SelectPoller.h
 // Author           : LIZHENG
 // Created          : 2015-01-13
 // Description      : I/O MultiPlexing 的 select 实现
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2015-01-13
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************

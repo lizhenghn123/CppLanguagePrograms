@@ -1,90 +1,89 @@
 // ***********************************************************************
-// Filename         : BlockQueueWorker.h
+// Filename         : BlockingQueueWorker.h
 // Author           : LIZHENG
 // Created          : 2014-05-16
-// Description      : ¹¤×÷µ÷¶È£¬¹¤×÷ÔÚ×èÈû¶ÓÁĞBlockingQueueÉÏÃæ
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-08-25
+// Description      : å·¥ä½œè°ƒåº¦ï¼Œå·¥ä½œåœ¨é˜»å¡é˜Ÿåˆ—(BlockingQueue æˆ–è€… BoundedBlockingQueue)ä¸Šé¢
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_BLOCKQUEUEWORKER_H
 #define ZL_BLOCKQUEUEWORKER_H
-#include "BlockQueue.h"
-
+#include "thread/BlockingQueue.h"
+#include "thread/ThreadGroup.h"
 NAMESPACE_ZL_THREAD_START
 
 template <typename Queue>
-    class JobWorker
+class BlockingQueueWorker
+{
+public:
+    typedef Queue                               QueueType;
+    typedef typename Queue::JobType             JobType;
+    typedef std::function<void(JobType&)>       FunctionType;
+
+    template<typename FunctionType>
+    BlockingQueueWorker(QueueType& queue, const FunctionType& function, int thread_num = 1)
+        : queue_(queue)
+        , function_(function)
+        , threadNum_(thread_num)
     {
-    public:
-        typedef Queue QueueType;
-        typedef typename Queue::JobType JobType;
-        typedef boost::function<bool(JobType&)> FunctionType;
+    }
 
-        template<typename FunctionType>
-        JobWorker(QueueType& queue, FunctionType function, int thread_num = 1):
-            queue_(queue), function_(function), thread_num_(thread_num)
+    BlockingQueueWorker(QueueType& queue, int thread_num = 1)
+        : queue_(queue)
+        , function_(NULL)
+        , threadNum_(thread_num)
+    {
+    }
+
+    ~BlockingQueueWorker()
+    {
+        stop();
+    }
+
+    void start()
+    {
+        if(threads_.size() > 0) return;
+        for (int i = 0; i < threadNum_; ++i)
         {
+            threads_.create_thread(std::bind(&BlockingQueueWorker::doWork, this));
         }
+    }
 
-        JobWorker(QueueType& queue, int thread_num = 1):
-            queue_(queue), thread_num_(thread_num)
-        {
-        }
+    template<typename FunctionType>
+    void start(const FunctionType& function)
+    {
+        function_ = function;
+        start();
+    }
 
-        ~JobWorker()
-        {
-            stop();
-        }
+    void stop()
+    {
+        function_ = 0;
+        queue_.stop();
+        threads_.join_all();
+    }
 
-        void start()
+private:
+    void doWork()
+    {
+        for(;;)
         {
-            if(threads_.size() > 0) return;
-            for(int i = 0; i < thread_num_; ++i)
+            JobType job;
+            bool bret = queue_.pop(job);
+            if (!bret) break;
+            if (function_)
             {
-                threads_.create_thread(boost::bind(&JobWorker::doWork, this));
+                function_(job);
             }
         }
+    }
 
-        template<typename Func>
-        void start(FunctionType function)
-        {
-            function_ = function;
-            start();
-        }
-
-        void stop()
-        {
-            function_ = 0;
-            queue_.Stop();
-            threads_.interrupt_all();
-            threads_.join_all();//×èÈû¡£Ö±µ½do_workÖ´ĞĞÍË³ö
-        }
-
-    private:
-        void doWork() //Ö÷Ìå¡£·´¸´¼ì²é¹¤×÷¶ÓÁĞÊı¾İ£¬Ö»ÒªÓĞÊı¾İ¾Í´¦Àí£¬ÖªµÀ´¦Àí¹¤×÷Íê³É
-        {
-            for(;;)
-            {
-                JobType job;
-                bool bret = queue_.pop(job);
-                if(!function_ || !function_(job))
-                {
-                    //break;
-                    //TODO:
-                }
-            }
-        }
-
-    private:
-        QueueType&        		queue_;
-        FunctionType		    function_;
-        int						thread_num_;
-        boost::thread_group		threads_;
-    };    
+private:
+    QueueType&              queue_;
+    FunctionType            function_;
+    int                     threadNum_;
+    ThreadGroup             threads_;
+};    
 
 NAMESPACE_ZL_THREAD_END
-
 #endif  /* ZL_BLOCKQUEUEWORKER_H */

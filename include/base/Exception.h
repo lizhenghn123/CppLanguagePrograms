@@ -1,11 +1,8 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : Exception.h
 // Author           : LIZHENG
 // Created          : 2014-11-05
 // Description      : 
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-11-05
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
@@ -28,7 +25,7 @@ public:
         return errmsg_.c_str();
     }
     
-    const char* stack_trace() const throw()
+    const char* stackTrace() const throw()
     {
         return callStack_.c_str();
     }

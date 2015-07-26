@@ -2,7 +2,7 @@
 #include "net/Timer.h"
 #include "base/StopWatch.h"
 #include "net/EventLoop.h"
-#include "base/ZLog.h"
+#include "base/Logger.h"
 #include <limits.h>
 NAMESPACE_ZL_NET_START
 
@@ -60,7 +60,7 @@ void TimerQueue::cancelTimerInLoop(TimerId id)
         activeTimers_.erase(it);
         timers_.erase(iter);
     }
-    else             // not find£¬maybe non exist or calling functor
+    else             // not findï¼Œmaybe non exist or calling functor
     {
         if(callingTimesFunctor_) // exist, but calling functor
         {

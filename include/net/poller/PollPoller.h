@@ -1,11 +1,8 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : PollPoller.h
 // Author           : LIZHENG
 // Created          : 2014-12-22
 // Description      : I/O MultiPlexing 的 poll 实现
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-12-22
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************

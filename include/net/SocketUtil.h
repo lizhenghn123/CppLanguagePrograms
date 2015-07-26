@@ -4,9 +4,6 @@
 // Created          : 2014-09-17
 // Description      : socket辅助宏定义、工具函数
 //
-// Last Modified By : LIZHENG
-// Last Modified On : 2015-01-06
-//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_SOCKETUTIL_H
@@ -159,53 +156,50 @@ NAMESPACE_ZL_NET_START
 class SocketUtil
 {
 public:
-    static int socketInitialise();
-    static int socketCleanup();
-
     static ZL_SOCKET createSocket();
     static ZL_SOCKET createSocketAndListen(const char *ip, int port, int backlog = 5);
     static int closeSocket(ZL_SOCKET fd);
     static void shutDown(ZL_SOCKET fd);
     static void shutdownWrite(ZL_SOCKET sockfd);
 
+    static int  bind(ZL_SOCKET sockfd, const char *ip, int port);
+    static int  bind(ZL_SOCKET sockfd, struct sockaddr_in addr);
+    static int  connect(ZL_SOCKET sockfd, const char *ip, int port);
     static int  connect(ZL_SOCKET sockfd, const struct sockaddr_in& addr);
-    static ZL_SOCKET acceptOne(ZL_SOCKET sockfd, struct sockaddr_in *addr);
+    static ZL_SOCKET accept(ZL_SOCKET sockfd, struct sockaddr_in *addr);
     static ssize_t read(ZL_SOCKET sockfd, void *buf, size_t count);
     static ssize_t write(ZL_SOCKET sockfd, const void *buf, size_t count);
 
     static int setNonBlocking(ZL_SOCKET fd, bool nonBlocking = true);
     static int setNoDelay(ZL_SOCKET fd, bool noDelay = true);
-    static int setReuseAddr(ZL_SOCKET fd, bool flag = true);
+    static int setReuseAddr(ZL_SOCKET fd, bool resue = true);
+    static int setKeepAlive(ZL_SOCKET fd, bool alive = true);
+
+    static int setSendTimeout(ZL_SOCKET fd, long long timeoutMs);
+    static int getSendTimeout(ZL_SOCKET fd, long long* timeoutMs);
+    static int setRecvTimeout(ZL_SOCKET fd, long long timeoutMs);
+    static int getRecvTimeout(ZL_SOCKET fd, long long* timeoutMs);
+
     static int setSendBuffer(ZL_SOCKET fd, int readSize);
+    static int getSendBuffer(ZL_SOCKET fd, int* readSize);
     static int setRecvBuffer(ZL_SOCKET fd, int writeSize);
-    static int getSendBuffer(ZL_SOCKET fd);
-    static int getRecvBuffer(ZL_SOCKET fd);
+    static int getRecvBuffer(ZL_SOCKET fd, int* writeSize);
+
+    static int setOpt(ZL_SOCKET fd, int level, int name, char *value, int len);
+    static int getOpt(ZL_SOCKET fd, int level, int optname, int& optval);
 
     static struct sockaddr_in getLocalAddr(ZL_SOCKET sockfd);
+    static std::string        getLocalIp(ZL_SOCKET sockfd);
+    static short              getLocalPort(ZL_SOCKET sockfd);
+    static std::string        getLocalIpPort(ZL_SOCKET sockfd);
     static struct sockaddr_in getPeerAddr(ZL_SOCKET sockfd);
+    static std::string        getPeerIp(ZL_SOCKET sockfd);
+    static short              getPeerPort(ZL_SOCKET sockfd);
+    static std::string        getPeerIpPort(ZL_SOCKET sockfd);
 
     static bool isSelfConnect(ZL_SOCKET sockfd);
     static int getSocketError(ZL_SOCKET sockfd);
 };
 
-namespace
-{
-    class SocketInitialization
-    {
-    public:
-        SocketInitialization()
-        {
-            SocketUtil::socketInitialise();
-        }
-        ~SocketInitialization()
-        {
-            SocketUtil::socketCleanup();
-        }
-    };
-
-    extern  SocketInitialization  g_socket_init_once;
-}
-
 NAMESPACE_ZL_NET_END
-
 #endif  /* ZL_SOCKETUTIL_H */

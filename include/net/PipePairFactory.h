@@ -1,19 +1,16 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : PipePairFactory.h
 // Author           : LIZHENG
 // Created          : 2014-12-18
 // Description      : pipe、socketpair、eventfd的封装，可用于线程/进程间通信及同步
 //                    未充分验证，可能有bug
 //
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-12-24
-//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_PIPEPAIRFACTORY_H
 #define ZL_PIPEPAIRFACTORY_H
 #include "net/SocketUtil.h"
-#include "base/ZLog.h"
+#include "base/Logger.h"
 #include "base/Timestamp.h"
 #include "thread/Thread.h"
 #include <sys/epoll.h>        // for epoll
@@ -267,7 +264,7 @@ public:
         }
 
         struct sockaddr_in addr2;
-        int srvSock = SocketUtil::acceptOne(listenSock, &addr2);
+        int srvSock = SocketUtil::accept(listenSock, &addr2);
         if(srvSock < 0 || errno != EINPROGRESS)
         {
             LOG_ERROR("TcpPairGenerator: accept failed[%d][%d].\n", srvSock, errno);

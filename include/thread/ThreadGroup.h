@@ -4,9 +4,6 @@
 // Created          : 2014-10-13
 // Description      :
 //
-// Last Modified By : LIZHENG
-// Last Modified On : 2015-03-01
-//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_THREADGROU_H
@@ -18,7 +15,7 @@
 NAMESPACE_ZL_THREAD_START
 class Thread;
 
-class ThreadGroup : NonCopy
+class ThreadGroup : zl::NonCopy
 {
 public:
     ThreadGroup();
@@ -29,8 +26,7 @@ public:
     Thread* create_thread(F threadfunc, const std::string& thrd_name="")
     {
         Thread *trd = new Thread(threadfunc, thrd_name);
-        LockGuard<Mutex> lock(mutex_);
-        threads_.push_back(trd);
+        add_thread(trd);
         return trd;
     }
 

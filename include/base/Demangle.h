@@ -1,11 +1,8 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : Demangle.h
 // Author           : LIZHENG
 // Created          : 2014-11-05
 // Description      : 
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-11-05
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************

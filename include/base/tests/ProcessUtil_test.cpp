@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include "base/ProcessUtil.h"
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
@@ -6,7 +6,7 @@
 using namespace zl;
 using namespace zl::base;
 
-int main(int argc, char **argv[])
+int main(int argc, char* argv[])
 {
     if(argc > 1)
     {

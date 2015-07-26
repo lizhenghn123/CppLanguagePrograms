@@ -2,10 +2,7 @@
 // Filename         : TcpConnector.h
 // Author           : LIZHENG
 // Created          : 2014-10-26
-// Description      : 客户端连接器，连接远程Socket
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-12-22
+// Description      : 瀹㈡埛绔繛鎺ュ櫒锛岃繛鎺ヨ繙绋婼ocket
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************

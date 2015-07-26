@@ -1,12 +1,15 @@
 #include "net/Channel.h"
 #include <sstream>
 #include <assert.h>
-#include "base/ZLog.h"
+#include "base/Logger.h"
 #include "net/EventLoop.h"
 NAMESPACE_ZL_NET_START
 
 Channel::Channel(EventLoop* loop, int fd)
-    : loop_(loop), fd_(fd), events_(0), revents_(0)
+    : loop_(loop)
+    , fd_(fd)
+    , events_(0)
+    , revents_(0)
 {
 }
 

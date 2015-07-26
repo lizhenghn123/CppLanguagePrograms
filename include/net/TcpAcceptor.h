@@ -2,10 +2,7 @@
 // Filename         : TcpAcceptor.h
 // Author           : LIZHENG
 // Created          : 2014-10-26
-// Description      : 服务端接受器，监听在某一端口上，接受远程Socket连接
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-12-22
+// Description      : 鏈嶅姟绔帴鍙楀櫒锛岀洃鍚湪鏌愪竴绔彛涓婏紝鎺ュ彈杩滅▼Socket杩炴帴
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************

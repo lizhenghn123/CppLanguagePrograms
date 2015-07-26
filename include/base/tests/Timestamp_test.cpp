@@ -14,8 +14,8 @@ void test_usage()
 	now += 3;
 	printf("Time : %s\n", now.toString().c_str());
 
-	tm* t = now.getTm();
-	printf("%s\n", asctime(t));
+	tm t = now.getTm();
+	printf("%s\n", asctime(&t));
 }
 
 void test_bench1()
@@ -168,19 +168,25 @@ void test_bench3(int flag = 0)
 	for(int i = 0 ; i < max_loop; i++)
 	{
 		sum += times[i];
-		printf(PRId64" ", times[i]);
+		printf("%" PRId64 " ", times[i]);
 	}
-	printf("\naverage : %f\n", sum * 1.0 / max_loop);
+	printf("\naverage : %f\n", sum * 1.0 / (max_loop*max_count));
 }
 
 int main(int argc, char* argv[])
 {
 	printf("##########################################\n");
-	//test_usage();
+	test_usage();
 	
 	printf("##########################################\n");
-    //test_bench1();
-	
+    test_bench1();
+
+    if(argc < 2)
+    {
+        printf("exit....\n");
+        return 0;
+    }
+    
 	int flag = atoi(argv[1]);
 
 	printf("##########################################\n");

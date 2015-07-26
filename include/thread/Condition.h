@@ -2,10 +2,7 @@
 // Filename         : Condition.h
 // Author           : LIZHENG
 // Created          : 2014-05-16
-// Description      : 条件变量在Windows及Linux平台下的封装
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-08-25
+// Description      : 鏉′欢鍙橀噺鍦╓indows鍙奓inux骞冲彴涓嬬殑灏佽
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
@@ -14,15 +11,6 @@
 #include "Define.h"
 #include "base/NonCopy.h"
 #include "thread/Mutex.h"
-#ifdef OS_LINUX
-#include <unistd.h>
-#include <pthread.h>
-#include <errno.h>
-#elif defined(OS_WINDOWS)
-#define OS_WINDOWS
-#include <Windows.h>
-#endif
-
 NAMESPACE_ZL_THREAD_START
 
 class Condition : public zl::NonCopy

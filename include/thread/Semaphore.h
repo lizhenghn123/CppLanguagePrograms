@@ -1,11 +1,8 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : Semaphore.h
 // Author           : LIZHENG
 // Created          : 2014-06-08
 // Description      : 信号量
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-12-21
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
@@ -21,7 +18,6 @@
 #include <pthread.h>
 #include <semaphore.h>
 #endif
-
 NAMESPACE_ZL_THREAD_START
 
 class Semaphore : public zl::NonCopy
@@ -64,9 +60,9 @@ public:
         struct timeval tv;
         gettimeofday(&tv, NULL);
         int64_t usec = tv.tv_usec + timeoutMs * 1000LL;
-        ts->tv_sec = tv.tv_sec + usec / 1000000;
-        ts->tv_nsec = (usec % 1000000) * 1000;
-        return sem_timedwait(sem, &ts);
+        ts.tv_sec = tv.tv_sec + usec / 1000000;
+        ts.tv_nsec = (usec % 1000000) * 1000;
+        return sem_timedwait(sem, &ts) == 0;
     #endif
     }
 
@@ -82,9 +78,7 @@ public:
     bool post(long rc = 1)
     {
     #ifdef OS_WINDOWS
-        if(::ReleaseSemaphore(sem_, rc, NULL))
-            return true;
-        return false;
+        return ::ReleaseSemaphore(sem_, rc, NULL);
     #elif defined(OS_LINUX)
         return sem_post(&sem_) == 0;
     #endif

@@ -1,31 +1,33 @@
 ﻿#include "net/SocketUtil.h"
 #include <string.h>
-#include "base/ZLog.h"
+#include "base/Logger.h"
 NAMESPACE_ZL_NET_START
 
-SocketInitialization  g_socket_init_once;
-
-int SocketUtil::socketInitialise()
+namespace
 {
-#ifdef OS_WINDOWS
-    WSADATA wsaData;
-    return WSAStartup(MAKEWORD(2, 2), &wsaData);
-#endif
-    return 0;
-}
-
-int SocketUtil::socketCleanup()
-{
-#ifdef OS_WINDOWS
-    return WSACleanup();
-#endif
-    return 0;
+    class SocketInitialization
+    {
+    public:
+        SocketInitialization()
+        {
+        #ifdef OS_WINDOWS
+            WSADATA wsaData;
+            WSAStartup(MAKEWORD(2, 2), &wsaData);
+        #endif
+        }
+        ~SocketInitialization()
+        {
+        #ifdef OS_WINDOWS
+            WSACleanup();
+        #endif
+        }
+    }g_socket_init_once ;
 }
 
 ZL_SOCKET SocketUtil::createSocket()
 {
     ZL_SOCKET fd = ZL_CREATE_SOCKET(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    LOG_INFO("createSocket [%d]", fd);
+    //LOG_INFO("createSocket [%d]", fd);
     return fd;
 }
 
@@ -33,7 +35,7 @@ int SocketUtil::closeSocket(ZL_SOCKET fd)
 {
     if (fd)
     {
-        LOG_INFO("closeSocket [%d]", fd);
+        //LOG_INFO("closeSocket [%d]", fd);
         return ZL_CLOSE(fd);
     }
     return -1;
@@ -51,17 +53,29 @@ void SocketUtil::shutdownWrite(ZL_SOCKET sockfd)
 
 ZL_SOCKET SocketUtil::createSocketAndListen(const char *ip, int port, int backlog)
 {
-    ZL_SOCKET sockfd = ZL_CREATE_SOCKET(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    ZL_SOCKET sockfd = SocketUtil::createSocket();
     if(sockfd < 0) return sockfd;
-    setNonBlocking(sockfd, true);
 
-    ZL_SOCKADDR_IN  sockaddr;
+    SocketUtil::setReuseAddr(sockfd, true);
+
+    int ret = SocketUtil::bind(sockfd, ip, port);
+    if (ret < 0) return ret;
+
+    ret = ZL_LISTEN(sockfd, backlog);
+    if (ret < 0) return ret;
+
+    return sockfd;
+}
+
+int SocketUtil::bind(ZL_SOCKET sockfd, const char *ip, int port)
+{
+    ZL_SOCKADDR_IN sockaddr;
     ::memset(&sockaddr, 0, sizeof(sockaddr));
     sockaddr.sin_family = AF_INET;
     sockaddr.sin_port = htons(port);
+    //sockaddr_.sin_addr.s_addr = INADDR_ANY;
     int nIP = 0;
-    if(!ip || '\0' == *ip || 0 == strcmp(ip, "0")
-        || 0 == strcmp(ip, "0.0.0.0") || 0 == strcmp(ip, "*"))
+    if (!ip || '\0' == *ip || 0 == strcmp(ip, "0") || 0 == strcmp(ip, "0.0.0.0") || 0 == strcmp(ip, "*"))
     {
         nIP = htonl(INADDR_ANY);
     }
@@ -71,24 +85,38 @@ ZL_SOCKET SocketUtil::createSocketAndListen(const char *ip, int port, int backlo
     }
     sockaddr.sin_addr.s_addr = nIP;
 
-    int res = ZL_BIND(sockfd, (struct sockaddr *) &sockaddr, sizeof(sockaddr));
-    if(res < 0) return res;
-
-    res = ZL_LISTEN(sockfd, backlog);
-    if(res < 0) return res;
-
-    return sockfd;
+    return ZL_BIND(sockfd, (struct sockaddr *)&sockaddr, sizeof(sockaddr));
 }
 
-int  SocketUtil::connect(ZL_SOCKET sockfd, const struct sockaddr_in& addr)
+int SocketUtil::bind(ZL_SOCKET sockfd, struct sockaddr_in addr)
+{
+    return ZL_BIND(sockfd, (struct sockaddr *)&addr, sizeof(addr));
+}
+
+int SocketUtil::connect(ZL_SOCKET sockfd, const char *ip, int port)
+{
+    struct sockaddr_in addr;
+    ::memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+
+    ::inet_pton(AF_INET, ip, &addr.sin_addr);
+    if (errno == EAFNOSUPPORT)
+        return errno;
+
+    return SocketUtil::connect(sockfd, addr);
+}
+
+int SocketUtil::connect(ZL_SOCKET sockfd, const struct sockaddr_in& addr)
 {
     return ZL_CONNECT(sockfd, (sockaddr *)&addr, static_cast<socklen_t>(sizeof(addr)));
 }
 
-ZL_SOCKET SocketUtil::acceptOne(ZL_SOCKET sockfd, ZL_SOCKADDR_IN *addr)
+ZL_SOCKET SocketUtil::accept(ZL_SOCKET sockfd, ZL_SOCKADDR_IN *addr)
 {
-    int addrlen = sizeof(*addr);
-    ZL_SOCKET connfd = ZL_ACCEPT(sockfd, (sockaddr *)addr, (socklen_t *)&addrlen);
+    ::memset(addr, 0, sizeof(*addr));
+    socklen_t addrlen = static_cast<socklen_t>(sizeof(*addr));
+    ZL_SOCKET connfd = ZL_ACCEPT(sockfd, (sockaddr *)addr, &addrlen);
     return connfd;
 }
 
@@ -128,10 +156,56 @@ int SocketUtil::setNoDelay(ZL_SOCKET fd, bool noDelay/* = true*/)
     return ZL_SETSOCKOPT(fd, IPPROTO_TCP, TCP_NODELAY, (char *)&optval, sizeof(optval));
 }
 
-int SocketUtil::setReuseAddr(ZL_SOCKET fd, bool flag /*= true*/)
+int SocketUtil::setReuseAddr(ZL_SOCKET fd, bool resue /*= true*/)
 {
-    int optval = flag ? 1 : 0;
-    return ZL_SETSOCKOPT(fd, SOL_SOCKET, SO_REUSEADDR, (char *)&optval, sizeof(optval));
+    int optval = resue ? 1 : 0;
+    return ZL_SETSOCKOPT(fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+}
+
+int SocketUtil::setKeepAlive(ZL_SOCKET fd, bool alive /*= true*/)
+{
+    int optval = alive ? 1 : 0;
+    return ZL_SETSOCKOPT(fd, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval));
+}
+
+int SocketUtil::setSendTimeout(ZL_SOCKET fd, long long timeoutMs)
+{
+    struct timeval tv;
+    tv.tv_sec = timeoutMs / 1000;
+    tv.tv_usec = (timeoutMs % 1000) * 1000;
+
+    return ZL_SETSOCKOPT(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv)) == -1;
+}
+
+int SocketUtil::getSendTimeout(ZL_SOCKET fd, long long *timeoutMs)
+{
+    struct timeval tv;
+    if (ZL_GETSOCKOPT(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv)) == 0)
+    {
+        *timeoutMs = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+        return 0;
+    }
+    return -1;
+}
+
+int SocketUtil::setRecvTimeout(ZL_SOCKET fd, long long timeoutMs)
+{
+    struct timeval tv;
+    tv.tv_sec = timeoutMs / 1000;
+    tv.tv_usec = (timeoutMs % 1000) * 1000;
+
+    return ZL_SETSOCKOPT(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) == -1;
+}
+
+int SocketUtil::getRecvTimeout(ZL_SOCKET fd, long long* timeoutMs)
+{
+    struct timeval tv;
+    if (ZL_GETSOCKOPT(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) == 0)
+    {
+        *timeoutMs = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+        return 0;
+    }
+    return -1;
 }
 
 int SocketUtil::setSendBuffer(ZL_SOCKET fd, int readSize)
@@ -139,29 +213,34 @@ int SocketUtil::setSendBuffer(ZL_SOCKET fd, int readSize)
     return ZL_SETSOCKOPT(fd, SOL_SOCKET, SO_SNDBUF, &readSize, sizeof(readSize));
 }
 
+int SocketUtil::getSendBuffer(ZL_SOCKET fd, int* readSize)
+{
+    socklen_t buff_szie = sizeof(socklen_t);
+    return ZL_GETSOCKOPT(fd, SOL_SOCKET, SO_SNDBUF, readSize, &buff_szie);
+}
+
 int SocketUtil::setRecvBuffer(ZL_SOCKET fd, int writeSize)
 {
     return ZL_SETSOCKOPT(fd, SOL_SOCKET, SO_RCVBUF, &writeSize, sizeof(writeSize));
 }
 
-int SocketUtil::getSendBuffer(ZL_SOCKET fd) 
+int SocketUtil::getRecvBuffer(ZL_SOCKET fd, int* writeSize)
 {
     socklen_t buff_szie = sizeof(socklen_t);
-    int optname = 0;
-    int ret = ZL_GETSOCKOPT(fd, SOL_SOCKET, SO_SNDBUF, &optname, &buff_szie);
-    ZL_UNUSED(ret);
-    assert(ret != -1);
-    return optname > 0 ? optname : 0;
+    return ZL_GETSOCKOPT(fd, SOL_SOCKET, SO_RCVBUF, writeSize, &buff_szie);
 }
 
-int SocketUtil::getRecvBuffer(ZL_SOCKET fd)
+int SocketUtil::setOpt(ZL_SOCKET fd, int level, int name, char *value, int len)
 {
-    socklen_t buff_szie = sizeof(socklen_t);
-    int optname = 0;
-    int ret = ZL_GETSOCKOPT(fd, SOL_SOCKET, SO_RCVBUF, &optname, &buff_szie);
-    ZL_UNUSED(ret);
-    assert(ret != -1);
-    return optname > 0 ? optname : 0;
+    assert(value != NULL);
+    assert(len > 0);
+    return ZL_SETSOCKOPT(fd, level, name, value, static_cast<socklen_t>(len));
+}
+
+int  SocketUtil::getOpt(ZL_SOCKET fd, int level, int optname, int& optval)
+{
+    ZL_SOCKLEN optlen = sizeof(optval);
+    return ZL_GETSOCKOPT(fd, level, optname, &optval, &optlen);
 }
 
 typedef struct sockaddr SA;
@@ -186,6 +265,30 @@ struct sockaddr_in SocketUtil::getLocalAddr(ZL_SOCKET sockfd)
     return localaddr;
 }
 
+std::string SocketUtil::getLocalIp(ZL_SOCKET sockfd)
+{
+    struct sockaddr_in localaddr = SocketUtil::getLocalAddr(sockfd);
+    char ip[256], tmp[256];
+    ZL_SNPRINTF(ip, 256, "%s", ::inet_ntop(AF_INET, &localaddr.sin_addr, tmp, 256));
+    return std::string(ip);
+}
+
+short SocketUtil::getLocalPort(ZL_SOCKET sockfd)
+{
+     struct sockaddr_in localaddr = SocketUtil::getLocalAddr(sockfd);
+    char buf[16];
+    ZL_SNPRINTF(buf, 16, "%d", ntohs(localaddr.sin_port));
+    return ::atoi(buf);
+}
+
+std::string SocketUtil::getLocalIpPort(ZL_SOCKET sockfd)
+{
+    struct sockaddr_in localaddr = SocketUtil::getLocalAddr(sockfd);
+    char host[256], ip[256];
+    ZL_SNPRINTF(host, 256, "%s:%d", ::inet_ntop(AF_INET, &localaddr.sin_addr, ip, 256), ntohs(localaddr.sin_port));
+    return std::string(host);
+}
+
 struct sockaddr_in SocketUtil::getPeerAddr(ZL_SOCKET sockfd)
 {
     struct sockaddr_in peeraddr;
@@ -196,6 +299,30 @@ struct sockaddr_in SocketUtil::getPeerAddr(ZL_SOCKET sockfd)
         printf("sockets::getPeerAddr");
     }
     return peeraddr;
+}
+
+std::string SocketUtil::getPeerIp(ZL_SOCKET sockfd)
+{
+    struct sockaddr_in peeraddr = SocketUtil::getPeerAddr(sockfd);
+    char ip[256], tmp[256];
+    ZL_SNPRINTF(ip, 256, "%s", ::inet_ntop(AF_INET, &peeraddr.sin_addr, tmp, 256));
+    return std::string(ip);
+}
+
+short SocketUtil::getPeerPort(ZL_SOCKET sockfd)
+{
+    struct sockaddr_in peeraddr = SocketUtil::getPeerAddr(sockfd);
+    char buf[16];
+    ZL_SNPRINTF(buf, 16, "%d", ntohs(peeraddr.sin_port));
+    return ::atoi(buf);
+}
+
+std::string SocketUtil::getPeerIpPort(ZL_SOCKET sockfd)
+{
+    struct sockaddr_in peeraddr = SocketUtil::getPeerAddr(sockfd);
+    char host[256], ip[256];
+    ZL_SNPRINTF(host, 256, "%s:%d", ::inet_ntop(AF_INET, &peeraddr.sin_addr, ip, 256), ntohs(peeraddr.sin_port));
+    return std::string(host);
 }
 
 bool SocketUtil::isSelfConnect(ZL_SOCKET sockfd)

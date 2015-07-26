@@ -1,5 +1,5 @@
-﻿#include "net/http/HttpServer.h"
-#include "base/ZLog.h"
+#include "net/http/HttpServer.h"
+#include "base/Logger.h"
 #include "net/TcpConnection.h"
 #include "net/http/HttpContext.h"
 #include "net/http/HttpRequest.h"
@@ -67,7 +67,7 @@ void HttpServer::response(const TcpConnectionPtr& conn, const HttpRequest& req)
 
     NetBuffer buf;
     response.compileToBuffer(&buf);
-    printf("[%s]\n", buf.toString().c_str());
+    //printf("[%s]\n", buf.toString().c_str());
     conn->send(&buf);
 
     LOG_INFO("HttpServer::response send data [%d]", conn->fd());

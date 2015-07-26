@@ -4,9 +4,6 @@
 // Created          : 2014-11-04
 // Description      :
 //
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-11-04
-//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_NETBUFFER_H
@@ -33,9 +30,9 @@ public:
 
 public:
     NetBuffer()
-        : readerIndex_(kCheapPrepend),
-          writerIndex_(kCheapPrepend),
-          buffer_(kCheapPrepend + kInitialSize)
+        : readerIndex_(kCheapPrepend)
+        , writerIndex_(kCheapPrepend)
+        , buffer_(kCheapPrepend + kInitialSize)
     {
         assert(readableBytes() == 0);
         assert(writableBytes() == kInitialSize);

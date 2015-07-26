@@ -1,18 +1,16 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : SmartAssert.h
 // Author           : LIZHENG
 // Created          : 2014-09-18
 // Description      : 增强版的Assert实现
 // 
-// Last Modified By : LIZHENG
-// Last Modified On : 2015-01-11
-//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_SMARTASSERT_H
 #define ZL_SMARTASSERT_H
 #include <string>
 #include <sstream>
+#include <stdlib.h>
 namespace zl
 {
 namespace base
@@ -26,9 +24,9 @@ class SmartAssert
 {
 public:
     SmartAssert(const char* expr, const char* function, int line, const char* file, bool abortOnExit = false)
-        : SMART_ASSERT_A(*this),
-          SMART_ASSERT_B(*this),
-          abortIfExit_(abortOnExit)
+        : SMART_ASSERT_A(*this)
+        , SMART_ASSERT_B(*this)
+        , abortIfExit_(abortOnExit)
     {
         std::ostringstream oss;
         if (expr && *expr)
@@ -102,9 +100,9 @@ static SmartAssert __dont_use_this__ = MakeAssert(NULL, NULL, 0, 0, false); //gc
 #define MACRO_DO_CAT2(x, y) x##y
 #define MACRO_P(x)  #x
 
-#define ZL_STATIC_ASSERT(expr) ZL_STATIC_ASSERT_IMPL(expr, __FILE__, __LINE__)
+#define ZL_STATIC_ASSERT(expr, ...) ZL_STATIC_ASSERT_IMPL(expr, __FILE__, __LINE__)
 #define ZL_STATIC_ASSERT_IMPL(expr, file, line)  \
-           typedef char static_assert_fail_on_##file_and_##line[2 * ((expr) != 0) - 1]
+                  typedef char static_assert_fail_on_##file_##line[2 * ((expr) != 0) - 1]
 
 }
 }

@@ -2,25 +2,37 @@
 // Filename         : Mutex.h
 // Author           : LIZHENG
 // Created          : 2014-05-16
-// Description      : 互斥锁在Windows及Linux平台下的封装
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-08-25
+// Description      : 浜掓枼閿佸湪Windows鍙奓inux骞冲彴涓嬬殑灏佽
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_MUTEX_H
 #define ZL_MUTEX_H
 #include "Define.h"
-#include <exception>
 #ifdef OS_WINDOWS
 #include <Windows.h>
 #elif defined(OS_LINUX)
 #include <unistd.h>
 #include <pthread.h>
+#include <errno.h>
 #endif
 
 NAMESPACE_ZL_THREAD_START
+
+#ifdef NDEBUG
+#define THREAD_CHECK(func)  {  int errnum = (func);       \
+                               if(errnum != 0)            \
+                                   fprintf(stderr, "%s:%d : [%d]\n", __FILE__, __LINE__, errnum);  \
+                            }
+#else
+#define THREAD_CHECK(func)  {  int errnum = (func);       \
+                               if(errnum != 0)            \
+                               {                          \
+                                   fprintf(stderr, "%s:%d : [%d]\n", __FILE__, __LINE__, errnum); \
+                                   assert(errnum == 0);   \
+                               }                          \
+                            }
+#endif
 
 class NullMutex
 {
@@ -46,15 +58,50 @@ public:
     void unlock()
     {
     }
+};
 
-#ifdef	OS_WINDOWS
-    CRITICAL_SECTION* getMutex()
-#elif defined(OS_LINUX)
-    pthread_mutex_t* getMutex()
-#endif
+class SpinMutex
+{
+public:
+    SpinMutex()
     {
-        return NULL;
+        lock_ = 0;
     }
+
+    ~SpinMutex()
+    {
+    } 
+
+    void lock()
+    {
+    #ifdef OS_WINDOWS
+        while (::InterlockedExchange((long*)&lock_, TRUE))
+        {
+            
+        }
+    #elif defined(OS_LINUX)
+        while(__sync_lock_test_and_set(&lock_, 1))
+        {
+            
+        }
+    #endif
+    }
+
+    void unlock()
+    {
+    #ifdef OS_WINDOWS
+        ::InterlockedExchange((long*)&lock_, FALSE);
+    #elif defined(OS_LINUX)
+        __sync_lock_release(&lock_);
+    #endif
+    }
+
+private:
+#ifdef OS_WINDOWS
+    BOOL lock_;
+#elif defined(OS_LINUX)
+    volatile int lock_;
+#endif
 };
 
 class Mutex
@@ -85,10 +132,7 @@ public:
     #ifdef OS_WINDOWS
         EnterCriticalSection(&mutex_);
     #elif defined(OS_LINUX)
-        if(pthread_mutex_lock(&mutex_) != 0)
-        {
-            throw std::exception();
-        }
+        THREAD_CHECK(pthread_mutex_lock(&mutex_));
     #endif
     }
 
@@ -110,7 +154,7 @@ public:
     #ifdef OS_WINDOWS
         LeaveCriticalSection(&mutex_);
     #elif defined(OS_LINUX)
-        pthread_mutex_unlock(&mutex_);
+        THREAD_CHECK(pthread_mutex_unlock(&mutex_));
     #endif
     }
 
@@ -130,6 +174,7 @@ private:
     pthread_mutex_t mutex_;
 #endif
 };
+
 
 class RecursiveMutex
 {
@@ -161,7 +206,7 @@ public:
     #if defined(OS_WINDOWS)
         EnterCriticalSection(&mutex_);
     #else
-        pthread_mutex_lock(&mutex_);
+        THREAD_CHECK(pthread_mutex_lock(&mutex_));
     #endif
     }
 
@@ -179,7 +224,7 @@ public:
     #if defined(OS_WINDOWS)
         LeaveCriticalSection(&mutex_);
     #else
-        pthread_mutex_unlock(&mutex_);
+        THREAD_CHECK(pthread_mutex_unlock(&mutex_));
     #endif
     }
 

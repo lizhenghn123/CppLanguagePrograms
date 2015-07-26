@@ -4,9 +4,6 @@
 // Created          : 2014-10-21
 // Description      :
 //
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-10-21
-//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_TIMESTAMP_H
@@ -75,7 +72,7 @@ public:
         std::swap(microSeconds_, that.microSeconds_);
     }
 
-    struct tm* getTm(bool showlocaltime = true) const;
+    struct tm getTm(bool showlocaltime = true) const;
     std::string toString(bool showlocaltime = true) const;
 
 private:
@@ -109,7 +106,7 @@ inline int64_t operator-(const Timestamp& end, const Timestamp& start)
 
 inline Timestamp operator+(const Timestamp& lhs, double seconds)
 {
-    long delta = seconds * ZL_USEC_PER_SEC;
+    int64_t delta = seconds * ZL_USEC_PER_SEC;
     return Timestamp(lhs.microSeconds() + delta);
 }
 

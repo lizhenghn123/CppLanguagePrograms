@@ -1,11 +1,8 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : BoundedBlockingQueue.h
 // Author           : LIZHENG
 // Created          : 2014-06-08
 // Description      : 固定大小的同步阻塞队列，可工作于多线程环境下，可用于线程之间数据存取
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2015-01-26
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
@@ -13,7 +10,6 @@
 #define ZL_BOUNDEDBLOCKINGQUEUE_H
 #include "Define.h"
 #include <queue>
-#include <stack>
 #include "thread/Mutex.h"
 #include "thread/Condition.h"
 #include "thread/BlockingQueue.h"
@@ -36,11 +32,11 @@ public:
 
 public:
     explicit BoundedBlockingQueue(int maxSize)
-        : stopFlag_(false),
-        maxSize_(maxSize),
-        mutex_(),
-        notEmpty_(mutex_),
-        notFull_(mutex_)
+        : stopFlag_(false)
+        , maxSize_(maxSize)
+        , mutex_()
+        , notEmpty_(mutex_)
+        , notFull_(mutex_)
     {
     }
 
@@ -213,12 +209,12 @@ private:
     }
 
 protected:
-    bool               stopFlag_;
-    int                maxSize_;
-    mutable MutexType  mutex_;
-    ConditionType      notEmpty_;
-    ConditionType      notFull_;
-    QueueType          queue_;
+    bool                    stopFlag_;
+    int                     maxSize_;
+    mutable MutexType       mutex_;
+    ConditionType           notEmpty_;
+    ConditionType           notFull_;
+    QueueType               queue_;
 };
 
 /* using is not support in VS2010*/

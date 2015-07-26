@@ -1,11 +1,8 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : Eventfd.h
 // Author           : LIZHENG
 // Created          : 2015-01-14
 // Description      : 进程及线程间的事件通知，need linux kernel > 2.6.22
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2015-01-14
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
@@ -28,6 +25,8 @@ public:
 
 public:
     int fd() { return eventfd_; }
+
+    void notify() { write(1); }
 
     ssize_t write(uint64_t value = 1);
 

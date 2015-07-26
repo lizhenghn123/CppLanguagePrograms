@@ -1,4 +1,4 @@
-﻿#include "HttpRequest.h"
+#include "HttpRequest.h"
 //#include <regex>
 #include <sstream>
 NAMESPACE_ZL_NET_START
@@ -45,6 +45,8 @@ bool HttpRequest::parseHeader(const string& header)
         setMethod(HttpMethod::HttpPut);
     else if (strcmp(method.c_str(), "delete") == 0)
         setMethod(HttpMethod::HttpDelete);
+
+    setPath(token[1]);
 
     //HttpVersion，Client发过来的http协议版本号
     setVersion((token[2] == "HTTP/1.1" ? HttpVersion::HTTP_VERSION_1_1 : HttpVersion::HTTP_VERSION_1_0));

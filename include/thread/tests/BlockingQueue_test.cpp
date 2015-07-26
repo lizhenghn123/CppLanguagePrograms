@@ -1,5 +1,6 @@
-﻿#include <iostream>
+#include <iostream>
 #include <vector>
+#include <stack>
 #include <string>
 #include <iterator>
 #include "thread/Thread.h"
@@ -44,7 +45,7 @@ private:
         while(queue_.pop(one))
         {
             char result[256];
-            ZL_SNPRINTF(result, sizeof(result), "thread_%d_get_%d\n", this_thread::get_id().tid(), one);
+            ZL_SNPRINTF(result, sizeof(result), "thread_%d_get_%d\n", this_thread::tid(), one);
             std::cout << result;
             this_thread::sleep_for(chrono::milliseconds(200));
         }
@@ -92,7 +93,7 @@ private:
         {
             int one = queue_.pop();
             char result[256];
-            ZL_SNPRINTF(result, sizeof(result), "thread_%d_get_%d\n", this_thread::get_id().tid(), one);
+            ZL_SNPRINTF(result, sizeof(result), "thread_%d_get_%d\n", this_thread::tid(), one);
             std::cout << result;
             this_thread::sleep_for(chrono::milliseconds(200));
             running = (one != -1);

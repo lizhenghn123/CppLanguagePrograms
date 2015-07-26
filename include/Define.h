@@ -4,9 +4,6 @@
 // Created          : 2014-07-01
 // Description      :
 //
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-07-01
-//
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_STDDEFINE_H
@@ -26,6 +23,10 @@
 #include <functional>
 #include <iterator>
 #include <numeric>
+#include <stdint.h>
+#define __STDC_FORMAT_MACROS
+//#include <inttypes.h>           // printf("%"PRId64"\n", (int64_t)value);  
+#undef __STDC_FORMAT_MACROS
 #include "OsDefine.h"
 #include "base/SmartAssert.h"
 #ifdef OS_WINDOWS

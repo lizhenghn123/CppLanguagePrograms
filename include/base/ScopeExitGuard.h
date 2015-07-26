@@ -2,10 +2,7 @@
 // Filename         : ScopeExitGuard.h
 // Author           : LIZHENG
 // Created          : 2014-10-01
-// Description      : RAIIÀà£¬ÓÃÓÚ×ÊÔ´ÊÍ·Å¡¢ÇåÀí
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2015-01-11
+// Description      : RAIIç±»ï¼Œç”¨äºèµ„æºé‡Šæ”¾ã€æ¸…ç†
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
@@ -26,7 +23,8 @@ class ScopeExitGuard
 {
 public:
     explicit ScopeExitGuard(std::function<void ()> onExitCallback)
-        : onExitCb_(onExitCallback), dismissed_(false)
+        : onExitCb_(onExitCallback)
+        , dismissed_(false)
     {
     }
 

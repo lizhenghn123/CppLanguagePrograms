@@ -38,7 +38,9 @@ build_triplet = x86_64-unknown-linux-gnu
 host_triplet = x86_64-unknown-linux-gnu
 bin_PROGRAMS = Atomic_test$(EXEEXT) BlockingQueue_test$(EXEEXT) \
 	CountDownLatch_test$(EXEEXT) Thread_test$(EXEEXT) \
-	ThreadLocal_test$(EXEEXT)
+	ThreadLocal_test$(EXEEXT) Mutex_test$(EXEEXT) \
+	ThreadGroup_test$(EXEEXT) BlockingQueueWorker_test$(EXEEXT) \
+	ThreadId_test$(EXEEXT)
 subdir = zlreactor/thread/tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -51,39 +53,48 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_Atomic_test_OBJECTS = Atomic_test-Atomic_test.$(OBJEXT)
+am_Atomic_test_OBJECTS = Atomic_test.$(OBJEXT)
 Atomic_test_OBJECTS = $(am_Atomic_test_OBJECTS)
 Atomic_test_LDADD = $(LDADD)
-Atomic_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(Atomic_test_LDFLAGS) $(LDFLAGS) -o $@
-am_BlockingQueue_test_OBJECTS =  \
-	BlockingQueue_test-BlockingQueue_test.$(OBJEXT)
+am_BlockingQueueWorker_test_OBJECTS =  \
+	BlockingQueueWorker_test.$(OBJEXT)
+BlockingQueueWorker_test_OBJECTS =  \
+	$(am_BlockingQueueWorker_test_OBJECTS)
+BlockingQueueWorker_test_LDADD = $(LDADD)
+am_BlockingQueue_test_OBJECTS = BlockingQueue_test.$(OBJEXT)
 BlockingQueue_test_OBJECTS = $(am_BlockingQueue_test_OBJECTS)
 BlockingQueue_test_LDADD = $(LDADD)
-BlockingQueue_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(BlockingQueue_test_LDFLAGS) $(LDFLAGS) -o $@
-am_CountDownLatch_test_OBJECTS =  \
-	CountDownLatch_test-CountDownLatch_test.$(OBJEXT)
+am_CountDownLatch_test_OBJECTS = CountDownLatch_test.$(OBJEXT)
 CountDownLatch_test_OBJECTS = $(am_CountDownLatch_test_OBJECTS)
 CountDownLatch_test_LDADD = $(LDADD)
-CountDownLatch_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(CountDownLatch_test_LDFLAGS) $(LDFLAGS) -o $@
+am_Mutex_test_OBJECTS = Mutex_test-Mutex_test.$(OBJEXT)
+Mutex_test_OBJECTS = $(am_Mutex_test_OBJECTS)
+Mutex_test_LDADD = $(LDADD)
+am_ThreadGroup_test_OBJECTS = ThreadGroup_test.$(OBJEXT)
+ThreadGroup_test_OBJECTS = $(am_ThreadGroup_test_OBJECTS)
+ThreadGroup_test_LDADD = $(LDADD)
+ThreadId_test_SOURCES = ThreadId_test.c
+ThreadId_test_OBJECTS = ThreadId_test.$(OBJEXT)
+ThreadId_test_LDADD = $(LDADD)
 am_ThreadLocal_test_OBJECTS = ThreadLocal_test.$(OBJEXT)
 ThreadLocal_test_OBJECTS = $(am_ThreadLocal_test_OBJECTS)
 ThreadLocal_test_LDADD = $(LDADD)
-am_Thread_test_OBJECTS = Thread_test-Thread_test.$(OBJEXT)
+am_Thread_test_OBJECTS = Thread_test.$(OBJEXT)
 Thread_test_OBJECTS = $(am_Thread_test_OBJECTS)
 Thread_test_LDADD = $(LDADD)
-Thread_test_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(Thread_test_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -93,21 +104,26 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(Atomic_test_SOURCES) $(BlockingQueue_test_SOURCES) \
-	$(CountDownLatch_test_SOURCES) $(ThreadLocal_test_SOURCES) \
+SOURCES = $(Atomic_test_SOURCES) $(BlockingQueueWorker_test_SOURCES) \
+	$(BlockingQueue_test_SOURCES) $(CountDownLatch_test_SOURCES) \
+	$(Mutex_test_SOURCES) $(ThreadGroup_test_SOURCES) \
+	ThreadId_test.c $(ThreadLocal_test_SOURCES) \
 	$(Thread_test_SOURCES)
-DIST_SOURCES = $(Atomic_test_SOURCES) $(BlockingQueue_test_SOURCES) \
-	$(CountDownLatch_test_SOURCES) $(ThreadLocal_test_SOURCES) \
+DIST_SOURCES = $(Atomic_test_SOURCES) \
+	$(BlockingQueueWorker_test_SOURCES) \
+	$(BlockingQueue_test_SOURCES) $(CountDownLatch_test_SOURCES) \
+	$(Mutex_test_SOURCES) $(ThreadGroup_test_SOURCES) \
+	ThreadId_test.c $(ThreadLocal_test_SOURCES) \
 	$(Thread_test_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run aclocal-1.11
-AMTAR = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run tar
+ACLOCAL = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run aclocal-1.11
+AMTAR = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run autoconf
-AUTOHEADER = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run autoheader
-AUTOMAKE = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run automake-1.11
+AUTOCONF = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run autoconf
+AUTOHEADER = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run autoheader
+AUTOMAKE = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run automake-1.11
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -143,7 +159,7 @@ LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = 
 LN_S = cp -p
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/missing --run makeinfo
+MAKEINFO = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 NM = /usr/bin/nm -B
 NMEDIT = 
@@ -164,10 +180,10 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = strip
 VERSION = 1.0
-abs_builddir = /media/sf_DDRIVE/os_share/zlreactor/zlreactor/thread/tests
-abs_srcdir = /media/sf_DDRIVE/os_share/zlreactor/zlreactor/thread/tests
-abs_top_builddir = /media/sf_DDRIVE/os_share/zlreactor
-abs_top_srcdir = /media/sf_DDRIVE/os_share/zlreactor
+abs_builddir = /media/sf_DDRIVE/os_share/zl_reactor/zlreactor/thread/tests
+abs_srcdir = /media/sf_DDRIVE/os_share/zl_reactor/zlreactor/thread/tests
+abs_top_builddir = /media/sf_DDRIVE/os_share/zl_reactor
+abs_top_srcdir = /media/sf_DDRIVE/os_share/zl_reactor
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 ac_ct_DUMPBIN = 
@@ -196,7 +212,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /media/sf_DDRIVE/os_share/zlreactor/install-sh
+install_sh = ${SHELL} /media/sf_DDRIVE/os_share/zl_reactor/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -206,7 +222,7 @@ mandir = ${datarootdir}/man
 mkdir_p = /bin/mkdir -p
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /media/sf_DDRIVE/os_share/zlreactor
+prefix = /media/sf_DDRIVE/os_share/zl_reactor
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
@@ -218,23 +234,26 @@ top_build_prefix = ../../../
 top_builddir = ../../..
 top_srcdir = ../../..
 INCLUDES = -I../../../zlreactor
-Atomic_test_CPPFLAGS = $(CPPFLAGS)
-Atomic_test_LDFLAGS = $(CPPFLAGS)
+
+#Atomic_test_CPPFLAGS        = $(CPPFLAGS)
+#Atomic_test_LDFLAGS         = $(CPPFLAGS)
 Atomic_test_SOURCES = Atomic_test.cpp
-BlockingQueue_test_CPPFLAGS = $(CPPFLAGS)
-BlockingQueue_test_LDFLAGS = $(CPPFLAGS)
+Mutex_test_CPPFLAGS = $(CPPFLAGS) -O2
+Mutex_test_SOURCES = Mutex_test.cpp
 BlockingQueue_test_SOURCES = BlockingQueue_test.cpp
-CountDownLatch_test_CPPFLAGS = $(CPPFLAGS)
-CountDownLatch_test_LDFLAGS = $(CPPFLAGS)
 CountDownLatch_test_SOURCES = CountDownLatch_test.cpp
-Thread_test_CPPFLAGS = $(CPPFLAGS)
-Thread_test_LDFLAGS = $(CPPFLAGS)
+
+#Thread_test_CPPFLAGS        = $(CPPFLAGS)
+#Thread_test_LDFLAGS         = $(CPPFLAGS)
 Thread_test_SOURCES = Thread_test.cpp
+ThreadiId_test_SOURCES = ThreadId_test.cpp
 ThreadLocal_test_SOURCES = ThreadLocal_test.cpp
+ThreadGroup_test_SOURCES = ThreadGroup_test.cpp
+BlockingQueueWorker_test_SOURCES = BlockingQueueWorker_test.cpp
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cpp .lo .o .obj
+.SUFFIXES: .c .cpp .lo .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -310,19 +329,31 @@ clean-binPROGRAMS:
 	rm -f $$list
 Atomic_test$(EXEEXT): $(Atomic_test_OBJECTS) $(Atomic_test_DEPENDENCIES) 
 	@rm -f Atomic_test$(EXEEXT)
-	$(Atomic_test_LINK) $(Atomic_test_OBJECTS) $(Atomic_test_LDADD) $(LIBS)
+	$(CXXLINK) $(Atomic_test_OBJECTS) $(Atomic_test_LDADD) $(LIBS)
+BlockingQueueWorker_test$(EXEEXT): $(BlockingQueueWorker_test_OBJECTS) $(BlockingQueueWorker_test_DEPENDENCIES) 
+	@rm -f BlockingQueueWorker_test$(EXEEXT)
+	$(CXXLINK) $(BlockingQueueWorker_test_OBJECTS) $(BlockingQueueWorker_test_LDADD) $(LIBS)
 BlockingQueue_test$(EXEEXT): $(BlockingQueue_test_OBJECTS) $(BlockingQueue_test_DEPENDENCIES) 
 	@rm -f BlockingQueue_test$(EXEEXT)
-	$(BlockingQueue_test_LINK) $(BlockingQueue_test_OBJECTS) $(BlockingQueue_test_LDADD) $(LIBS)
+	$(CXXLINK) $(BlockingQueue_test_OBJECTS) $(BlockingQueue_test_LDADD) $(LIBS)
 CountDownLatch_test$(EXEEXT): $(CountDownLatch_test_OBJECTS) $(CountDownLatch_test_DEPENDENCIES) 
 	@rm -f CountDownLatch_test$(EXEEXT)
-	$(CountDownLatch_test_LINK) $(CountDownLatch_test_OBJECTS) $(CountDownLatch_test_LDADD) $(LIBS)
+	$(CXXLINK) $(CountDownLatch_test_OBJECTS) $(CountDownLatch_test_LDADD) $(LIBS)
+Mutex_test$(EXEEXT): $(Mutex_test_OBJECTS) $(Mutex_test_DEPENDENCIES) 
+	@rm -f Mutex_test$(EXEEXT)
+	$(CXXLINK) $(Mutex_test_OBJECTS) $(Mutex_test_LDADD) $(LIBS)
+ThreadGroup_test$(EXEEXT): $(ThreadGroup_test_OBJECTS) $(ThreadGroup_test_DEPENDENCIES) 
+	@rm -f ThreadGroup_test$(EXEEXT)
+	$(CXXLINK) $(ThreadGroup_test_OBJECTS) $(ThreadGroup_test_LDADD) $(LIBS)
+ThreadId_test$(EXEEXT): $(ThreadId_test_OBJECTS) $(ThreadId_test_DEPENDENCIES) 
+	@rm -f ThreadId_test$(EXEEXT)
+	$(LINK) $(ThreadId_test_OBJECTS) $(ThreadId_test_LDADD) $(LIBS)
 ThreadLocal_test$(EXEEXT): $(ThreadLocal_test_OBJECTS) $(ThreadLocal_test_DEPENDENCIES) 
 	@rm -f ThreadLocal_test$(EXEEXT)
 	$(CXXLINK) $(ThreadLocal_test_OBJECTS) $(ThreadLocal_test_LDADD) $(LIBS)
 Thread_test$(EXEEXT): $(Thread_test_OBJECTS) $(Thread_test_DEPENDENCIES) 
 	@rm -f Thread_test$(EXEEXT)
-	$(Thread_test_LINK) $(Thread_test_OBJECTS) $(Thread_test_LDADD) $(LIBS)
+	$(CXXLINK) $(Thread_test_OBJECTS) $(Thread_test_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -330,11 +361,36 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/Atomic_test-Atomic_test.Po
-include ./$(DEPDIR)/BlockingQueue_test-BlockingQueue_test.Po
-include ./$(DEPDIR)/CountDownLatch_test-CountDownLatch_test.Po
+include ./$(DEPDIR)/Atomic_test.Po
+include ./$(DEPDIR)/BlockingQueueWorker_test.Po
+include ./$(DEPDIR)/BlockingQueue_test.Po
+include ./$(DEPDIR)/CountDownLatch_test.Po
+include ./$(DEPDIR)/Mutex_test-Mutex_test.Po
+include ./$(DEPDIR)/ThreadGroup_test.Po
+include ./$(DEPDIR)/ThreadId_test.Po
 include ./$(DEPDIR)/ThreadLocal_test.Po
-include ./$(DEPDIR)/Thread_test-Thread_test.Po
+include ./$(DEPDIR)/Thread_test.Po
+
+.c.o:
+	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+#	source='$<' object='$@' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(COMPILE) -c $<
+
+.c.obj:
+	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+#	source='$<' object='$@' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+
+.c.lo:
+	$(LTCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+#	source='$<' object='$@' libtool=yes \
+#	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) \
+#	$(LTCOMPILE) -c -o $@ $<
 
 .cpp.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -357,61 +413,19 @@ include ./$(DEPDIR)/Thread_test-Thread_test.Po
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(LTCXXCOMPILE) -c -o $@ $<
 
-Atomic_test-Atomic_test.o: Atomic_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Atomic_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Atomic_test-Atomic_test.o -MD -MP -MF $(DEPDIR)/Atomic_test-Atomic_test.Tpo -c -o Atomic_test-Atomic_test.o `test -f 'Atomic_test.cpp' || echo '$(srcdir)/'`Atomic_test.cpp
-	$(am__mv) $(DEPDIR)/Atomic_test-Atomic_test.Tpo $(DEPDIR)/Atomic_test-Atomic_test.Po
-#	source='Atomic_test.cpp' object='Atomic_test-Atomic_test.o' libtool=no \
+Mutex_test-Mutex_test.o: Mutex_test.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Mutex_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Mutex_test-Mutex_test.o -MD -MP -MF $(DEPDIR)/Mutex_test-Mutex_test.Tpo -c -o Mutex_test-Mutex_test.o `test -f 'Mutex_test.cpp' || echo '$(srcdir)/'`Mutex_test.cpp
+	$(am__mv) $(DEPDIR)/Mutex_test-Mutex_test.Tpo $(DEPDIR)/Mutex_test-Mutex_test.Po
+#	source='Mutex_test.cpp' object='Mutex_test-Mutex_test.o' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Atomic_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Atomic_test-Atomic_test.o `test -f 'Atomic_test.cpp' || echo '$(srcdir)/'`Atomic_test.cpp
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Mutex_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Mutex_test-Mutex_test.o `test -f 'Mutex_test.cpp' || echo '$(srcdir)/'`Mutex_test.cpp
 
-Atomic_test-Atomic_test.obj: Atomic_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Atomic_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Atomic_test-Atomic_test.obj -MD -MP -MF $(DEPDIR)/Atomic_test-Atomic_test.Tpo -c -o Atomic_test-Atomic_test.obj `if test -f 'Atomic_test.cpp'; then $(CYGPATH_W) 'Atomic_test.cpp'; else $(CYGPATH_W) '$(srcdir)/Atomic_test.cpp'; fi`
-	$(am__mv) $(DEPDIR)/Atomic_test-Atomic_test.Tpo $(DEPDIR)/Atomic_test-Atomic_test.Po
-#	source='Atomic_test.cpp' object='Atomic_test-Atomic_test.obj' libtool=no \
+Mutex_test-Mutex_test.obj: Mutex_test.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Mutex_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Mutex_test-Mutex_test.obj -MD -MP -MF $(DEPDIR)/Mutex_test-Mutex_test.Tpo -c -o Mutex_test-Mutex_test.obj `if test -f 'Mutex_test.cpp'; then $(CYGPATH_W) 'Mutex_test.cpp'; else $(CYGPATH_W) '$(srcdir)/Mutex_test.cpp'; fi`
+	$(am__mv) $(DEPDIR)/Mutex_test-Mutex_test.Tpo $(DEPDIR)/Mutex_test-Mutex_test.Po
+#	source='Mutex_test.cpp' object='Mutex_test-Mutex_test.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Atomic_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Atomic_test-Atomic_test.obj `if test -f 'Atomic_test.cpp'; then $(CYGPATH_W) 'Atomic_test.cpp'; else $(CYGPATH_W) '$(srcdir)/Atomic_test.cpp'; fi`
-
-BlockingQueue_test-BlockingQueue_test.o: BlockingQueue_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(BlockingQueue_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT BlockingQueue_test-BlockingQueue_test.o -MD -MP -MF $(DEPDIR)/BlockingQueue_test-BlockingQueue_test.Tpo -c -o BlockingQueue_test-BlockingQueue_test.o `test -f 'BlockingQueue_test.cpp' || echo '$(srcdir)/'`BlockingQueue_test.cpp
-	$(am__mv) $(DEPDIR)/BlockingQueue_test-BlockingQueue_test.Tpo $(DEPDIR)/BlockingQueue_test-BlockingQueue_test.Po
-#	source='BlockingQueue_test.cpp' object='BlockingQueue_test-BlockingQueue_test.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(BlockingQueue_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o BlockingQueue_test-BlockingQueue_test.o `test -f 'BlockingQueue_test.cpp' || echo '$(srcdir)/'`BlockingQueue_test.cpp
-
-BlockingQueue_test-BlockingQueue_test.obj: BlockingQueue_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(BlockingQueue_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT BlockingQueue_test-BlockingQueue_test.obj -MD -MP -MF $(DEPDIR)/BlockingQueue_test-BlockingQueue_test.Tpo -c -o BlockingQueue_test-BlockingQueue_test.obj `if test -f 'BlockingQueue_test.cpp'; then $(CYGPATH_W) 'BlockingQueue_test.cpp'; else $(CYGPATH_W) '$(srcdir)/BlockingQueue_test.cpp'; fi`
-	$(am__mv) $(DEPDIR)/BlockingQueue_test-BlockingQueue_test.Tpo $(DEPDIR)/BlockingQueue_test-BlockingQueue_test.Po
-#	source='BlockingQueue_test.cpp' object='BlockingQueue_test-BlockingQueue_test.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(BlockingQueue_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o BlockingQueue_test-BlockingQueue_test.obj `if test -f 'BlockingQueue_test.cpp'; then $(CYGPATH_W) 'BlockingQueue_test.cpp'; else $(CYGPATH_W) '$(srcdir)/BlockingQueue_test.cpp'; fi`
-
-CountDownLatch_test-CountDownLatch_test.o: CountDownLatch_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CountDownLatch_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CountDownLatch_test-CountDownLatch_test.o -MD -MP -MF $(DEPDIR)/CountDownLatch_test-CountDownLatch_test.Tpo -c -o CountDownLatch_test-CountDownLatch_test.o `test -f 'CountDownLatch_test.cpp' || echo '$(srcdir)/'`CountDownLatch_test.cpp
-	$(am__mv) $(DEPDIR)/CountDownLatch_test-CountDownLatch_test.Tpo $(DEPDIR)/CountDownLatch_test-CountDownLatch_test.Po
-#	source='CountDownLatch_test.cpp' object='CountDownLatch_test-CountDownLatch_test.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CountDownLatch_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CountDownLatch_test-CountDownLatch_test.o `test -f 'CountDownLatch_test.cpp' || echo '$(srcdir)/'`CountDownLatch_test.cpp
-
-CountDownLatch_test-CountDownLatch_test.obj: CountDownLatch_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CountDownLatch_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT CountDownLatch_test-CountDownLatch_test.obj -MD -MP -MF $(DEPDIR)/CountDownLatch_test-CountDownLatch_test.Tpo -c -o CountDownLatch_test-CountDownLatch_test.obj `if test -f 'CountDownLatch_test.cpp'; then $(CYGPATH_W) 'CountDownLatch_test.cpp'; else $(CYGPATH_W) '$(srcdir)/CountDownLatch_test.cpp'; fi`
-	$(am__mv) $(DEPDIR)/CountDownLatch_test-CountDownLatch_test.Tpo $(DEPDIR)/CountDownLatch_test-CountDownLatch_test.Po
-#	source='CountDownLatch_test.cpp' object='CountDownLatch_test-CountDownLatch_test.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CountDownLatch_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o CountDownLatch_test-CountDownLatch_test.obj `if test -f 'CountDownLatch_test.cpp'; then $(CYGPATH_W) 'CountDownLatch_test.cpp'; else $(CYGPATH_W) '$(srcdir)/CountDownLatch_test.cpp'; fi`
-
-Thread_test-Thread_test.o: Thread_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Thread_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Thread_test-Thread_test.o -MD -MP -MF $(DEPDIR)/Thread_test-Thread_test.Tpo -c -o Thread_test-Thread_test.o `test -f 'Thread_test.cpp' || echo '$(srcdir)/'`Thread_test.cpp
-	$(am__mv) $(DEPDIR)/Thread_test-Thread_test.Tpo $(DEPDIR)/Thread_test-Thread_test.Po
-#	source='Thread_test.cpp' object='Thread_test-Thread_test.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Thread_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Thread_test-Thread_test.o `test -f 'Thread_test.cpp' || echo '$(srcdir)/'`Thread_test.cpp
-
-Thread_test-Thread_test.obj: Thread_test.cpp
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Thread_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Thread_test-Thread_test.obj -MD -MP -MF $(DEPDIR)/Thread_test-Thread_test.Tpo -c -o Thread_test-Thread_test.obj `if test -f 'Thread_test.cpp'; then $(CYGPATH_W) 'Thread_test.cpp'; else $(CYGPATH_W) '$(srcdir)/Thread_test.cpp'; fi`
-	$(am__mv) $(DEPDIR)/Thread_test-Thread_test.Tpo $(DEPDIR)/Thread_test-Thread_test.Po
-#	source='Thread_test.cpp' object='Thread_test-Thread_test.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Thread_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Thread_test-Thread_test.obj `if test -f 'Thread_test.cpp'; then $(CYGPATH_W) 'Thread_test.cpp'; else $(CYGPATH_W) '$(srcdir)/Thread_test.cpp'; fi`
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(Mutex_test_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Mutex_test-Mutex_test.obj `if test -f 'Mutex_test.cpp'; then $(CYGPATH_W) 'Mutex_test.cpp'; else $(CYGPATH_W) '$(srcdir)/Mutex_test.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

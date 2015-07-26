@@ -97,7 +97,7 @@ bool DateTimeUtil::stringToDataTime(const char *strTime, struct tm *datetime)
     datetime->tm_mday = atoi(pos);
     if(datetime->tm_mday < 1)
         return false;
-    // 闰年二月29天
+    // 闂板勾浜屾湀29澶?
     if((DateTimeUtil::isLeapYear(datetime->tm_year)) && (2 == datetime->tm_mon) && (datetime->tm_mday > 29))
         return false;
     else if(datetime->tm_mday > 28)
@@ -122,12 +122,12 @@ bool DateTimeUtil::stringToDataTime(const char *strTime, struct tm *datetime)
     datetime->tm_wday = 0;
     datetime->tm_yday = 0;
 
-    // 计算改天是一年中的第几天
+    // 璁＄畻鏀瑰ぉ鏄竴骞翠腑鐨勭鍑犲ぉ
     for(int i = 1; i <= datetime->tm_mon; ++i)
     {
         if(i == datetime->tm_mon)
         {
-            // 刚好是这个月
+            // 鍒氬ソ鏄繖涓湀
             datetime->tm_yday += datetime->tm_mday;
         }
         else
@@ -151,7 +151,7 @@ bool DateTimeUtil::stringToDataTime(const char *strTime, struct tm *datetime)
         }
     }
 
-    // 月基数
+    // 鏈堝熀鏁?
     static int leap_month_base[] = { -1, 0, 3, 4, 0, 2, 5, 0, 3, 6, 1, 4, 6 };
     static int common_month_base[] = { -1, 0, 3, 3, 6, 1, 4, 0, 3, 5, 0, 3, 5 };
 
@@ -168,7 +168,7 @@ bool DateTimeUtil::stringToDataTime(const char *strTime, struct tm *datetime)
         month_base = common_month_base;
     }
 
-    // 计算星期几
+    // 璁＄畻鏄熸湡鍑?
     datetime->tm_wday = (datetime->tm_year
                          + datetime->tm_year / 4
                          + datetime->tm_year / 400
@@ -177,7 +177,7 @@ bool DateTimeUtil::stringToDataTime(const char *strTime, struct tm *datetime)
                          + month_base[datetime->tm_mon]
                          + datetime->tm_mday) / 7;
 
-    // 年月处理
+    // 骞存湀澶勭悊
     datetime->tm_mon -= 1;
     datetime->tm_year -= 1900;
 

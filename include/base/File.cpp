@@ -5,26 +5,26 @@
 NAMESPACE_ZL_START
 
 File::File()
-    :m_fil(NULL)
-    ,m_b_close(true)
-    ,m_rptr(0)
-    ,m_wptr(0)
+    : m_fil(NULL)
+    , m_b_close(true)
+    , m_rptr(0)
+    , m_wptr(0)
 {
 }
 
 File::File(FILE *fil)
-    :m_fil(fil)
-    ,m_b_close(false)
-    ,m_rptr(0)
-    ,m_wptr(0)
+    : m_fil(fil)
+    , m_b_close(false)
+    , m_rptr(0)
+    , m_wptr(0)
 {
 }
 
 File::File(const std::string& path, const std::string& mode)
-    :m_fil(NULL)
-    ,m_b_close(true)
-    ,m_rptr(0)
-    ,m_wptr(0)
+    : m_fil(NULL)
+    , m_b_close(true)
+    , m_rptr(0)
+    , m_wptr(0)
 {
     fopen(path, mode);
 }
@@ -233,11 +233,7 @@ size_t MemFile::fread(char *ptr, size_t size, size_t nmemb) const
         sz = available;
         m_b_read_caused_eof = true;
     }
-    if (!sz)
-    {
-        return 0;
-    }
-    if (p + sz < BLOCKSIZE)
+    else if (p + sz < BLOCKSIZE)
     {
         memcpy(ptr, m_current_read -> data + p, sz);
         m_read_ptr += sz;
@@ -250,10 +246,10 @@ size_t MemFile::fread(char *ptr, size_t size, size_t nmemb) const
         m_read_ptr += sz1;
         while (sz2 > BLOCKSIZE)
         {
-            if (m_current_read -> next)
+            if (m_current_read->next)
             {
-                m_current_read = m_current_read -> next;
-                memcpy(ptr + sz1, m_current_read -> data, BLOCKSIZE);
+                m_current_read = m_current_read->next;
+                memcpy(ptr + sz1, m_current_read->data, BLOCKSIZE);
                 m_read_ptr += BLOCKSIZE;
                 sz1 += BLOCKSIZE;
                 sz2 -= BLOCKSIZE;
@@ -263,10 +259,10 @@ size_t MemFile::fread(char *ptr, size_t size, size_t nmemb) const
                 return sz1;
             }
         }
-        if (m_current_read -> next)
+        if (m_current_read->next)
         {
-            m_current_read = m_current_read -> next;
-            memcpy(ptr + sz1, m_current_read -> data, sz2);
+            m_current_read = m_current_read->next;
+            memcpy(ptr + sz1, m_current_read->data, sz2);
             m_read_ptr += sz2;
         }
         else

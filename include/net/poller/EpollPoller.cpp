@@ -3,18 +3,20 @@
 #include <sys/epoll.h>
 #include "net/Socket.h"
 #include "net/Channel.h"
-#include "base/ZLog.h"
+#include "base/Logger.h"
 NAMESPACE_ZL_NET_START
 
-ZL_STATIC_ASSERT(EPOLLIN == POLLIN);
-ZL_STATIC_ASSERT(EPOLLPRI == POLLPRI);
-ZL_STATIC_ASSERT(EPOLLOUT == POLLOUT);
-ZL_STATIC_ASSERT(EPOLLRDHUP == POLLRDHUP);
-ZL_STATIC_ASSERT(EPOLLERR == POLLERR);
-ZL_STATIC_ASSERT(EPOLLHUP == POLLHUP);
+ZL_STATIC_ASSERT(EPOLLIN == POLLIN, "must equal");
+ZL_STATIC_ASSERT(EPOLLPRI == POLLPRI, "must equal");
+ZL_STATIC_ASSERT(EPOLLOUT == POLLOUT, "must equal");
+ZL_STATIC_ASSERT(EPOLLRDHUP == POLLRDHUP, "must equal");
+ZL_STATIC_ASSERT(EPOLLERR == POLLERR, "must equal");
+ZL_STATIC_ASSERT(EPOLLHUP == POLLHUP, "must equal");
 
 EpollPoller::EpollPoller(EventLoop *loop, bool enableET/* = false*/)
-    : Poller(loop), enableET_(enableET), events_(64)
+    : Poller(loop)
+    , enableET_(enableET)
+    , events_(64)
 {
     epollfd_ = epoll_create(1024);
     assert(epollfd_ > 0 && " epoll create failure!");
@@ -53,7 +55,7 @@ bool EpollPoller::updateChannel(Channel *channel)
 
 bool EpollPoller::removeChannel(Channel *channel)
 {
-    if(!hasChannel(channel))   // 注意 updateChannel 函数中也有一处removeChannel的逻辑
+    if(!hasChannel(channel))   // 娉ㄦ剰 updateChannel 鍑芥暟涓篃鏈変竴澶剅emoveChannel鐨勯�昏緫
         return true;
 
     ZL_SOCKET fd = channel->fd();
@@ -76,11 +78,11 @@ bool EpollPoller::update(Channel *channel, int operation)
     int events = channel->events();
     if (events & FDEVENT_IN)  ev.events |= EPOLLIN;
 	if (events & FDEVENT_OUT) ev.events |= EPOLLOUT;
-	ev.events |= EPOLLERR | EPOLLHUP;
+    ev.events |= EPOLLERR | EPOLLHUP;
 
     if (enableET_)            ev.events |= EPOLLET;
 
-	ev.data.ptr = channel;
+    ev.data.ptr = channel;
 
     if (::epoll_ctl(epollfd_, operation, fd, &ev) < 0)
     {
@@ -111,7 +113,7 @@ Timestamp EpollPoller::poll_once(int timeoutMs, ChannelList& activeChannels)
     else
     {
         // error happens, log uncommon ones
-		// TODO : should return -1 if EINTR, else return 0
+        // TODO : should return -1 if EINTR, else return 0
         if (savedErrno != SOCK_ERR_EINTR)
         {
             errno = savedErrno;
@@ -131,12 +133,12 @@ void EpollPoller::fireActiveChannels(int numEvents, ChannelList& activeChannels)
         assert(hasChannel(channel) && "the channel must be already exist");
         
         //channel->set_revents(events_[i].events);
-		int revents = FDEVENT_NONE;
-		if (events_[i].events & EPOLLIN)    revents |= FDEVENT_IN;
-		if (events_[i].events & EPOLLPRI)   revents |= FDEVENT_PRI;
-		if (events_[i].events & EPOLLOUT)   revents |= FDEVENT_OUT;
-		if (events_[i].events & EPOLLERR)   revents |= FDEVENT_ERR;
-		if (events_[i].events & EPOLLHUP)   revents |= FDEVENT_HUP;
+        int revents = FDEVENT_NONE;
+        if (events_[i].events & EPOLLIN)    revents |= FDEVENT_IN;
+        if (events_[i].events & EPOLLPRI)   revents |= FDEVENT_PRI;
+        if (events_[i].events & EPOLLOUT)   revents |= FDEVENT_OUT;
+        if (events_[i].events & EPOLLERR)   revents |= FDEVENT_ERR;
+        if (events_[i].events & EPOLLHUP)   revents |= FDEVENT_HUP;
         channel->set_revents(revents);
 
         activeChannels.push_back(channel);

@@ -1,11 +1,8 @@
-﻿// ***********************************************************************
+// ***********************************************************************
 // Filename         : Thread.h
 // Author           : LIZHENG
 // Created          : 2014-09-04
-// Description      : Refer : http://tinythreadpp.bitsnbites.eu/
-//
-// Last Modified By : LIZHENG
-// Last Modified On : 2014-09-04
+// Description      : 
 //
 // Copyright (c) lizhenghn@gmail.com. All rights reserved.
 // ***********************************************************************
@@ -14,30 +11,42 @@
 #include "Define.h"
 #include "base/NonCopy.h"
 #include "thread/Mutex.h"
+#include <string>
 NAMESPACE_ZL_THREAD_START
 
 #if defined(OS_WINDOWS)
 typedef HANDLE native_thread_handle;
 #else
+#include <unistd.h>
+#include <errno.h>
 typedef pthread_t native_thread_handle;
+#endif
+
+#if !defined(_TTHREAD_CPP11_) && !defined(thread_local)
+#if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__SUNPRO_CC) || defined(__IBMCPP__)
+#define thread_local __thread
+#else
+#define thread_local __declspec(thread)
+#endif
 #endif
 
 class Thread : zl::NonCopy
 {
 public:
-    typedef std::function<void ()> ThreadFunc;
-
     class id;
+    typedef std::function<void ()> ThreadFunc;
 
 public:
     explicit Thread(const ThreadFunc& func, const std::string& name = "unknown");
     ~Thread();
 
 public:
-    void start();
     void join();
-    bool joinable() const;
     void detach();
+
+    bool joinable() const;
+    
+    id get_id() const;  /// Return the thread ID of a thread object.
 
     native_thread_handle threadHandle() const
     {
@@ -49,30 +58,26 @@ public:
         return threadName_;
     }
 
-    /// Return the thread ID of a thread object.
-    id get_id() const;
-
     static unsigned int hardware_concurrency();
 
 private:
     friend struct ThreadImplDataInfo;
     native_thread_handle   threadId_;
-    ThreadFunc             threadFunc_;
+    //ThreadFunc             threadFunc_;
     std::string            threadName_;
-    mutable Mutex          threadMutex_;     ///< Serializer for access to the thread private data.
-    bool                   notAThread;       ///< True if this object is not a thread of execution.
+    bool                   notAThread_;     ///< True iff this object is not a thread of execution
+	bool                   joined_;         ///< True iff this thread called join 
 #if defined(OS_WINDOWS)
     unsigned int           win32ThreadID_;  ///< Unique thread ID (filled out by _beginthreadex).
 #endif
 };
 
-/// Thread ID.
+/// Thread ID. Refer : http://tinythreadpp.bitsnbites.eu/
 /// The thread ID is a unique identifier for each thread.
 /// @see thread::get_id()
 class Thread::id
 {
 public:
-    /// Default constructor.
     /// The default constructed ID is that of thread without a thread of execution.
     id() : mId(0) {};
 
@@ -122,7 +127,7 @@ public:
         return os;
     }
 
-    unsigned long int tid() const
+    unsigned long int value() const
     {
         return mId;
     }
@@ -152,7 +157,8 @@ namespace chrono
 {
     /// Duration template class. This class provides enough functionality to
     /// implement @c this_thread::sleep_for().
-    template <class _Rep, class _Period = ratio<1> > class duration
+    template < class _Rep, class _Period = ratio<1> >
+    class duration
     {
     private:
         _Rep rep_;
@@ -187,16 +193,28 @@ namespace this_thread
     /// Return the thread ID of the calling thread.
     Thread::id get_id();
 
+    extern thread_local int g_currentTid;
+    void cacheThreadTid();
+
+    /// return thread id of kernel
+    inline int tid()
+    {
+        if (g_currentTid == 0)
+            cacheThreadTid();
+
+        return g_currentTid;
+    }
+
     /// Yield execution to another thread.
     /// Offers the operating system the opportunity to schedule another thread
     /// that is ready to run on the current processor.
     inline void yield()
     {
-#if defined(OS_WINDOWS)
+    #if defined(OS_WINDOWS)
         Sleep(0);
-#else
+    #else
         sched_yield();
-#endif
+    #endif
     }
 
     /// Blocks the calling thread for a period of time.
@@ -208,13 +226,24 @@ namespace this_thread
     /// @endcode
     /// @note Supported duration types are: nanoseconds, microseconds,
     /// milliseconds, seconds, minutes and hours.
-    template <class _Rep, class _Period> void sleep_for(const chrono::duration<_Rep, _Period>& aTime)
+    template <class _Rep, class _Period>
+    void sleep_for(const chrono::duration<_Rep, _Period>& aTime)
     {
-#if defined(OS_WINDOWS)
+    #if defined(OS_WINDOWS)
         Sleep(int(double(aTime.count()) * (1000.0 * _Period::_as_double()) + 0.5));
-#else
-        usleep(int(double(aTime.count()) * (1000000.0 * _Period::_as_double()) + 0.5));
-#endif
+    #else
+        while(usleep(int(double(aTime.count()) * (1000000.0 * _Period::_as_double()) + 0.5)) != 0 && errno == EINTR);
+    #endif
+    }
+
+    inline void sleep(uint32_t millsecond)
+    {
+    //#if defined(OS_WINDOWS)
+    //    Sleep(millsecond);
+    //#else
+    //    usleep(millsecond / 1000);
+    //#endif
+        sleep_for(chrono::milliseconds(millsecond));
     }
 }
 
