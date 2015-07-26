@@ -78,6 +78,7 @@ public:
     */
     bool setUserAgent(const char* userAgent);
 
+public:
     /**
     * @brief HTTP GET请求
     * @param url         输入参数,请求的url地址
@@ -85,6 +86,14 @@ public:
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
     int get(const char* url, int timeoutMs = 4000);
+
+    /**
+    * @brief HTTP GET请求
+    * @param url         输入参数,请求的url地址
+    * @param filepath    输入参数,将请求保存到本地的路径
+    * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
+    */
+    int get(const char* url, const char* filepath, int timeoutMs = 4000);
 
     /**
     * @brief HTTP POST请求

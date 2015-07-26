@@ -7,45 +7,40 @@ using namespace std;
 int main()
 {
     {
-        std::string s = "ÄãºÃ";
-        s = zl::base::ConvertUtf8ToGBK(s);
-        std::string url("http://192.168.14.208:80/tts.php?data=");
-        url += s;
-        url += "&speed=5&decode=6";
-        cout << url << "\n";
-        HttpRequest req;
-        req.Get(url.c_str());
-        cout << req.GetHeader() << "\n\n";
-        cout << req.GetBody() << "\n\n";
+        HttpRequest req(true, true);
+        req.setUserAgent("MyTestClient");
+        req.get("http://www.baidu.com", "1.html");
+        cout << req.getHeader() << "\n";
+        cout << req.getBody() << "\n";
         system("pause");
     }
     {
         HttpRequest req(false, false);
-        req.Get("http://www.baidu.com");
-        assert(req.GetHeader().empty());
-        assert(req.GetBody().empty());
+        req.get("http://www.baidu.com");
+        assert(req.getHeader().empty());
+        assert(req.getBody().empty());
         system("pause");
     }
     {
         HttpRequest req(true, false);
-        req.Get("http://www.baidu.com");
-        cout << req.GetHeader() << "\n";
-        assert(req.GetBody().empty());
+        req.get("http://www.baidu.com");
+        cout << req.getHeader() << "\n";
+        assert(req.getBody().empty());
         system("pause");
     }
     {
         HttpRequest req(false, true);
-        req.Get("http://www.baidu.com");
-        assert(req.GetHeader().empty());
-        cout << req.GetBody() << "\n";
+        req.get("http://www.baidu.com");
+        assert(req.getHeader().empty());
+        cout << req.getBody() << "\n";
         system("pause");
     }
     {
         HttpRequest req(true, true);
-        req.AddHeader("User-Agent", "Mozilla/4.04[en](Win95;I;Nav)");
-        req.Get("https://www.baidu.com");
-        cout << req.GetHeader() << "\n";
-        cout << req.GetBody() << "\n";
+        req.addHeader("User-Agent", "Mozilla/4.04[en](Win95;I;Nav)");
+        req.get("https://www.baidu.com");
+        cout << req.getHeader() << "\n";
+        cout << req.getBody() << "\n";
         system("pause");
     }
 

@@ -133,6 +133,13 @@ namespace detail
         return result;
     }
 
+    static size_t writeBodyToFileCallback(char* buffer, size_t size, size_t memb, void* stream)
+    {
+        FILE *file = static_cast<FILE *>(stream);
+        size_t result = fwrite(buffer, size, memb,file);
+        return result;
+    }
+
     static size_t readDataCallback(char* buffer, size_t size, size_t memb, void* stream)
     {
         HttpRequest::UploadObject *obj = static_cast<HttpRequest::UploadObject*>(stream);
@@ -242,6 +249,42 @@ int HttpRequest::get(const char* url, int timeoutMs/* = 4000*/)
     {
         return -1;
     }
+    return ret;
+}
+
+int HttpRequest::get(const char* url, const char* filepath, int timeoutMs/* = 4000*/)
+{
+    assert(url && filepath);
+    FILE *file = fopen(filepath, "wb");
+    if(!file) return -1;
+
+    int ret = CURLE_OK;
+    try
+    {
+        setHttpsUrl(curl_, url);
+
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_URL, url));
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, NULL));
+        //CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HTTPHEADER, headers_));
+
+        // 设置消息头的读取
+        //CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERFUNCTION, writeHeaderCallback));
+        //CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERDATA, (void *)&reponse_));
+
+        // 设置消息体的读取
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, writeBodyToFileCallback));
+        CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEDATA, file));
+
+        setCurlTimeout(curl_, timeoutMs);
+
+        ret = performCurl(curl_);
+    }
+    catch (...)
+    {
+        fclose(file);
+        return -1;
+    }
+    fclose(file);
     return ret;
 }
 
