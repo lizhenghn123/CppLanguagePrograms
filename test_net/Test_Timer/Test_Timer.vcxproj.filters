@@ -36,7 +36,7 @@
     <ClInclude Include="..\..\include\base\FileUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\base\ZLog.h">
+    <ClInclude Include="..\..\include\base\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,7 +62,7 @@
     <ClCompile Include="..\..\include\base\FileUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\base\ZLog.cpp">
+    <ClCompile Include="..\..\include\base\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,14 +4,14 @@
     <ClCompile Include="Test_CountDownLatch.cpp" />
     <ClCompile Include="..\..\include\thread\Thread.cpp" />
     <ClCompile Include="..\..\include\base\Timestamp.cpp" />
-    <ClCompile Include="..\..\include\base\ZLog.cpp" />
     <ClCompile Include="..\..\include\base\FileUtil.cpp" />
+    <ClCompile Include="..\..\include\base\Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\thread\CountDownLatch.h" />
     <ClInclude Include="..\..\include\thread\Thread.h" />
     <ClInclude Include="..\..\include\base\Timestamp.h" />
-    <ClInclude Include="..\..\include\base\ZLog.h" />
     <ClInclude Include="..\..\include\base\FileUtil.h" />
+    <ClInclude Include="..\..\include\base\Logger.h" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iterator>
+#include <stack>
 #include "thread/Thread.h"
 #include "thread/BlockingQueue.h"
 #include "thread/BoundedBlockingQueue.h"
