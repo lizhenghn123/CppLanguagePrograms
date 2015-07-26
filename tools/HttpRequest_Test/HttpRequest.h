@@ -3,9 +3,6 @@
 // Created          : 2013-05-12
 // Description      : 对libcurl的包装，对外提供GET、POST接口
 //
-// Last Modified By : LIZHENG
-// Last Modified On : 2015-06-04
-//
 // Copyright (c) lizheng@thinkit.cn. All rights reserved.
 // ***********************************************************************
 #ifndef ZL_HTTPREQUEST_H
@@ -73,7 +70,13 @@ public:
     * @param key         输入参数,key
     * @param value       输入参数,value
     */
-    bool addHeader(const char *key, const char *value);
+    bool addHeader(const char* key, const char* value);
+
+    /**
+    * @brief 设置http请求时的user-agent
+    * @param userAgent   输入参数,User-Agent
+    */
+    bool setUserAgent(const char* userAgent);
 
     /**
     * @brief HTTP GET请求
@@ -81,7 +84,7 @@ public:
     * @param timeoutMs   输入参数，本次请求的超时时间,单位毫秒，下同
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
-    int httpGet(const char *url, int timeoutMs = 4000);
+    int get(const char* url, int timeoutMs = 4000);
 
     /**
     * @brief HTTP POST请求
@@ -90,7 +93,7 @@ public:
     * @param dataSize    输入参数,需要post的数据大小
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
-    int httpPost(const char *url, const char *postData, int dataSize, int timeoutMs = 4000);
+    int post(const char* url, const char* postData, int dataSize, int timeoutMs = 4000);
 
     /**
     * @brief HTTP POST请求
@@ -98,21 +101,21 @@ public:
     * @param postData    输入参数，需要post的数据
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
-    int httpPost(const char *url, const std::string& postData, int timeoutMs = 4000);
+    int post(const char* url, const std::string& postData, int timeoutMs = 4000);
 
     /**
     * @brief HTTP DELETE请求
     * @param url         输入参数,请求的url地址
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
-    int httpDelete(const char *url, int timeoutMs = 4000);
+    int del(const char* url, int timeoutMs = 4000);
 
     /**
     * @brief HTTP PUT请求
     * @param url         输入参数,请求的url地址
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
-    int httpPut(const char *url, const char *putData, size_t dataSize);
+    int put(const char* url, const char* putData, size_t dataSize);
 
     /**
     * @brief HTTPS GET请求,证书版本
@@ -120,7 +123,7 @@ public:
     * @param pCaPath     输入参数,为CA证书的路径.如果输入为NULL,则不验证服务器端证书的有效性.
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
-    int httpGets(const char *url, const char *pCaPath = NULL, int timeoutMs = 4000);
+    int gets(const char* url, const char* pCaPath = NULL, int timeoutMs = 4000);
 
     /**
     * @brief HTTPS POST请求,证书版本
@@ -129,7 +132,7 @@ public:
     * @param pCaPath     输入参数,为CA证书的路径.如果输入为NULL,则不验证服务器端证书的有效性.
     * @return            返回标识,只有为CURLE_OK(0)时表示成功，其他都是失败
     */
-    int httpPosts(const char *url, const std::string& postData, const char *pCaPath = NULL, int timeoutMs = 4000);
+    int posts(const char* url, const std::string& postData, const char* pCaPath = NULL, int timeoutMs = 4000);
 
 private:
     /**
