@@ -11,7 +11,7 @@
 #include "Define.h"
 #ifdef OS_WINDOWS
 #include <time.h>
-#include <WinSock2.h>
+#include <WinSock2.h>  // timeval在该处定义，或者自己定义timeval（因为WinSock2.h有可能冲突）
 //#include <Windows.h>
 //struct timeval
 //{
