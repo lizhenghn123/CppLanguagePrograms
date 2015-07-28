@@ -1,5 +1,5 @@
 #include <iostream>
-#include "base/ZLog.h"
+#include "base/Logger.h"
 #include "base/Timestamp.h"
 using namespace zl::base;
 

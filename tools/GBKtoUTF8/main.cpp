@@ -176,8 +176,8 @@ int main()
     std::cout << "-----------------------------------------\n";
     std::string ghello = "ÄãºÃ";
     std::string gthank = "Ð»Ð»";
-    std::cout << ghello << "\t" << ConvertGBKToUtf8(ghello) << "\t" << IsTextUTF8(ghello.c_str(), ghello.size()) << "\t" << IsTextUTF8(ghello) << "\n";
-    std::cout << gthank << "\t" << ConvertGBKToUtf8(gthank) << "\t" << IsTextUTF8(gthank.c_str(), gthank.size()) << "\t" << IsTextUTF8(gthank) << "\n";
+    std::cout << ghello << "\t" << convertGBKToUtf8(ghello) << "\t" << isTextUTF8(ghello.c_str(), ghello.size()) << "\t" << isTextUTF8(ghello) << "\n";
+    std::cout << gthank << "\t" << convertGBKToUtf8(gthank) << "\t" << isTextUTF8(gthank.c_str(), gthank.size()) << "\t" << isTextUTF8(gthank) << "\n";
     std::vector<std::string> uVecStr;
     std::vector<std::string> gVecStr;
     GetText(true, uVecStr);
@@ -185,12 +185,12 @@ int main()
     std::cout << "--------------utf8--->gbk----------------\n";
     for (std::vector<std::string>::iterator itr = uVecStr.begin(); itr != uVecStr.end(); ++itr)
     {
-        std::cout << *itr << "\t" << ConvertUtf8ToGBK(*itr) << "\t" << IsTextUTF8((*itr).c_str(), (*itr).size()) << "\t" << IsTextUTF8(*itr) << "\n";
+        std::cout << *itr << "\t" << convertUtf8ToGBK(*itr) << "\t" << isTextUTF8((*itr).c_str(), (*itr).size()) << "\t" << isTextUTF8(*itr) << "\n";
     }
     std::cout << "--------------gbk--->utf8----------------\n";
     for (std::vector<std::string>::iterator itr = gVecStr.begin(); itr != gVecStr.end(); ++itr)
     {
-        std::cout << *itr << "\t" << ConvertGBKToUtf8(*itr) << "\t" << IsTextUTF8((*itr).c_str(), (*itr).size()) << "\t" << IsTextUTF8(*itr) << "\n";
+        std::cout << *itr << "\t" << convertGBKToUtf8(*itr) << "\t" << isTextUTF8((*itr).c_str(), (*itr).size()) << "\t" << isTextUTF8(*itr) << "\n";
     }
     std::cout << "---------------------------------\n";
     system("pause");

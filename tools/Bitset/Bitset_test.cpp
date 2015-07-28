@@ -1,7 +1,7 @@
 #include <iostream>
 #include "base/Bitset.h"
 using namespace std;
-
+using namespace zl;
 
 template< typename T>
 void test_t()
