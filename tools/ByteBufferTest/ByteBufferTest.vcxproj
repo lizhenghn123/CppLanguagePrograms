@@ -76,12 +76,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\net\ByteBuffer.h" />
-    <ClInclude Include="..\..\include\net\NetBuffer.h" />
     <ClInclude Include="..\..\include\net\NetUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\net\ByteBuffer.cpp" />
-    <ClCompile Include="..\..\include\net\NetBuffer.cpp" />
     <ClCompile Include="..\..\include\net\NetUtil.cpp" />
     <ClCompile Include="ByteBufferTest.cpp" />
   </ItemGroup>

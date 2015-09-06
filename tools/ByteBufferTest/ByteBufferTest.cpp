@@ -1,267 +1,121 @@
 #include <iostream>
 #include "net/ByteBuffer.h"
-#include "net/NetBuffer.h"
 using namespace std;
 using zl::net::ByteBuffer;
-using zl::net::NetBuffer;
 
 ///see https://github.com/chenshuo/muduo/blob/master/muduo/net/tests/Buffer_unittest.cc
-
 namespace test_bytebuffer
-{
-
-void testBufferAppendRetrieve()
-{
-    ByteBuffer buf;
-    assert(buf.readableBytes() == 0);
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize);
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
-
-    const string str(200, 'x');
-    buf.append(str);
-    assert(buf.readableBytes() == str.size());
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize - str.size());
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
-
-    const string str2 =  buf.retrieveAsString(50);
-    assert(str2.size() == 50);
-    assert(buf.readableBytes() == str.size() - str2.size());
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize - str.size());
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend + str2.size());
-
-    buf.append(str);
-    assert(buf.readableBytes() == 2*str.size() - str2.size());
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize - 2*str.size());
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend + str2.size());
-
-    const string str3 =  buf.retrieveAllAsString();
-    assert(str3.size() == 350);
-    assert(buf.readableBytes() == 0);
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize);
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
-}
-
-void testBufferGrow()
-{
-    ByteBuffer buf;
-    buf.append(string(400, 'y'));
-    assert(buf.readableBytes() == 400);
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize-400);
-
-    buf.retrieve(50);
-    assert(buf.readableBytes() == 350);
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize-400);
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend+50);
-
-    buf.append(string(1000, 'z'));
-    assert(buf.readableBytes() == 1350);
-    assert(buf.writableBytes() == 0);
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend+50); // FIXME
-
-    buf.retrieveAll();
-    assert(buf.readableBytes() == 0);
-    assert(buf.writableBytes() == 1400); // FIXME
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
-}
-
-void testBufferInsideGrow()
-{
-    ByteBuffer buf;
-    buf.append(string(800, 'y'));
-    assert(buf.readableBytes() == 800);
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize-800);
-
-    buf.retrieve(500);
-    assert(buf.readableBytes()== 300);
-    assert(buf.writableBytes()== ByteBuffer::kInitialSize-800);
-    assert(buf.prependableBytes()== ByteBuffer::kCheapPrepend+500);
-
-    buf.append(string(300, 'z'));
-    assert(buf.readableBytes() == 600);
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize-600);
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
-}
-
-void testBufferShrink()
-{
-    ByteBuffer buf;
-    buf.append(string(2000, 'y'));
-    assert(buf.readableBytes() == 2000);
-    assert(buf.writableBytes() == 0);
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
-
-    buf.retrieve(1500);
-    assert(buf.readableBytes() ==  500);
-    assert(buf.writableBytes() ==  0);
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend+1500);
-
-    buf.shrink(0);
-    assert(buf.readableBytes() == 500);
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize-500);
-    assert(buf.retrieveAllAsString() == string(500, 'y'));
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
-}
-
-void testBufferPrepend()
-{
-    ByteBuffer buf;
-    buf.append(string(200, 'y'));
-    assert(buf.readableBytes() == 200);
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize-200);
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
-
-    int x = 0;
-    buf.prepend(&x, sizeof x);
-    assert(buf.readableBytes() == 204);
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize-200);
-    assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend - 4);
-}
-
-void testBufferReadInt()
-{
-    ByteBuffer buf;
-    buf.append("HTTP");
-
-    assert(buf.readableBytes() == 4);
-    assert(buf.peekInt8() == 'H');
-    int top16 = buf.peekInt16();
-    cout << 'H'+ 'T'*256 << "\n";
-    cout << 'T'*256 + 'H' << "\n";
-    cout << 'H'*256 + 'T' << "\n";
-    assert(top16 == 'H'*256 + 'T');
-    //assert(top16 == 'H'+ 'T'*256 );
-    assert(buf.peekInt32() == top16*65536 + 'T'*256 + 'P');
-    //assert(buf.peekInt32() == 'H'+ 'T'*256 + 'T' * 256 * 256 + 'P' * 256 * 256 * 256);
-
-    assert(buf.readInt8() == 'H');
-    assert(buf.readInt16() == 'T'*256 + 'T');
-    assert(buf.readInt8() == 'P');
-    assert(buf.readableBytes() == 0);
-    assert(buf.writableBytes() == ByteBuffer::kInitialSize);
-
-    buf.appendInt8(-1);
-    buf.appendInt16(-1);
-    buf.appendInt32(-1);
-    assert(buf.readableBytes() == 7);
-    assert(buf.readInt8() == -1);
-    assert(buf.readInt32() == -1);
-    assert(buf.readInt16() == -1);
-}
-
-}
-
-namespace test_netbuffer
 {
     void testBufferAppendRetrieve()
     {
-        NetBuffer buf;
+        ByteBuffer buf;
         assert(buf.readableBytes() == 0);
-        assert(buf.writableBytes() == NetBuffer::kInitialSize);
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize);
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
 
         const string str(200, 'x');
         buf.write(str);
         assert(buf.readableBytes() == str.size());
-        assert(buf.writableBytes() == NetBuffer::kInitialSize - str.size());
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize - str.size());
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
 
         const string str2 =  buf.retrieveAsString(50);
         assert(str2.size() == 50);
         assert(buf.readableBytes() == str.size() - str2.size());
-        assert(buf.writableBytes() == NetBuffer::kInitialSize - str.size());
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend + str2.size());
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize - str.size());
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend + str2.size());
 
         buf.write(str);
         assert(buf.readableBytes() == 2*str.size() - str2.size());
-        assert(buf.writableBytes() == NetBuffer::kInitialSize - 2*str.size());
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend + str2.size());
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize - 2*str.size());
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend + str2.size());
 
         const string str3 =  buf.retrieveAllAsString();
         assert(str3.size() == 350);
         assert(buf.readableBytes() == 0);
-        assert(buf.writableBytes() == NetBuffer::kInitialSize);
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize);
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
     }
 
     void testBufferGrow()
     {
-        NetBuffer buf;
+        ByteBuffer buf;
         buf.write(string(400, 'y'));
         assert(buf.readableBytes() == 400);
-        assert(buf.writableBytes() == NetBuffer::kInitialSize-400);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize-400);
 
         buf.retrieve(50);
         assert(buf.readableBytes() == 350);
-        assert(buf.writableBytes() == NetBuffer::kInitialSize-400);
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend+50);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize-400);
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend+50);
 
         buf.write(string(1000, 'z'));
         assert(buf.readableBytes() == 1350);
         assert(buf.writableBytes() == 0);
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend+50); // FIXME
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend+50); // FIXME
 
         buf.retrieveAll();
         assert(buf.readableBytes() == 0);
         assert(buf.writableBytes() == 1400); // FIXME
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend);
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
     }
 
     void testBufferInsideGrow()
     {
-        NetBuffer buf;
+        ByteBuffer buf;
         buf.write(string(800, 'y'));
         assert(buf.readableBytes() == 800);
-        assert(buf.writableBytes() == NetBuffer::kInitialSize-800);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize-800);
 
         buf.retrieve(500);
         assert(buf.readableBytes()== 300);
-        assert(buf.writableBytes()== NetBuffer::kInitialSize-800);
-        assert(buf.prependableBytes()== NetBuffer::kCheapPrepend+500);
+        assert(buf.writableBytes()== ByteBuffer::kInitialSize-800);
+        assert(buf.prependableBytes()== ByteBuffer::kCheapPrepend+500);
 
         buf.write(string(300, 'z'));
         assert(buf.readableBytes() == 600);
-        assert(buf.writableBytes() == NetBuffer::kInitialSize-600);
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize-600);
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
     }
 
     void testBufferShrink()
     {
-        NetBuffer buf;
+        ByteBuffer buf;
         buf.write(string(2000, 'y'));
         assert(buf.readableBytes() == 2000);
         assert(buf.writableBytes() == 0);
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend);
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
 
         buf.retrieve(1500);
         assert(buf.readableBytes() ==  500);
         assert(buf.writableBytes() ==  0);
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend+1500);
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend+1500);
 
         buf.shrink(0);
         assert(buf.readableBytes() == 500);
-        assert(buf.writableBytes() == NetBuffer::kInitialSize-500);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize-500);
         assert(buf.retrieveAllAsString() == string(500, 'y'));
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend);
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
     }
 
     void testBufferPrepend()
     {
-        NetBuffer buf;
+        ByteBuffer buf;
         buf.write(string(200, 'y'));
         assert(buf.readableBytes() == 200);
-        assert(buf.writableBytes() == NetBuffer::kInitialSize-200);
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize-200);
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend);
 
         int x = 0;
         buf.prepend(&x, sizeof x);
         assert(buf.readableBytes() == 204);
-        assert(buf.writableBytes() == NetBuffer::kInitialSize-200);
-        assert(buf.prependableBytes() == NetBuffer::kCheapPrepend - 4);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize-200);
+        assert(buf.prependableBytes() == ByteBuffer::kCheapPrepend - 4);
     }
 
     void testBufferReadInt()
     {
-        NetBuffer buf;
+        ByteBuffer buf;
         buf.write("HTTP");
 
         assert(buf.readableBytes() == 4);
@@ -277,7 +131,7 @@ namespace test_netbuffer
         assert(buf.read<int16_t>() == 'T'*256 + 'T');
         assert(buf.read<int8_t>() == 'P');
         assert(buf.readableBytes() == 0);
-        assert(buf.writableBytes() == NetBuffer::kInitialSize);
+        assert(buf.writableBytes() == ByteBuffer::kInitialSize);
 
         buf.write<int8_t>(-1);
         buf.write<short>(-1);
@@ -290,9 +144,10 @@ namespace test_netbuffer
         //buf.readInt32();
         //buf.retrieve(4);
     }
+
     void  testBufferReadNum()
     {
-        NetBuffer buf;
+        ByteBuffer buf;
         buf.write<int>(1234);
         buf.write<float>(56.123406456);
         buf.write<double>(85679.1234567);
@@ -311,7 +166,7 @@ namespace test_netbuffer
         cout << "-----------" << d2 << "\n";
 
         {
-            NetBuffer buf;
+            ByteBuffer buf;
             buf.write("asdfghj1,.45!");
             std::string s = buf.toString();
             cout << s << "\n";
@@ -321,7 +176,7 @@ namespace test_netbuffer
 
 int main()
 {
-    if( 0 )
+    if( 2 )
     {
         test_bytebuffer::testBufferAppendRetrieve();
         cout << "------------------\n";
@@ -335,27 +190,12 @@ int main()
         cout << "------------------\n";
         test_bytebuffer::testBufferReadInt();
         cout << "------------------\n";
-    }
-    if( 2 )
-    {
-        test_netbuffer::testBufferAppendRetrieve();
-        cout << "------------------\n";
-        test_netbuffer::testBufferGrow();
-        cout << "------------------\n";
-        test_netbuffer::testBufferInsideGrow();
-        cout << "------------------\n";
-        test_netbuffer::testBufferShrink();
-        cout << "------------------\n";
-        test_netbuffer::testBufferPrepend();
-        cout << "------------------\n";
-        test_netbuffer::testBufferReadInt();
-        cout << "------------------\n";
-        test_netbuffer::testBufferReadNum();
+        test_bytebuffer::testBufferReadNum();
     }
 
     {
         ByteBuffer buf;
-        buf.append(string(100000, 'x'));
+        buf.write(string(100000, 'x'));
         const char* null = NULL;
         assert(buf.findEOL() == null);
         assert(buf.findEOL(buf.peek()+90000)  == null);
