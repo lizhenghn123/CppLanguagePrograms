@@ -78,7 +78,7 @@
     <ClInclude Include="ObjectPool.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ObjectPoolTest.cpp" />
+    <ClCompile Include="..\..\include\base\tests\ObjectPool_test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
