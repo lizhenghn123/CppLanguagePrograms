@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>  
+   <root> 
+    <list count="3" time="10"> 
+    <poi>
+       <pguid>123</pguid>
+       <name>xx1</name>
+    </poi> 
+    <poi>
+       <pguid>456</pguid>
+       <name>xx2</name>
+    </poi> 
+    <poi>
+       <pguid>789</pguid>
+       <name>xx3</name>
+    </poi> 
+    </list> 
+  </root>

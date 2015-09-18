@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grammar xmlns="http://www.w3.org/2001/06/grammar" xml:lang="en-US" version="1.0" mode="continuous" root="digit" monitor="false">
+<!-- mode=  continuous || voice-->
+
+<!--识别类型. keyword：关键词识别；speech-to-text：全文转写-->
+  <rule id="service">
+  	<one-of>
+	<!--	<item><ruleref uri="#emotion"/></item>-->
+		<item><ruleref uri="#keyword"/></item>
+		<item><ruleref uri="#speech-to-text"/></item>
+	</one-of>
+  </rule>
+
+ <!--情绪识别类型-->
+  <rule id="emotion">
+	<one-of>
+		<item>生气</item>
+	</one-of>
+  </rule>
+ <!--关键词识别细分-->
+  <rule id="keyword">
+	<one-of>
+		<item><ruleref uri="#dirtyword"/></item>
+         <!--	<item><ruleref uri="#regularword"/></item>-->
+        <!--	<item><ruleref uri="#otherword"/></item>-->
+        <!--	<item><ruleref uri="#lzword"/></item>-->
+	</one-of>
+  </rule>
+  <rule id="dirtyword">
+	<one-of>
+		<item>GPRS</item>
+		<item>KB</item>
+		<item>V网</item>
+		<item>咨询</item>
+		<item>资费</item>
+		<item>自动台</item>
+		<item>自助台</item>
+    </one-of>
+  </rule>
+  <rule id="regularword">
+	<one-of>
+		<item>你好</item>
+		<item>知道</item>
+		<item>查询</item>
+		<item>短信提醒</item>	
+		<item>KB</item>
+	</one-of>
+  </rule>
+  <rule id="otherword">
+	<one-of>
+		<item>网银</item>
+		<item>不能上网</item>
+		<item>您好</item>
+		<item>资费</item>
+		<item>网速</item>
+		<item>升级</item>		
+	</one-of>
+  </rule>
+
+<!--全文转写-->  
+   <rule id="speech-to-text">
+       <one-of>
+		   <item>telecom</item>
+		   <item>banking</item>
+	   </one-of>
+   </rule>
+</grammar>
