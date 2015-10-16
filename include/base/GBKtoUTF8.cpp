@@ -205,6 +205,10 @@ int is_utf8_special_byte(unsigned char c)
 
 bool isTextUTF8(const std::string& str)
 {
+    return isTextUTF8(str.c_str(), str.size());
+
+    // 下面的实现有问题，比如对于gbk文本“一天门站章痊愈”，判断时越界访问了
+	
     unsigned one_byte   = 0X00;    //binary 00000000
     unsigned two_byte   = 0X06;    //binary 00000110
     unsigned three_byte = 0X0E;    //binary 00001110
