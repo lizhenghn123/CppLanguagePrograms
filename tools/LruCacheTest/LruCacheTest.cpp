@@ -32,6 +32,43 @@ int main()
         assert(0 == cache.getOrDefault(1));
         assert(4 == cache.getOrDefault(6));
     }
+    {
+        LruCache<int, int> cache(2);
+        assert(0 == cache.size());
+        assert(2 == cache.capacity());
+        assert(cache.empty());
+        assert(!cache.full());
+
+        cache.put(1, 1);
+        assert(1 == cache.size());
+        assert(!cache.empty());
+        assert(!cache.full());
+
+        cache.put(2, 2);
+        assert(2 ==cache.size());
+        assert(!cache.empty());
+        assert(cache.full());
+
+        cache.put(3, 3);
+        assert(2 == cache.size());
+        assert(!cache.empty());
+        assert(cache.full());
+    }
+    {   // test hasKey
+        LruCache<int, int> cache(2);
+        cache.put(1, 1);
+        assert(cache.hasKey(1));
+        assert(!cache.hasKey(2));
+    }
+    {   // test remove
+        LruCache<int, int> cache(2);
+        cache.put(1, 1);
+        assert(cache.remove(1));
+        assert(0 == cache.size());
+        assert(cache.empty());
+        assert(!cache.remove(2));
+    }
+
     system("pause");
     return 0;
 }

@@ -1,15 +1,15 @@
 #ifndef ZL_LRUCACHE_H
 #define ZL_LRUCACHE_H
 #include <list>
-#include <map>
-#include <hash_map>
+#include <unordered_map>
 #include "thread/Mutex.h"
 
 template<typename Key, typename Value, class LockType = zl::thread::NullMutex>
 class LruCache
 {
 public:
-    explicit LruCache(size_t capacity) : capacity_(capacity), size_(0)
+    explicit LruCache(size_t capacity)
+        : capacity_(capacity)
     {
     }
 
@@ -30,8 +30,10 @@ public:
         typename MAP::iterator iter = keyIndex_.find(key);
         if(iter != keyIndex_.end())
         {
+            //å¯¹åŒå‘é“¾è¡¨listçš„ä¿®æ”¹ç»å¯¹ä¸å¯ä»¥ä½¿åŸæœ‰çš„è¿­ä»£å™¨å¤±æ•ˆï¼Œå¦åˆ™mapé‡Œå­˜å‚¨çš„è¿­ä»£å™¨å°±å¤±æ•ˆäº†ã€‚
+            //è¿™é‡Œä½¿ç”¨çš„æ˜¯spliceæ–¹æ³•æ¥å°†ä¸­é—´çš„æŸä¸ªç»“ç‚¹ç§»åŠ¨åˆ°é¦–ä½ç½®ã€‚
             valueList_.splice(valueList_.begin(), valueList_, iter->second);
-            //iter->second = valueList_.begin();    //¸üĞÂË÷Òı, ·Ç±ØĞë
+            //iter->second = valueList_.begin();    //æ›´æ–°ç´¢å¼•, éå¿…é¡»
             assert(iter->second == valueList_.begin());
 
             value = iter->second->second;
@@ -40,7 +42,7 @@ public:
         return false;
     }
 
-    //Í¬ÉÏ£¬²»¹ıÈç¹û²»´æÔÚÔòÖ±½Ó·µ»ØÄ¬ÈÏÖµ¡£ TODO£º¿ÉÒÔÖ±½Ó½«Ä¬ÈÏÖµ²åÈëµ½»º´æÖĞ
+    //åŒä¸Šï¼Œä¸è¿‡å¦‚æœä¸å­˜åœ¨åˆ™ç›´æ¥è¿”å›é»˜è®¤å€¼ã€‚ TODOï¼šå¯ä»¥ç›´æ¥å°†é»˜è®¤å€¼æ’å…¥åˆ°ç¼“å­˜ä¸­
     Value getOrDefault(const Key& key, const Value& default_value = Value())
     {
         Value value;
@@ -49,36 +51,33 @@ public:
         return default_value;
     }
 
-    //¸üĞÂcache£¬ Èç¹û´æÔÚÔò¸üĞÂ£¬·ñÔòÖ±½Ó´æÈë
+    //æ›´æ–°cacheï¼Œ å¦‚æœå­˜åœ¨åˆ™æ›´æ–°ï¼Œå¦åˆ™ç›´æ¥å­˜å…¥
     bool put(const Key& key, const Value& value)
     {
         zl::thread::LockGuard<LockType> lock(mutex_);
         typename MAP::iterator miter = keyIndex_.find(key);
-        if(miter != keyIndex_.end()) //´æÔÚ
+        if(miter != keyIndex_.end()) //å­˜åœ¨
         {
-            // ¸üĞÂÁË¸ÃkeyµÄ·ÃÎÊË³Ğò£¨ÊÇ·ñĞèÒª¸üĞÂÓ¦°´ĞèÇóÀ´È·¶¨£©
+            // æ›´æ–°äº†è¯¥keyçš„è®¿é—®é¡ºåºï¼ˆæ˜¯å¦éœ€è¦æ›´æ–°åº”æŒ‰éœ€æ±‚æ¥ç¡®å®šï¼‰
             valueList_.splice(valueList_.begin(), valueList_, miter->second);
             miter->second->second = value;
         }
         else
         {
-            if (size_ < capacity_)     // insert new one
+            if (valueList_.size() < capacity_)     // insert new one
             {
                 valueList_.push_front(std::make_pair(key, value));
                 keyIndex_[key] = valueList_.begin();
-                size_++;
             }
-            else      // É¾³ı×îÉÙ·ÃÎÊµÄÔªËØ
+            else      // åˆ é™¤æœ€å°‘è®¿é—®çš„å…ƒç´ (å…¶å®å¹¶æ²¡æœ‰åˆ é™¤å°¾å…ƒç´ ï¼Œç›¸åæ˜¯å¤ç”¨äº†å°¾å…ƒç´ )
             {
-                //¶ÔË«ÏòÁ´±ílistµÄĞŞ¸Ä¾ø¶Ô²»¿ÉÒÔÊ¹Ô­ÓĞµÄµü´úÆ÷Ê§Ğ§£¬·ñÔòhashÀï´æ´¢µÄÄÚÈİ¾ÍÊ§Ğ§ÁË¡£
-                //ÕâÀïÊ¹ÓÃµÄÊÇsplice·½·¨À´½«ÖĞ¼äµÄÄ³¸ö½áµãÒÆ¶¯µ½Ê×Î»ÖÃ¡£
                 int oldkey = valueList_.back().first;
                 LIST::iterator oldone = valueList_.end();
                 --oldone;
                 valueList_.splice(valueList_.begin(), valueList_, oldone);
                 keyIndex_.erase(oldkey);
 
-                // ÔÙ²åÈëĞÂÔªËØµ½ÁĞ±íÍ·
+                // å†æ›´æ–°æ–°å…ƒç´ åˆ°åˆ—è¡¨å¤´
                 valueList_.begin()->first = key;
                 valueList_.begin()->second = value;
                 keyIndex_[key] = valueList_.begin();
@@ -111,13 +110,13 @@ public:
         return capacity_;
     }
 
-    bool isEmpty() const
+    bool empty() const
     {
         zl::thread::LockGuard<LockType> lock(mutex_);
         return valueList_.empty();
     }
 
-    bool isFull() const
+    bool full() const
     {
         zl::thread::LockGuard<LockType> lock(mutex_);
         return keyIndex_.size() == capacity_;
@@ -131,7 +130,7 @@ private:
         keyIndex_.clear();
     }
 
-    bool removeWithHolder(const Key& key)  //×¢Òâ´Ë´¦£¬ÒÔºó¿ÉÒÔ¸ÄÎª·µ»ØremoveºóµÄvalueÖµ
+    bool removeWithHolder(const Key& key)  //æ³¨æ„æ­¤å¤„ï¼Œä»¥åå¯ä»¥æ”¹ä¸ºè¿”å›removeåçš„valueå€¼
     {
         typename MAP::iterator iter = keyIndex_.find(key);
         if(iter == keyIndex_.end())
@@ -143,12 +142,11 @@ private:
 
 private:
     typedef std::list<std::pair<Key, Value> >       LIST;
-    typedef std::hash_map<Key, typename LIST::iterator>  MAP;
+    typedef std::unordered_map<Key, typename LIST::iterator>  MAP;
 
     LIST                   valueList_;
     MAP                    keyIndex_;
     size_t                 capacity_;
-    size_t                 size_;
     mutable LockType       mutex_;
 };
 
