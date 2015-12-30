@@ -1,19 +1,19 @@
-#include "Flyweight.h" 
-#include "FlyweightFactory.h" 
-#include <iostream> 
-using namespace std; 
+#include "Flyweight.h"
+#include "FlyweightFactory.h"
+#include <iostream>
+using namespace std;
 
-int main(int argc,char* argv[]) 
-{ 
-	FlyweightFactory* fc = new FlyweightFactory(); 
-	Flyweight* fw1 = fc->GetFlyweight("hello"); 
+int main(int argc, char *argv[])
+{
+    FlyweightFactory *fc = new FlyweightFactory();
+    Flyweight *fw1 = fc->GetFlyweight("hello");
 
-	Flyweight* fw2 = fc->GetFlyweight("world!"); 
-	Flyweight* fw3 = fc->GetFlyweight("hello"); 
+    Flyweight *fw2 = fc->GetFlyweight("world!");
+    Flyweight *fw3 = fc->GetFlyweight("hello");
 
-	fw1->Operation("1111");
-	fw2->Operation("2222");
+    fw1->Operation("1111");
+    fw2->Operation("2222");
 
-	system("pause");
-	return 0; 
-} 
+    system("pause");
+    return 0;
+}

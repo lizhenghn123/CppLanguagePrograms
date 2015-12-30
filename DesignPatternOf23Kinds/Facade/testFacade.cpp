@@ -1,13 +1,13 @@
-#include "Facade.h" 
+#include "Facade.h"
 
-#include <iostream> 
-using namespace std; 
+#include <iostream>
+using namespace std;
 
-int main(int argc,char* argv[]) 
-{ 
-	Facade* f = new Facade(); 
-	f->OperationWrapper(); 
+int main(int argc, char *argv[])
+{
+    Facade *f = new Facade();
+    f->OperationWrapper();
 
-	system("pause");
-	return 0; 
-} 
+    system("pause");
+    return 0;
+}

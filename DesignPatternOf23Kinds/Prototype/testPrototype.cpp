@@ -1,13 +1,13 @@
-#include "Prototype.h" 
-#include <iostream> 
-using namespace std; 
+#include "Prototype.h"
+#include <iostream>
+using namespace std;
 
 
-int main(int argc,char* argv[]) 
-{ 
-	Prototype* p = new ConcretePrototype(); 
-	Prototype* p1 = p->Clone(); 
+int main(int argc, char *argv[])
+{
+    Prototype *p = new ConcretePrototype();
+    Prototype *p1 = p->Clone();
 
-	system("pause");
-	return 0; 
-} 
+    system("pause");
+    return 0;
+}
