@@ -1,7 +1,6 @@
 // Filename         : HttpRestClient.h
 // Author           : LIZHENG
-// Created          : 2013-05-12
-// Description      : ¶ÔlibcurlµÄ°ü×°£¬¶ÔÍâÌá¹©GET¡¢POST½Ó¿Ú
+// Description      : å¯¹libcurlçš„åŒ…è£…ï¼Œå¯¹å¤–æä¾›GETã€POSTæ¥å£
 //
 // Copyright (c) lizheng@thinkit.cn. All rights reserved.
 // ***********************************************************************
@@ -32,10 +31,8 @@ public:
     ~HttpRestClient();
 
 public:
-    /**
-    * @brief ÉèÖÃÊÇ·ñµ÷ÊÔÊä³ö
-    * @param bDebug    ÊäÈë²ÎÊı,ÎªtrueÔòÊä³öµ÷ÊÔĞÅÏ¢
-    */
+    /// @brief è®¾ç½®æ˜¯å¦è°ƒè¯•è¾“å‡º
+    /// @param bDebug    è¾“å…¥å‚æ•°,ä¸ºtrueåˆ™è¾“å‡ºè°ƒè¯•ä¿¡æ¯
     static void setDebug(bool bDebug)
     {
         debug_ = bDebug;
@@ -46,118 +43,90 @@ public:
         return debug_;
     }
 
-    /**
-    * @brief »ñÈ¡´íÎóÂë¶ÔÓ¦µÄ´íÎóÏûÏ¢
-    * @param errcode   ÊäÈë²ÎÊı,curl´íÎóÂë£¨²Î¼ûcurl.hÖĞCURLcode¶¨Òå£©
-    * @return          Èç¹û´íÎóÂëerrcodeÎªcurl±ê×¼´íÎóÂë£¬Ôò·µ»ØÓĞĞ§×Ö·û´®£¬·ñÔòÎªNULL
-    */
+    /// @brief è·å–é”™è¯¯ç å¯¹åº”çš„é”™è¯¯æ¶ˆæ¯
+    /// @param errcode   è¾“å…¥å‚æ•°,curlé”™è¯¯ç ï¼ˆå‚è§curl.hä¸­CURLcodeå®šä¹‰ï¼‰
+    /// @return          å¦‚æœé”™è¯¯ç errcodeä¸ºcurlæ ‡å‡†é”™è¯¯ç ï¼Œåˆ™è¿”å›æœ‰æ•ˆå­—ç¬¦ä¸²ï¼Œå¦åˆ™ä¸ºNULL
     static const char* getErrorMessage(int errcode);
 
 public:
-    /**
-    * @brief ·µ»ØHttpÏìÓ¦µÄÏûÏ¢Í·
-    */
+    /// @brief è¿”å›Httpå“åº”çš„æ¶ˆæ¯å¤´
     std::string  getHeader() const { return reponse_.header_; }
 
-    /**
-    * @brief ·µ»ØHttpÏìÓ¦µÄÏûÏ¢Ìå
-    */
+    /// @brief è¿”å›Httpå“åº”çš„æ¶ˆæ¯ä½“
     std::string  getBody() const   { return reponse_.body_; }
 
 public:
-    /**
-    * @brief ÉèÖÃhttpÇëÇóÊ±µÄÍ·
-    * @param key         ÊäÈë²ÎÊı,key
-    * @param value       ÊäÈë²ÎÊı,value
-    */
+    /// @brief è®¾ç½®httpè¯·æ±‚æ—¶çš„å¤´
+    /// @param key         è¾“å…¥å‚æ•°,key
+    /// @param value       è¾“å…¥å‚æ•°,value
     bool addHeader(const char* key, const char* value);
 
-    /**
-    * @brief ÉèÖÃhttpÇëÇóÊ±µÄuser-agent
-    * @param userAgent   ÊäÈë²ÎÊı,User-Agent
-    */
+    /// @brief è®¾ç½®httpè¯·æ±‚æ—¶çš„user-agent
+    /// @param userAgent   è¾“å…¥å‚æ•°,User-Agent
     bool setUserAgent(const char* userAgent);
 
 public:
-    /**
-    * @brief HTTP GETÇëÇó
-    * @param url         ÊäÈë²ÎÊı,ÇëÇóµÄurlµØÖ·
-    * @param timeoutMs   ÊäÈë²ÎÊı£¬±¾´ÎÇëÇóµÄ³¬Ê±Ê±¼ä,µ¥Î»ºÁÃë£¬ÏÂÍ¬
-    * @return            ·µ»Ø±êÊ¶,Ö»ÓĞÎªCURLE_OK(0)Ê±±íÊ¾³É¹¦£¬ÆäËû¶¼ÊÇÊ§°Ü
-    */
+    /// @brief HTTP GETè¯·æ±‚
+    /// @param url         è¾“å…¥å‚æ•°,è¯·æ±‚çš„urlåœ°å€
+    /// @param timeoutMs   è¾“å…¥å‚æ•°ï¼Œæœ¬æ¬¡è¯·æ±‚çš„è¶…æ—¶æ—¶é—´,å•ä½æ¯«ç§’ï¼Œä¸‹åŒ
+    /// @return            è¿”å›æ ‡è¯†,åªæœ‰ä¸ºCURLE_OK(0)æ—¶è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–éƒ½æ˜¯å¤±è´¥
     int get(const char* url, int timeoutMs = 4000);
 
-    /**
-    * @brief HTTP GETÇëÇó
-    * @param url         ÊäÈë²ÎÊı,ÇëÇóµÄurlµØÖ·
-    * @param filepath    ÊäÈë²ÎÊı,½«ÇëÇó±£´æµ½±¾µØµÄÂ·¾¶
-    * @return            ·µ»Ø±êÊ¶,Ö»ÓĞÎªCURLE_OK(0)Ê±±íÊ¾³É¹¦£¬ÆäËû¶¼ÊÇÊ§°Ü
-    */
+    /// @brief HTTP GETè¯·æ±‚
+    /// @param url         è¾“å…¥å‚æ•°,è¯·æ±‚çš„urlåœ°å€
+    /// @param filepath    è¾“å…¥å‚æ•°,å°†è¯·æ±‚ä¿å­˜åˆ°æœ¬åœ°çš„è·¯å¾„
+    /// @return            è¿”å›æ ‡è¯†,åªæœ‰ä¸ºCURLE_OK(0)æ—¶è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–éƒ½æ˜¯å¤±è´¥
     int get(const char* url, const char* filepath, int timeoutMs = 4000);
 
-    /**
-    * @brief HTTP POSTÇëÇó
-    * @param url         ÊäÈë²ÎÊı,ÇëÇóµÄurlµØÖ·
-    * @param postData    ÊäÈë²ÎÊı£¬ĞèÒªpostµÄÊı¾İ
-    * @param dataSize    ÊäÈë²ÎÊı,ĞèÒªpostµÄÊı¾İ´óĞ¡
-    * @return            ·µ»Ø±êÊ¶,Ö»ÓĞÎªCURLE_OK(0)Ê±±íÊ¾³É¹¦£¬ÆäËû¶¼ÊÇÊ§°Ü
-    */
+    /// @brief HTTP POSTè¯·æ±‚
+    /// @param url         è¾“å…¥å‚æ•°,è¯·æ±‚çš„urlåœ°å€
+    /// @param postData    è¾“å…¥å‚æ•°ï¼Œéœ€è¦postçš„æ•°æ®
+    /// @param dataSize    è¾“å…¥å‚æ•°,éœ€è¦postçš„æ•°æ®å¤§å°
+    /// @return            è¿”å›æ ‡è¯†,åªæœ‰ä¸ºCURLE_OK(0)æ—¶è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–éƒ½æ˜¯å¤±è´¥
     int post(const char* url, const char* postData, int dataSize, int timeoutMs = 4000);
 
-    /**
-    * @brief HTTP POSTÇëÇó
-    * @param url         ÊäÈë²ÎÊı,ÇëÇóµÄurlµØÖ·
-    * @param postData    ÊäÈë²ÎÊı£¬ĞèÒªpostµÄÊı¾İ
-    * @return            ·µ»Ø±êÊ¶,Ö»ÓĞÎªCURLE_OK(0)Ê±±íÊ¾³É¹¦£¬ÆäËû¶¼ÊÇÊ§°Ü
-    */
+    /// @brief HTTP POSTè¯·æ±‚
+    /// @param url         è¾“å…¥å‚æ•°,è¯·æ±‚çš„urlåœ°å€
+    /// @param postData    è¾“å…¥å‚æ•°ï¼Œéœ€è¦postçš„æ•°æ®
+    /// @return            è¿”å›æ ‡è¯†,åªæœ‰ä¸ºCURLE_OK(0)æ—¶è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–éƒ½æ˜¯å¤±è´¥
     int post(const char* url, const std::string& postData, int timeoutMs = 4000);
 
-    /**
-    * @brief HTTP DELETEÇëÇó
-    * @param url         ÊäÈë²ÎÊı,ÇëÇóµÄurlµØÖ·
-    * @return            ·µ»Ø±êÊ¶,Ö»ÓĞÎªCURLE_OK(0)Ê±±íÊ¾³É¹¦£¬ÆäËû¶¼ÊÇÊ§°Ü
-    */
+    /// @brief HTTP DELETEè¯·æ±‚
+    /// @param url         è¾“å…¥å‚æ•°,è¯·æ±‚çš„urlåœ°å€
+    /// @return            è¿”å›æ ‡è¯†,åªæœ‰ä¸ºCURLE_OK(0)æ—¶è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–éƒ½æ˜¯å¤±è´¥
     int del(const char* url, int timeoutMs = 4000);
 
-    /**
-    * @brief HTTP PUTÇëÇó
-    * @param url         ÊäÈë²ÎÊı,ÇëÇóµÄurlµØÖ·
-    * @return            ·µ»Ø±êÊ¶,Ö»ÓĞÎªCURLE_OK(0)Ê±±íÊ¾³É¹¦£¬ÆäËû¶¼ÊÇÊ§°Ü
-    */
+    /// @brief HTTP PUTè¯·æ±‚
+    /// @param url         è¾“å…¥å‚æ•°,è¯·æ±‚çš„urlåœ°å€
+    /// @return            è¿”å›æ ‡è¯†,åªæœ‰ä¸ºCURLE_OK(0)æ—¶è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–éƒ½æ˜¯å¤±è´¥
     int put(const char* url, const char* putData, size_t dataSize);
 
-    /**
-    * @brief HTTPS GETÇëÇó,Ö¤Êé°æ±¾
-    * @param url         ÊäÈë²ÎÊı,ÇëÇóµÄurlµØÖ·
-    * @param pCaPath     ÊäÈë²ÎÊı,ÎªCAÖ¤ÊéµÄÂ·¾¶.Èç¹ûÊäÈëÎªNULL,Ôò²»ÑéÖ¤·şÎñÆ÷¶ËÖ¤ÊéµÄÓĞĞ§ĞÔ.
-    * @return            ·µ»Ø±êÊ¶,Ö»ÓĞÎªCURLE_OK(0)Ê±±íÊ¾³É¹¦£¬ÆäËû¶¼ÊÇÊ§°Ü
-    */
+    /// @brief HTTPS GETè¯·æ±‚,è¯ä¹¦ç‰ˆæœ¬
+    /// @param url         è¾“å…¥å‚æ•°,è¯·æ±‚çš„urlåœ°å€
+    /// @param pCaPath     è¾“å…¥å‚æ•°,ä¸ºCAè¯ä¹¦çš„è·¯å¾„.å¦‚æœè¾“å…¥ä¸ºNULL,åˆ™ä¸éªŒè¯æœåŠ¡å™¨ç«¯è¯ä¹¦çš„æœ‰æ•ˆæ€§.
+    /// @return            è¿”å›æ ‡è¯†,åªæœ‰ä¸ºCURLE_OK(0)æ—¶è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–éƒ½æ˜¯å¤±è´¥
     int gets(const char* url, const char* pCaPath = NULL, int timeoutMs = 4000);
 
-    /**
-    * @brief HTTPS POSTÇëÇó,Ö¤Êé°æ±¾
-    * @param url         ÊäÈë²ÎÊı,ÇëÇóµÄurlµØÖ·
-    * @param strPost     ÊäÈë²ÎÊı,ĞèÒªpostµÄÊı¾İ
-    * @param pCaPath     ÊäÈë²ÎÊı,ÎªCAÖ¤ÊéµÄÂ·¾¶.Èç¹ûÊäÈëÎªNULL,Ôò²»ÑéÖ¤·şÎñÆ÷¶ËÖ¤ÊéµÄÓĞĞ§ĞÔ.
-    * @return            ·µ»Ø±êÊ¶,Ö»ÓĞÎªCURLE_OK(0)Ê±±íÊ¾³É¹¦£¬ÆäËû¶¼ÊÇÊ§°Ü
-    */
+    /// @brief HTTPS POSTè¯·æ±‚,è¯ä¹¦ç‰ˆæœ¬
+    /// @param url         è¾“å…¥å‚æ•°,è¯·æ±‚çš„urlåœ°å€
+    /// @param strPost     è¾“å…¥å‚æ•°,éœ€è¦postçš„æ•°æ®
+    /// @param pCaPath     è¾“å…¥å‚æ•°,ä¸ºCAè¯ä¹¦çš„è·¯å¾„.å¦‚æœè¾“å…¥ä¸ºNULL,åˆ™ä¸éªŒè¯æœåŠ¡å™¨ç«¯è¯ä¹¦çš„æœ‰æ•ˆæ€§.
+    /// @return            è¿”å›æ ‡è¯†,åªæœ‰ä¸ºCURLE_OK(0)æ—¶è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–éƒ½æ˜¯å¤±è´¥
     int posts(const char* url, const std::string& postData, const char* pCaPath = NULL, int timeoutMs = 4000);
 
 private:
-    /**
-    * @brief ³õÊ¼»¯»Øµ÷
-    * @param requestHeader ÊäÈë²ÎÊı,ÊÇ·ñÇëÇóhttpÏûÏ¢Í·
-    * @param requestBody   ÊäÈë²ÎÊı,ÊÇ·ñÇëÇóhttpÏûÏ¢Ìå
-    */
+    /// @brief åˆå§‹åŒ–å›è°ƒ
+    /// @param requestHeader è¾“å…¥å‚æ•°,æ˜¯å¦è¯·æ±‚httpæ¶ˆæ¯å¤´
+    /// @param requestBody   è¾“å…¥å‚æ•°,æ˜¯å¦è¯·æ±‚httpæ¶ˆæ¯ä½“
     void  init(bool requestHeader = true, bool requestBody = true);
 
 private:
-    static bool          debug_;       /**ÊÇ·ñ¿ªÆôµ÷ÊÔÊä³ö*/
+    static bool          debug_;       /// æ˜¯å¦å¼€å¯è°ƒè¯•è¾“å‡º
 
 private:
-    struct curl_slist    *headers_;
-    CURL                 *curl_;
+    struct curl_slist*   headers_;
+    CURL*&               curl_;
     Reponse              reponse_;
 };
 
-#endif  /* ZL_HTTPRESTCLIENT_H */
+#endif  // ZL_HTTPRESTCLIENT_H
