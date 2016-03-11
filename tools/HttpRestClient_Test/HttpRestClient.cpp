@@ -97,7 +97,7 @@ namespace detail
         if (code != CURLE_OK)
             return code;
 
-        // æ£€æŸ¥è¿”å›å€¼
+        // ¼ì²é·µ»ØÖµ
         long retCode = 200;
         code = curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &retCode);
         if (code != CURLE_OK || retCode != 200)
@@ -162,17 +162,17 @@ bool HttpRestClient::debug_ = false;
 HttpRestClient::HttpRestClient(bool requestHeader/* = true*/, bool requestBody/* = true*/)
 {
     headers_ = NULL;
-    headers_ = curl_slist_append(headers_, "Expect:");//ä¹Ÿè®¸æœ‰Expect: 100-continueï¼Œå»æ‰å®ƒ
-    headers_ = curl_slist_append(headers_, "Accept:");//åˆ é™¤å­˜åœ¨çš„æ¶ˆæ¯å¤´Accept
-    //headers_ = curl_slist_append(headers_, "Host: 127.0.0.1:80"); //ä¿®æ”¹å­˜åœ¨çš„æ¶ˆæ¯å¤´Host
+    headers_ = curl_slist_append(headers_, "Expect:");//Ò²ĞíÓĞExpect: 100-continue£¬È¥µôËü
+    headers_ = curl_slist_append(headers_, "Accept:");//É¾³ı´æÔÚµÄÏûÏ¢Í·Accept
+    //headers_ = curl_slist_append(headers_, "Host: 127.0.0.1:80"); //ĞŞ¸Ä´æÔÚµÄÏûÏ¢Í·Host
     headers_ = curl_slist_append(headers_, "User-Agent: upload");
     headers_ = curl_slist_append(headers_, "Cache-Control: no-cache");
-    headers_ = curl_slist_append(headers_, "Connection: Keep-Alive"); //httpé•¿è¿æ¥
+    headers_ = curl_slist_append(headers_, "Connection: Keep-Alive"); //http³¤Á¬½Ó
 
     curl_ = createCurl();
 
-    // å½“å¤šä¸ªçº¿ç¨‹éƒ½ä½¿ç”¨è¶…æ—¶å¤„ç†çš„æ—¶å€™ï¼ŒåŒæ—¶ä¸»çº¿ç¨‹ä¸­æœ‰sleepæˆ–æ˜¯waitç­‰æ“ä½œ
-    // å¦‚æœä¸è®¾ç½®è¿™ä¸ªé€‰é¡¹ï¼Œlibcurlå°†ä¼šå‘ä¿¡å·æ‰“æ–­è¿™ä¸ªwaitä»è€Œå¯¼è‡´ç¨‹åºé€€å‡º
+    // µ±¶à¸öÏß³Ì¶¼Ê¹ÓÃ³¬Ê±´¦ÀíµÄÊ±ºò£¬Í¬Ê±Ö÷Ïß³ÌÖĞÓĞsleep»òÊÇwaitµÈ²Ù×÷
+    // Èç¹û²»ÉèÖÃÕâ¸öÑ¡Ïî£¬libcurl½«»á·¢ĞÅºÅ´ò¶ÏÕâ¸öwait´Ó¶øµ¼ÖÂ³ÌĞòÍË³ö
     CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_NOSIGNAL, 1));
 
     init(requestHeader, requestBody);
@@ -192,7 +192,7 @@ void HttpRestClient::init(bool requestHeader/* = true*/, bool requestBody/* = tr
     //assert(requestHeader || requestBody);
     if(requestHeader)
     {
-        // è®¾ç½®æ¶ˆæ¯å¤´çš„è¯»å–
+        // ÉèÖÃÏûÏ¢Í·µÄ¶ÁÈ¡
         CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERFUNCTION, writeHeaderCallback));
         CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERDATA, (void *)&reponse_));
     }
@@ -204,7 +204,7 @@ void HttpRestClient::init(bool requestHeader/* = true*/, bool requestBody/* = tr
 
     if(requestBody)
     {
-        // è®¾ç½®æ¶ˆæ¯ä½“çš„è¯»å–
+        // ÉèÖÃÏûÏ¢ÌåµÄ¶ÁÈ¡
         CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, writeBodyCallback));
         CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEDATA, (void *)&reponse_));
     }
@@ -268,11 +268,11 @@ int HttpRestClient::get(const char* url, const char* filepath, int timeoutMs/* =
         CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_READFUNCTION, NULL));
         //CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HTTPHEADER, headers_));
 
-        // è®¾ç½®æ¶ˆæ¯å¤´çš„è¯»å–
+        // ÉèÖÃÏûÏ¢Í·µÄ¶ÁÈ¡
         //CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERFUNCTION, writeHeaderCallback));
         //CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_HEADERDATA, (void *)&reponse_));
 
-        // è®¾ç½®æ¶ˆæ¯ä½“çš„è¯»å–
+        // ÉèÖÃÏûÏ¢ÌåµÄ¶ÁÈ¡
         CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, writeBodyToFileCallback));
         CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_WRITEDATA, file));
 
@@ -424,7 +424,7 @@ int HttpRestClient::posts(const char* url, const std::string& strPost, const cha
         }
         else
         {
-            //ç¼ºçœæƒ…å†µå°±æ˜¯PEMï¼Œæ‰€ä»¥æ— éœ€è®¾ç½®ï¼Œå¦å¤–æ”¯æŒDER
+            //È±Ê¡Çé¿ö¾ÍÊÇPEM£¬ËùÒÔÎŞĞèÉèÖÃ£¬ÁíÍâÖ§³ÖDER
             //curl_easy_setopt(curl_,CURLOPT_SSLCERTTYPE,"PEM");
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_SSL_VERIFYPEER, true));
             CURL_CHECK(curl_easy_setopt(curl_, CURLOPT_CAINFO, pCaPath));
@@ -443,7 +443,7 @@ int HttpRestClient::posts(const char* url, const std::string& strPost, const cha
 
 const char* HttpRestClient::getErrorMessage(int errcode)
 {
-    //å‚è€ƒcurl.hä¸­çš„CURLcodeå®šä¹‰
+    //²Î¿¼curl.hÖĞµÄCURLcode¶¨Òå
     static const int max_size_curl_error = 89;
     static const char *strCurlMessage[max_size_curl_error] =
     {
