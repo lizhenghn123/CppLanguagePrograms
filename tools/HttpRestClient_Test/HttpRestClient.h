@@ -125,7 +125,7 @@ private:
 
 private:
     struct curl_slist*   headers_;
-    CURL*&               curl_;
+    CURL*                curl_;
     Reponse              reponse_;
 };
 

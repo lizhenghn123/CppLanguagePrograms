@@ -1,6 +1,7 @@
 #include "HttpRestClient.h"
-#include <curl/curl.h>
+#include <string.h>
 #include <assert.h>
+#include <curl/curl.h>
 
 #define JUST_RETUAN_IF_FALSE(expr, ret)  do { if(!expr) return ret;} while(0)
 #define JUST_RETUAN_IF_TRUE(expr, ret)   do { if(expr) return ret;} while(0)
