@@ -75,10 +75,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\include\utility\Base64.cpp" />
     <ClCompile Include="..\..\include\utility\SHA1.cpp" />
     <ClCompile Include="SHA1_test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\utility\Base64.h" />
     <ClInclude Include="..\..\include\utility\SHA1.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

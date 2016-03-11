@@ -3,8 +3,10 @@
   <ItemGroup>
     <ClCompile Include="SHA1_test.cpp" />
     <ClCompile Include="..\..\include\utility\SHA1.cpp" />
+    <ClCompile Include="..\..\include\utility\Base64.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\utility\SHA1.h" />
+    <ClInclude Include="..\..\include\utility\Base64.h" />
   </ItemGroup>
 </Project>

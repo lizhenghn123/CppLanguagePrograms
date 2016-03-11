@@ -2,7 +2,7 @@
 // Filename         : SHA1.h
 // Author           : LIZHENG
 // Created          : 2015-05-27
-// Description      : °²È«¹şÏ£Ëã·¨£¨Secure Hash Algorithm£©
+// Description      : å®‰å…¨å“ˆå¸Œç®—æ³•ï¼ˆSecure Hash Algorithmï¼‰
 //
 // Last Modified By : LIZHENG
 // Last Modified On : 2015-05-27
@@ -13,52 +13,52 @@
 #define ZL_SHA1_H
 #include <string>
 #include <stdint.h>
-// ¶ÔÓÚ³¤¶ÈĞ¡ÓÚ2^64Î»µÄÏûÏ¢£¬SHA1»á²úÉúÒ»¸ö160Î»µÄÏûÏ¢ÕªÒª¡£µ±½ÓÊÕµ½ÏûÏ¢µÄÊ±ºò£¬Õâ¸öÏûÏ¢ÕªÒª¿ÉÒÔÓÃÀ´ÑéÖ¤Êı¾İµÄÍêÕûĞÔ¡£
-// ÔÚ´«ÊäµÄ¹ı³ÌÖĞ£¬Êı¾İºÜ¿ÉÄÜ»á·¢Éú±ä»¯£¬ÄÇÃ´ÕâÊ±ºò¾Í»á²úÉú²»Í¬µÄÏûÏ¢ÕªÒª¡£
-// SHA1ÌØĞÔ£º²»¿ÉÒÔ´ÓÏûÏ¢ÕªÒªÖĞ¸´Ô­ĞÅÏ¢£»Á½¸ö²»Í¬µÄÏûÏ¢²»»á²úÉúÍ¬ÑùµÄÏûÏ¢ÕªÒª¡£
+// å¯¹äºé•¿åº¦å°äº2^64ä½çš„æ¶ˆæ¯ï¼ŒSHA1ä¼šäº§ç”Ÿä¸€ä¸ª160ä½çš„æ¶ˆæ¯æ‘˜è¦ã€‚å½“æ¥æ”¶åˆ°æ¶ˆæ¯çš„æ—¶å€™ï¼Œè¿™ä¸ªæ¶ˆæ¯æ‘˜è¦å¯ä»¥ç”¨æ¥éªŒè¯æ•°æ®çš„å®Œæ•´æ€§ã€‚
+// åœ¨ä¼ è¾“çš„è¿‡ç¨‹ä¸­ï¼Œæ•°æ®å¾ˆå¯èƒ½ä¼šå‘ç”Ÿå˜åŒ–ï¼Œé‚£ä¹ˆè¿™æ—¶å€™å°±ä¼šäº§ç”Ÿä¸åŒçš„æ¶ˆæ¯æ‘˜è¦ã€‚
+// SHA1ç‰¹æ€§ï¼šä¸å¯ä»¥ä»æ¶ˆæ¯æ‘˜è¦ä¸­å¤åŸä¿¡æ¯ï¼›ä¸¤ä¸ªä¸åŒçš„æ¶ˆæ¯ä¸ä¼šäº§ç”ŸåŒæ ·çš„æ¶ˆæ¯æ‘˜è¦ã€‚
 
 namespace zl
 {
-namespace utility
-{
+    namespace util
+    {
 
-class SHA1
-{
-public:
-	SHA1();
-	~SHA1();
+        class SHA1
+        {
+        public:
+            SHA1();
+            ~SHA1();
 
-	static std::string HexDigest(const std::string& src);
+            static std::string hexDigest(const std::string& src);
 
-public:
-	void Init();
-	void Update(const std::string& sp);
-	// Finalizes the Sha1 operation and fills the buffer with the digest.
-	//  Data is uint8_t digest_[20]
-	void Final(void* digest);
-	//  Hex encoding for result
-	std::string HexFinal();
+        public:
+            void reset();
+            void update(const std::string& sp);
+            // Finalizes the Sha1 operation and fills the buffer with the digest.
+            //  Data is uint8_t digest_[20]
+            void final(void* digest);
+            //  Hex encoding for result
+            std::string hexFinal();
 
-private:
-	void SHA1Transform(uint32_t state[5], const uint8_t buffer[64]);
-	void Update(const uint8_t* data, size_t input_len);
-	void FinalInternal();
+        private:
+            void sha1Transform(uint32_t state[5], const uint8_t buffer[64]);
+            void update(const uint8_t* data, size_t input_len);
+            void finalInternal();
 
-private:
-	SHA1(const SHA1&);
-	const SHA1& operator=(const SHA1&);
+        private:
+            SHA1(const SHA1&);
+            const SHA1& operator=(const SHA1&);
 
-	struct SHA1_CTX
-	{
-		uint32_t state[5];
-		uint32_t count[2];  // Bit count of input.
-		uint8_t buffer[64];
-	};
+            struct SHA1_CTX
+            {
+                uint32_t state[5];
+                uint32_t count[2];  // Bit count of input.
+                uint8_t buffer[64];
+            };
 
-	SHA1_CTX context_;
-	uint8_t  digest_[20];
-};
+            SHA1_CTX context_;
+            uint8_t  digest_[20];
+        };
 
-}
+    }
 }
 #endif  /* ZL_SHA1_H */
